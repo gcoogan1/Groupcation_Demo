@@ -1,5 +1,5 @@
-import Pictogram from "./components/Pictogram/Pictogram";
-import Groupcation from "./assets/Groupcation.svg?react"; // IMPORTANT -> .svg?react
+import Walking from "./assets/Walking.svg?react"; // IMPORTANT -> .svg?react
+import GraphicRoute from "./components/GraphicRoute/GraphicRoute";
 
 const App = () => {
 	return (
@@ -15,9 +15,9 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<Pictogram size="medium" type="primaryOpacity" >
-				<Groupcation style={{ color: "#E40078" }} />
-			</Pictogram>
+			<GraphicRoute type="walking" >
+				<Walking style={{ color: "#BD8E62" }} />
+			</GraphicRoute>
 		</div>
 	);
 };
