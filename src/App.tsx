@@ -1,6 +1,6 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import Switch from "./components/Switch/Switch";
+import FilterChip from "./components/FilterChip/FilterChip";
 
 const App = () => {
 
@@ -18,7 +18,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<Switch />
+			<FilterChip filterText="21 Travelers" onClick={() => console.log("Filter")} />
 		</div>
 	);
 };

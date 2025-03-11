@@ -2,6 +2,7 @@ export const theme = {
   primary: '#E40078',
   primaryOpacity: '#E400780D',
   secondary: '#404040',
+  iconText: '#737373',
   base: "#ffff",
   surface: '#F4F4F4',
   line: '#EAEAEA',

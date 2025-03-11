@@ -8,6 +8,6 @@ export const CloseButtonContainer = styled.button`
   border-radius: 999px;
   background-color: ${theme.surface};
   display: flex;
-  justify-content: 'center';
-  align-content: 'center';
+  justify-content: center;
+  align-content: center;
 `

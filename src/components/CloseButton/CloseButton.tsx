@@ -9,7 +9,7 @@ interface CloseButtonProps {
 const CloseButton: React.FC<CloseButtonProps> = ({ onClose }) => {
   return (
     <CloseButtonContainer onClick={onClose}>
-      <Cancel color={theme.secondary} />
+      <Cancel color={theme.iconText} />
     </CloseButtonContainer>
   )
 }

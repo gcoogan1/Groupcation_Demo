@@ -9,8 +9,6 @@ interface CollapseButtonProps {
 	expanded?: boolean;
 }
 
-const chevColor = "#737373";
-
 const CollapaseButton: React.FC<CollapseButtonProps> = ({ expanded }) => {
 	const [isExpanded, setIsExpanded] = useState(expanded);
 
@@ -21,9 +19,9 @@ const CollapaseButton: React.FC<CollapseButtonProps> = ({ expanded }) => {
 	return (
 		<CollapseButtonContainer style={{ backgroundColor: !isExpanded ? theme.line : 'transparent' }} onClick={handleExpand}>
 			{isExpanded ? (
-				<ChevronDown color={chevColor} />
+				<ChevronDown color={theme.iconText} />
 			) : (
-				<ChevronUp color={chevColor} />
+				<ChevronUp color={theme.iconText} />
 			)}
 		</CollapseButtonContainer>
 	);
