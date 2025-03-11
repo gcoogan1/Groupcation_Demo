@@ -18,3 +18,14 @@ export const FilterChipText = styled.p`
   font-weight: 400;
   color: ${theme.secondary};
 `
+
+export const CloseButtonWrapper= styled.div`
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 999px;
+  background-color: ${theme.surface};
+`

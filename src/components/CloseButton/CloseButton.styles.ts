@@ -9,5 +9,5 @@ export const CloseButtonContainer = styled.button`
   background-color: ${theme.surface};
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
 `

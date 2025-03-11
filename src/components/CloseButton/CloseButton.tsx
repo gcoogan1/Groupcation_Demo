@@ -3,7 +3,7 @@ import Cancel from "../../assets/Cancel.svg?react"
 import { theme } from "../../styles/theme";
 
 interface CloseButtonProps {
-  onClose: () => void; 
+  onClose: () => void;
 }
 
 const CloseButton: React.FC<CloseButtonProps> = ({ onClose }) => {

@@ -1,6 +1,6 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import FilterChip from "./components/FilterChip/FilterChip";
+import RemoveButton from "./components/RemoveButton/RemoveButton";
 
 const App = () => {
 
@@ -18,7 +18,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<FilterChip filterText="21 Travelers" onClick={() => console.log("Filter")} />
+			<RemoveButton onRemove={() => console.log("Remove")} />
 		</div>
 	);
 };

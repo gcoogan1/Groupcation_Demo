@@ -1,5 +1,6 @@
-import CloseButton from "../CloseButton/CloseButton";
-import { FilterChipContainer, FilterChipText } from "./FilterChip.styles";
+import Close from "../../assets/Cancel.svg?react"
+import { theme } from "../../styles/theme";
+import { CloseButtonWrapper, FilterChipContainer, FilterChipText } from "./FilterChip.styles";
 
 interface FilterChipProps {
   filterText: string;
@@ -12,7 +13,9 @@ const FilterChip: React.FC<FilterChipProps> = ({ filterText, onClick }) => {
       <FilterChipText>
         {filterText}
       </FilterChipText>
-      <CloseButton onClose={onClick} />
+      <CloseButtonWrapper onClick={onClick} >
+      <Close color={theme.iconText} />
+      </CloseButtonWrapper>
     </FilterChipContainer>
   )
 }
