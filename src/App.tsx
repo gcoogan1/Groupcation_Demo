@@ -1,9 +1,39 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import RemoveButton from "./components/RemoveButton/RemoveButton";
+import LinkedTrip from "./components/LinkedTrip/LinkedTrip";
+import { avatarTheme } from "./styles/theme";
+import BackgroundImg from "./assets/background.jpeg";
 
 const App = () => {
+	type AvatarThemeKeys = keyof typeof avatarTheme;
 
+	type Traveler = {
+		initials: string;
+		color: AvatarThemeKeys;
+	};
+
+	const travelers: Traveler[] = [
+		{
+			initials: "bc",
+			color: "red",
+		},
+		{
+			initials: "ab",
+			color: "orange",
+		},
+		{
+			initials: "ov",
+			color: "pink",
+		},
+		{
+			initials: "bc",
+			color: "purple",
+		},
+		{
+			initials: "jc",
+			color: "gold",
+		},
+	];
 
 	return (
 		<div
@@ -18,7 +48,15 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<RemoveButton onRemove={() => console.log("Remove")} />
+
+			<div style={{ width: "400px" }}>
+				<LinkedTrip
+					tripName={"Billy and Annie's Ireland Family Vacation"}
+					duration={"20 May 2025 to 26 May 2025"}
+					travelers={travelers}
+					backgroundImg={BackgroundImg}
+				/>
+			</div>
 		</div>
 	);
 };

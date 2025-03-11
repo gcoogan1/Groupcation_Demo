@@ -11,7 +11,7 @@ type Traveler = {
 
 interface AvatarStackProps {
   travelers: Traveler[];
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const AvatarStack: React.FC<AvatarStackProps> = ({ travelers, onClick }) => {
