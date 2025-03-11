@@ -1,6 +1,6 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import CloseButton from "./components/CloseButton/CloseButton";
+import Switch from "./components/Switch/Switch";
 
 const App = () => {
 
@@ -18,7 +18,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<CloseButton onClose={() => console.log("Click")} />
+			<Switch />
 		</div>
 	);
 };
