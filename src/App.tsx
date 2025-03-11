@@ -1,43 +1,9 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
-import AvatarStack from "./components/AvatarStack/AvatarStack";
-import { avatarTheme } from "./styles/theme";
+
+import CollapaseButton from "./components/CollapaseButton/CollapaseButton";
 
 const App = () => {
 
-	type AvatarThemeKeys = keyof typeof avatarTheme;
-	
-	type Traveler = {
-		initials: string;
-		color: AvatarThemeKeys;
-	};
-
-	const travelers: Traveler[] = [
-		{
-			initials: "gc",
-			color: "red",
-		},
-		{
-			initials: "hb",
-			color: "orange",
-		},
-		{
-			initials: "pv",
-			color: "pink",
-		},
-		{
-			initials: "mh",
-			color: "purple",
-		},
-		{
-			initials: "cc",
-			color: "gold",
-		},
-		{
-			initials: "ac",
-			color: "red",
-		},
-
-	];
 
 	return (
 		<div
@@ -52,7 +18,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<AvatarStack travelers={travelers} onClick={() => console.log("Clicked!")} />
+			<CollapaseButton  />
 		</div>
 	);
 };
