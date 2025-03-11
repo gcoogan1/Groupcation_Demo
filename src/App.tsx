@@ -1,5 +1,5 @@
-import Walking from "./assets/Walking.svg?react"; // IMPORTANT -> .svg?react
-import GraphicRoute from "./components/GraphicRoute/GraphicRoute";
+// IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
+import Avatar from "./components/Avatar/Avatar";
 
 const App = () => {
 	return (
@@ -15,9 +15,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<GraphicRoute type="walking" >
-				<Walking style={{ color: "#BD8E62" }} />
-			</GraphicRoute>
+			<Avatar color="brown" initials="gc" />
 		</div>
 	);
 };
