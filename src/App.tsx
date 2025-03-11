@@ -1,6 +1,6 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import CollapaseButton from "./components/CollapaseButton/CollapaseButton";
+import CloseButton from "./components/CloseButton/CloseButton";
 
 const App = () => {
 
@@ -18,7 +18,7 @@ const App = () => {
 			}}
 		>
 			<h1>Groupcation - To The Alps</h1>
-			<CollapaseButton  />
+			<CloseButton onClose={() => console.log("Click")} />
 		</div>
 	);
 };
