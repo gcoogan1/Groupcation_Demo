@@ -1,13 +1,15 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
-import Button from "./components/Button/Button";
-import ChevRight from "./assets/Chevron_Right.svg?react"
+
+import FilterItem from "./components/FilterItem/FilterItem";
+import Pictogram from "./components/Pictogram/Pictogram";
+import Flight from "./assets/Flight.svg?react";
+import Note from "./assets/Note.svg?react";
 import { theme } from "./styles/theme";
 
 
 
 const App = () => {
-
 
 	return (
 		<div
@@ -24,14 +26,8 @@ const App = () => {
 			<h1>Groupcation - To The Alps</h1>
 
 			<div style={{ width: "300px" }}>
-				<Button
-					rightIcon={<ChevRight color={theme.secondary} />} 
-					color={"outlined"} 
-					onClick={() => console.log("Add Train")}
-					ariaLabel={"Add Train"}				
-					>
-						Add Train
-					</Button>
+				<FilterItem action={"checkbox"} selected icon={<Pictogram size="small" type="flight"><Flight color="white" /></Pictogram>} label={"Flight"} />
+				<FilterItem action={"switch"} icon={<Pictogram size="small" type="noteOpacity"><Note color={theme.note} /></Pictogram>} label={"Notes"} />
 			</div>
 		</div>
 	);
