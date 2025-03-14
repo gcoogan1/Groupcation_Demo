@@ -18,7 +18,8 @@ export const theme = {
   walking: '#BD8E62',
   driving: '#DB8A26',
   note: '#CFA629',
-  noteOpacity: '#CFA6291A'
+  noteOpacity: '#CFA6291A',
+  error: '#EB0000'
 }
 
 export const avatarTheme = {

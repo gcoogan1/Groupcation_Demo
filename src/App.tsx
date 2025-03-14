@@ -7,6 +7,7 @@ import Flight from "./assets/Flight.svg?react";
 import Note from "./assets/Note.svg?react";
 import { theme } from "./styles/theme";
 import MenuItem from "./components/MenuItem/MenuItem";
+import InputText from "./components/Inputs/InputText/InputText";
 
 
 
@@ -27,7 +28,7 @@ const App = () => {
 			<h1>Groupcation - To The Alps</h1>
 
 			<div style={{ width: "300px" }}>
-				<MenuItem pictogram={<Pictogram size="small" type="flight"><Flight color="white" /></Pictogram>} text="Celebration" />
+				<InputText name="text" label="Label" placeholder="Placeholder Text" />
 			</div>
 		</div>
 	);
