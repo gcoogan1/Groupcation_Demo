@@ -11,24 +11,13 @@ import InputText from "./components/Inputs/InputText/InputText";
 import InputDate from "./components/Inputs/InputDate/InputDate";
 import InputTime from "./components/Inputs/InputTime/InputTime";
 import InputSelect from "./components/Inputs/InputSelect/InputSelect";
+import InputNumber from "./components/Inputs/InputNumber/InputNumber";
+import { useState } from "react";
 
 
 
 const App = () => {
-	const options = [
-		{
-			value: "Phila",
-			label: "Philadelphia"
-		},
-		{
-			value: "Paris",
-			label: "Paris"
-		},
-		{
-			value: "London",
-			label: "London"
-		}
-	]
+	const [amount, setAmount] = useState(0);
 	return (
 		<div
 			style={{
@@ -44,7 +33,9 @@ const App = () => {
 			<h1>Groupcation - To The Alps</h1>
 
 			<div style={{ width: "240px" }}>
-				<InputSelect options={options} name="text" label="Label"  />
+				<InputNumber 
+					value={amount}
+					onChange={(val) => setAmount(val)} label={"Label"} name={"currency"}				 />
 			</div>
 		</div>
 	);
