@@ -8,6 +8,7 @@ import Note from "./assets/Note.svg?react";
 import { theme } from "./styles/theme";
 import MenuItem from "./components/MenuItem/MenuItem";
 import InputText from "./components/Inputs/InputText/InputText";
+import InputDate from "./components/Inputs/InputDate/InputDate";
 
 
 
@@ -27,8 +28,8 @@ const App = () => {
 		>
 			<h1>Groupcation - To The Alps</h1>
 
-			<div style={{ width: "300px" }}>
-				<InputText name="text" label="Label" placeholder="Placeholder Text" />
+			<div style={{ width: "240px" }}>
+				<InputDate name="text" label="Label" placeholder="Placeholder Text" />
 			</div>
 		</div>
 	);
