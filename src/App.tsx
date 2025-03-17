@@ -9,6 +9,7 @@ import { theme } from "./styles/theme";
 import MenuItem from "./components/MenuItem/MenuItem";
 import InputText from "./components/Inputs/InputText/InputText";
 import InputDate from "./components/Inputs/InputDate/InputDate";
+import InputTime from "./components/Inputs/InputTime/InputTime";
 
 
 
@@ -29,7 +30,7 @@ const App = () => {
 			<h1>Groupcation - To The Alps</h1>
 
 			<div style={{ width: "240px" }}>
-				<InputDate name="text" label="Label" placeholder="Placeholder Text" />
+				<InputTime name="text" label="Label"  />
 			</div>
 		</div>
 	);
