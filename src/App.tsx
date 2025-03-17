@@ -10,11 +10,25 @@ import MenuItem from "./components/MenuItem/MenuItem";
 import InputText from "./components/Inputs/InputText/InputText";
 import InputDate from "./components/Inputs/InputDate/InputDate";
 import InputTime from "./components/Inputs/InputTime/InputTime";
+import InputSelect from "./components/Inputs/InputSelect/InputSelect";
 
 
 
 const App = () => {
-
+	const options = [
+		{
+			value: "Phila",
+			label: "Philadelphia"
+		},
+		{
+			value: "Paris",
+			label: "Paris"
+		},
+		{
+			value: "London",
+			label: "London"
+		}
+	]
 	return (
 		<div
 			style={{
@@ -30,7 +44,7 @@ const App = () => {
 			<h1>Groupcation - To The Alps</h1>
 
 			<div style={{ width: "240px" }}>
-				<InputTime name="text" label="Label"  />
+				<InputSelect options={options} name="text" label="Label"  />
 			</div>
 		</div>
 	);

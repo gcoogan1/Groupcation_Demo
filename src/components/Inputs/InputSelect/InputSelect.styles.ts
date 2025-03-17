@@ -8,9 +8,8 @@ interface InputContainerProps {
 export const InputContainer = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   width: 100%;
-  cursor: pointer;
 `;
 
 export const StyledLabel = styled.label<InputContainerProps>`
@@ -25,58 +24,48 @@ export const StyledLabel = styled.label<InputContainerProps>`
   color: ${({ isError }) => (isError ? theme.error : theme.secondary)};
 `;
 
-export const InputWrapper = styled.div<InputContainerProps>`
+export const IconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: ${theme.iconText};
+  }
+`;
+
+export const StyledSelect = styled.select<InputContainerProps>`
   width: 100%;
   padding: 16px;
+  padding-right: 36px; /* Make room for the icon */
   font-family: "Rubik";
   border: ${({ isError }) => (isError ? `2px solid ${theme.error}` : `2px solid ${theme.secondary}`)};
   border-radius: 4px;
   background: ${theme.base};
   font-size: 14px;
+  outline: none;
   color: ${theme.secondary};
   line-height: 20px;
   font-weight: 400;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-export const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const StyledInput = styled.input<InputContainerProps>`
-  width: 100%;
-  font-family: "Rubik";
-  font-size: 14px;
-  border: none;
-  color: ${theme.secondary};
-  outline: none;
-
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
+  appearance: none;
+  -webkit-appearance: none; 
+  -moz-appearance: none;
 
   &::placeholder {
     color: ${theme.iconText};
   }
-  
-  .react-datepicker-wrapper,
-  .react-datepicker__input-container input {
-    width: 100%;
-    outline: none;
-    border: none;
-  }
 `;
 
 export const ErrorText = styled.span<InputContainerProps>`
-  font-size: 12px;
-  color: red;
-  visibility: ${({ isError }) => (isError ? "visible" : "hidden")};
-  margin-top: 4px;
   position: absolute;
-  bottom: -16px;
-  left: 0;
+  bottom: -22px;
+  font-size: 14px;
+  color: ${theme.error};
+  visibility: ${({ isError }) => (isError ? "visible" : "hidden")};
 `;
