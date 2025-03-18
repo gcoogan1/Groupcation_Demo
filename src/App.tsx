@@ -13,6 +13,7 @@ import InputTime from "./components/Inputs/InputTime/InputTime";
 import InputSelect from "./components/Inputs/InputSelect/InputSelect";
 import InputNumber from "./components/Inputs/InputNumber/InputNumber";
 import { useState } from "react";
+import FileUpload from "./components/Inputs/InputAttachment/InputAttachment";
 
 
 
@@ -32,11 +33,7 @@ const App = () => {
 		>
 			<h1>Groupcation - To The Alps</h1>
 
-			<div style={{ width: "240px" }}>
-				<InputNumber 
-					value={amount}
-					onChange={(val) => setAmount(val)} label={"Label"} name={"currency"}				 />
-			</div>
+			<FileUpload />
 		</div>
 	);
 };

@@ -28,6 +28,7 @@ export const ButtonContainer = styled.div<ButtonContainerProps>`
   justify-content: center;
   align-items: center;
   gap: 4px;
+	cursor: pointer;
 `;
 
 export const ButtonText = styled.p<ButtonTextProps>`
