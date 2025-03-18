@@ -1,24 +1,11 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
 
-import FilterItem from "./components/FilterItem/FilterItem";
-import Pictogram from "./components/Pictogram/Pictogram";
-import Flight from "./assets/Flight.svg?react";
-import Note from "./assets/Note.svg?react";
-import { theme } from "./styles/theme";
-import MenuItem from "./components/MenuItem/MenuItem";
-import InputText from "./components/Inputs/InputText/InputText";
-import InputDate from "./components/Inputs/InputDate/InputDate";
-import InputTime from "./components/Inputs/InputTime/InputTime";
-import InputSelect from "./components/Inputs/InputSelect/InputSelect";
-import InputNumber from "./components/Inputs/InputNumber/InputNumber";
-import { useState } from "react";
-import FileUpload from "./components/Inputs/InputAttachment/InputAttachment";
+import InputTextArea from "./components/Inputs/InputTextArea/InputTextArea";
 
 
 
 const App = () => {
-	const [amount, setAmount] = useState(0);
 	return (
 		<div
 			style={{
@@ -33,7 +20,9 @@ const App = () => {
 		>
 			<h1>Groupcation - To The Alps</h1>
 
-			<FileUpload />
+			<div style={{ width: '280px'}}>
+			<InputTextArea label={"Label"} name={"message"} placeholder="User Input tEXT" />
+			</div>
 		</div>
 	);
 };
