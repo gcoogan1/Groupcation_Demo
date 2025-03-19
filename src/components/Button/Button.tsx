@@ -21,11 +21,17 @@ const Button: React.FC<ButtonProps> = ({
   const isOutlined = color === 'outlined';
   const isPrimary = color === 'primary'
 
+  const handleOnClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Pevents parent click events
+    event.stopPropagation()
+    onClick()
+  }
+
   return (
     <ButtonContainer
       color={color}
       aria-label={ariaLabel}
-      onClick={onClick}
+      onClick={(e) => handleOnClick(e)}
       showBorder={isOutlined}
     >
       {leftIcon && leftIcon}
