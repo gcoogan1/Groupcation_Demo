@@ -1,39 +1,41 @@
 import React, { useRef, useState } from "react";
-import Walking from "../../assets/Walking.svg?react";
-import AddNotes from "../../assets/AdditionalNotes.svg?react";
+import NoteIcon from "../../assets/Note.svg?react";
 import {
 	AddNotesContainer,
 	AddNotesContent,
 	AddNotesTitle,
 	ContentContainer,
 	ExpandableContent,
-	RouteContainer,
-	RouteFooter,
-	RouteFooterContent,
-	RouteFooterTitle,
-	RouteHighlightText,
-	RouteItem,
-	RouteText,
-} from "./Route.styles";
-import GraphicRoute from "../GraphicRoute/GraphicRoute";
+	NoteContainer,
+	NoteFooter,
+	NoteFooterContent,
+	NoteFooterTitle,
+	NoteHighlightText,
+	NoteItem,
+	NoteLine,
+	NoteText,
+	NoteItemContent,
+} from "./Note.styles";
 import { theme } from "../../styles/theme";
 import CollapaseButton from "../CollapaseButton/CollapaseButton";
 import Button from "../Button/Button";
 import Edit from "../../assets/Edit.svg?react";
 
-interface ActivityRouteProps {
+interface NotesProps {
 	onEditClick: () => void;
-	hightlightedRouteAction: string;
-	routeText: string;
-	notesText: string;
+	hightlightedNoteAction: string;
+	noteText: string;
+	extendedNotesTitle: string;
+	extendedNoteText: string;
 	footerText: string;
 }
 
-const ActivityRoute: React.FC<ActivityRouteProps> = ({
+const Note: React.FC<NotesProps> = ({
 	onEditClick,
-	hightlightedRouteAction,
-	routeText,
-	notesText,
+	hightlightedNoteAction,
+	noteText,
+	extendedNotesTitle,
+	extendedNoteText,
 	footerText,
 }) => {
 	const [expanded, setExpanded] = useState(false);
@@ -49,28 +51,43 @@ const ActivityRoute: React.FC<ActivityRouteProps> = ({
 	};
 
 	return (
-		<RouteContainer
+		<NoteContainer
 			isExpanded={expanded}
 			onClick={toggleExpand}
 			style={{ flexDirection: "column" }}
 		>
-			<RouteItem isExpanded={expanded}>
-				<GraphicRoute type={"walking"}>
-					<Walking color={theme.walking} />
-				</GraphicRoute>
-				<RouteText>
-					<RouteHighlightText>{hightlightedRouteAction} </RouteHighlightText>
-					{routeText}
-				</RouteText>
-				{expanded && (
+			{!expanded ? (
+				<>
+					<NoteLine />
+					<NoteItem isExpanded={expanded}>
+						<NoteItemContent>
+							<NoteIcon color={theme.note} />
+							<NoteText>
+								<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
+								{noteText}
+							</NoteText>
+						</NoteItemContent>
+					</NoteItem>
+					<NoteLine />
+				</>
+			) : (
+				<NoteItem isExpanded={expanded}>
+					<NoteItemContent>
+						<NoteIcon color={theme.note} />
+
+						<NoteText>
+							<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
+							{noteText}
+						</NoteText>
+					</NoteItemContent>
 					<CollapaseButton
 						onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
 							event.stopPropagation();
 							setExpanded(false);
 						}}
 					/>
-				)}
-			</RouteItem>
+				</NoteItem>
+			)}
 			<ExpandableContent
 				isExpanded={expanded}
 				ref={contentRef}
@@ -78,17 +95,14 @@ const ActivityRoute: React.FC<ActivityRouteProps> = ({
 			>
 				<ContentContainer>
 					<AddNotesContainer>
-						<AddNotes color={theme.iconText} />
-						<div>
-							<AddNotesTitle>Additional Notes</AddNotesTitle>
-							<AddNotesContent>{notesText}</AddNotesContent>
-						</div>
+						<AddNotesTitle>{extendedNotesTitle}</AddNotesTitle>
+						<AddNotesContent>{extendedNoteText}</AddNotesContent>
 					</AddNotesContainer>
 				</ContentContainer>
-				<RouteFooter>
+				<NoteFooter>
 					<div>
-						<RouteFooterTitle>Added By</RouteFooterTitle>
-						<RouteFooterContent>{footerText}</RouteFooterContent>
+						<NoteFooterTitle>Added By</NoteFooterTitle>
+						<NoteFooterContent>{footerText}</NoteFooterContent>
 					</div>
 					<Button
 						leftIcon={<Edit color={theme.secondary} />}
@@ -98,10 +112,10 @@ const ActivityRoute: React.FC<ActivityRouteProps> = ({
 					>
 						Edit
 					</Button>
-				</RouteFooter>
+				</NoteFooter>
 			</ExpandableContent>
-		</RouteContainer>
+		</NoteContainer>
 	);
 };
 
-export default ActivityRoute;
+export default Note;

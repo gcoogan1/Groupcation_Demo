@@ -5,6 +5,7 @@ export const CollapseButtonContainer = styled.button`
   border: none;
   border-radius: 999px;
   display: flex;
-  justify-content: 'center';
-  align-content: 'center';
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `
