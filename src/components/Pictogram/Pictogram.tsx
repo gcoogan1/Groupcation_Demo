@@ -6,7 +6,7 @@ type ThemeKeys = keyof typeof theme;
 
 interface PictogramProps {
 	type: ThemeKeys;
-	size: "small" | "medium";
+	size?: "small" | "medium";
 	innerBorderColor?: string;
 	children: React.ReactNode;
 }

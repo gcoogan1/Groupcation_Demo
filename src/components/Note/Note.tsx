@@ -56,38 +56,27 @@ const Note: React.FC<NotesProps> = ({
 			onClick={toggleExpand}
 			style={{ flexDirection: "column" }}
 		>
-			{!expanded ? (
-				<>
-					<NoteLine />
-					<NoteItem isExpanded={expanded}>
-						<NoteItemContent>
-							<NoteIcon color={theme.note} />
-							<NoteText>
-								<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
-								{noteText}
-							</NoteText>
-						</NoteItemContent>
-					</NoteItem>
-					<NoteLine />
-				</>
-			) : (
+			<>
+				<NoteLine isExpanded={expanded} />
 				<NoteItem isExpanded={expanded}>
 					<NoteItemContent>
 						<NoteIcon color={theme.note} />
-
 						<NoteText>
 							<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
 							{noteText}
 						</NoteText>
 					</NoteItemContent>
-					<CollapaseButton
-						onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-							event.stopPropagation();
-							setExpanded(false);
-						}}
-					/>
+					{expanded && (
+						<CollapaseButton
+							onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+								event.stopPropagation();
+								setExpanded(false);
+							}}
+						/>
+					)}
 				</NoteItem>
-			)}
+				<NoteLine isExpanded={expanded} />
+			</>
 			<ExpandableContent
 				isExpanded={expanded}
 				ref={contentRef}

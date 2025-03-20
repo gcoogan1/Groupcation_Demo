@@ -11,8 +11,8 @@ export const NoteContainer = styled.div<NoteContainerProps>`
 	justify-content: space-between;
 	max-width: 400px;
 	border-radius: 8px;
-  min-height: 70px;
-	cursor: ${({ isExpanded }) => isExpanded ? 'auto' : 'pointer'};
+	min-height: 70px;
+	cursor: ${({ isExpanded }) => (isExpanded ? "auto" : "pointer")};
 	border: ${({ isExpanded }) =>
 		isExpanded ? `2px solid ${theme.line}` : "2px solid transparent"};
 	box-shadow: ${({ isExpanded }) =>
@@ -21,11 +21,14 @@ export const NoteContainer = styled.div<NoteContainerProps>`
 		isExpanded ? theme.surface : "transparent"};
 `;
 
-export const NoteLine = styled.div`
+export const NoteLine = styled.div<NoteContainerProps>`
 	height: 1px;
 	align-self: stretch;
 	margin: 0px 16px 0px 24px;
-	background: linear-gradient(90deg, #cfa629 50%, rgba(207, 166, 41, 0) 100%);
+	background: ${({ isExpanded }) =>
+		isExpanded
+			? "transparent"
+			: "linear-gradient(90deg, #cfa629 50%, rgba(207, 166, 41, 0) 100%)"};
 `;
 
 export const NoteItem = styled.div<NoteContainerProps>`
@@ -34,6 +37,11 @@ export const NoteItem = styled.div<NoteContainerProps>`
 	width: 100%;
 	padding: 8px 16px 8px 24px;
 	gap: 16px;
+`;
+
+export const CollapseButtonContainer = styled.div`
+	width: 40px;
+	height: 40px;
 `;
 
 export const NoteItemContent = styled.div`
@@ -86,6 +94,7 @@ export const AddNotesTitle = styled.div`
 	line-height: 20px;
 	color: ${theme.secondary};
 `;
+
 export const AddNotesContent = styled.div`
 	font-size: 14px;
 	font-weight: 400;
