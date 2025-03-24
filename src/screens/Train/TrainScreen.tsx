@@ -1,8 +1,9 @@
 import PageWrapper from "../../components/PageWrapper/PageWrapper";
 import TrainForm from "../../modules/activities/train/components/TrainForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const TrainScreen = () => {
+	const { trainId } = useParams();
 	const navigate = useNavigate();
 
 	const handleOnClose = () => {
@@ -16,7 +17,7 @@ const TrainScreen = () => {
 			formTitle="Add New"
 			formTitleAction="Train"
 		>
-			<TrainForm />
+			<TrainForm trainId={trainId} />
 		</PageWrapper>
 	);
 };

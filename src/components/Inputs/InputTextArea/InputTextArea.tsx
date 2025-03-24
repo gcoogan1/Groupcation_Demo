@@ -1,3 +1,4 @@
+import { FieldError, UseFormRegister } from "react-hook-form";
 import {
 	ErrorText,
 	InputContainer,
@@ -9,7 +10,9 @@ interface InputTextAreaProps {
 	label: string;
 	placeholder?: string;
 	name: string;
-	error?: boolean;
+	error?: FieldError;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	register: UseFormRegister<any>;
 }
 
 const InputTextArea: React.FC<InputTextAreaProps> = ({
@@ -17,16 +20,18 @@ const InputTextArea: React.FC<InputTextAreaProps> = ({
 	placeholder,
 	name,
 	error,
+	register
 }) => {
 	return (
 		<InputContainer>
-			<StyledLabel is_error={error}>{label}</StyledLabel>
+			<StyledLabel is_error={!!error}>{label}</StyledLabel>
 			<StyledInput
-				is_error={error}
+				{...register(name)}
+				is_error={!!error}
 				placeholder={placeholder}
 				aria-label={name}
 			/>
-			<ErrorText is_error={error}>This field is required.</ErrorText>
+			<ErrorText is_error={!!error}>{error?.message}</ErrorText>
 		</InputContainer>
 	);
 };

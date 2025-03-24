@@ -15,4 +15,8 @@ export const ROUTES: Route[] = [
     path: '/train-form',
     element: <TrainScreen /> 
   },
+  {
+    path: '/train-form/:trainId',
+    element: <TrainScreen /> 
+  },
 ];

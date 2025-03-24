@@ -17,4 +17,10 @@ export const trainSchema = z.object({
       })
     )
     .optional(),
-})
+  cost: z.string().optional(),
+  attachments: z
+    .array(z.instanceof(File))
+    .max(5, "You can upload a maximum of 5 files")
+    .optional(),
+  notes: z.string().min(10, "Must have at least 10 characters.").optional(),
+});

@@ -7,7 +7,7 @@ interface ButtonProps {
   onClick: () => void;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  type?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -16,7 +16,8 @@ const Button: React.FC<ButtonProps> = ({
   ariaLabel,
   onClick,
   leftIcon,
-  rightIcon
+  rightIcon,
+  type
 }) => {
 
   const isOutlined = color === 'outlined';
@@ -34,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
       aria-label={ariaLabel}
       onClick={(e) => handleOnClick(e)}
       showBorder={isOutlined}
+      type={type ? type : 'button'}
     >
       {leftIcon && leftIcon}
       <ButtonText primary={isPrimary}>{children}</ButtonText>

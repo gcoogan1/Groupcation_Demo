@@ -6,6 +6,7 @@ import {
 	StyledInput,
 	StyledLabel,
 } from "./InputNumber.styles";
+import { UseFormRegister } from "react-hook-form";
 
 interface InputNumberProps {
 	label: string;
@@ -13,6 +14,8 @@ interface InputNumberProps {
 	value: number;
 	onChange: (value: number) => void;
 	error?: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	register: UseFormRegister<any>;
 }
 
 const InputNumber: React.FC<InputNumberProps> = ({
@@ -21,6 +24,7 @@ const InputNumber: React.FC<InputNumberProps> = ({
 	value,
 	onChange,
 	error,
+	register
 }) => {
 	const [displayValue, setDisplayValue] = useState((value / 100).toFixed(2));
 
@@ -35,13 +39,14 @@ const InputNumber: React.FC<InputNumberProps> = ({
 		setDisplayValue(formatCurrency(numericValue));
 		onChange(numericValue);
 	};
-
+	
 	return (
 		<InputContainer>
 			<StyledLabel is_error={error}>{label}</StyledLabel>
 			<InputSymbol>$</InputSymbol>
 			<StyledInput
 				type="text"
+				{...register(name)}
 				is_error={error}
 				value={displayValue}
 				aria-label={name}

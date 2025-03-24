@@ -2,13 +2,12 @@ import styled from "styled-components";
 import { theme } from "../../../styles/theme";
 
 export const AttachmentContainer = styled.div`
-	width: 240px;
 	max-width: 480px;
 	border-radius: 4px;
 	display: flex;
 	gap: 8px;
 	padding: 16px;
-  flex-direction: column;
+    flex-direction: column;
 	border: 2px solid ${theme.secondary};
 `;
 

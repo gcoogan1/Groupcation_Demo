@@ -52,7 +52,7 @@ const InputSelect: React.FC<InputSelectProps> = ({
 								(item: Option) => item.value === option.value
 							);
 							return (
-								<li {...props}>
+								<li {...props} key={option.label}>
 									<Checkbox
 										icon={<CheckboxUnselected />}
 										checkedIcon={<CheckboxSelected />}

@@ -56,6 +56,7 @@ export const ContentTitleContainer = styled.div`
   width: 100%;
   display: flex;
   gap: 16px;
+  justify-content: space-between;
 `
 
 export const ContentTitle = styled.p`

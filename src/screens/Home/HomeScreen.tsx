@@ -58,6 +58,7 @@ const HomeScreen = () => {
     >
       <h1>Groupcation - To The Alps</h1>
       <Link to="/train-form">Add Train</Link>
+      <Link to="/train-form/b4a637e1-d717-4826-818f-87f848e7d2cf">Update Train</Link>
 
       {/* <div style={{ minHeight: "600px" }}>
         <Note
