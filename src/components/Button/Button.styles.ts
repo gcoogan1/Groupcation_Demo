@@ -10,28 +10,33 @@ const ButtonVariants = {
 
 interface ButtonContainerProps {
 	color: keyof typeof ButtonVariants;
-	showBorder: boolean;
+	showBorder?: boolean;
 }
 
 interface ButtonTextProps {
 	primary: boolean;
 }
 
-export const ButtonContainer = styled.div<ButtonContainerProps>`
-  background: ${({ color }) => ButtonVariants[color]};
-  box-shadow: ${({ showBorder }) =>
+export const ButtonContainer = styled.button.withConfig({
+	shouldForwardProp: (prop) => prop !== "showBorder",
+})<ButtonContainerProps>`
+	background: ${({ color }) => ButtonVariants[color]};
+	box-shadow: ${({ showBorder }) =>
 		showBorder ? `inset 0 0 0 2px ${theme.line}` : "none"};
-  border-radius: 8px;
-  padding: ${({ color }) =>
+	border-radius: 8px;
+	padding: ${({ color }) =>
 		color === "primary" || color === "secondary" ? "16px" : "12px"};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
 	cursor: pointer;
+	border: none;
 `;
 
-export const ButtonText = styled.p<ButtonTextProps>`
+export const ButtonText = styled.p.withConfig({
+	shouldForwardProp: (prop) => prop !== "primary",
+})<ButtonTextProps>`
 	font-size: 14px;
 	font-weight: 600;
 	line-height: 20px;

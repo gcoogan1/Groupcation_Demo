@@ -19,7 +19,8 @@ export const theme = {
   driving: '#DB8A26',
   note: '#CFA629',
   noteOpacity: '#CFA6291A',
-  error: '#EB0000'
+  error: '#EB0000',
+  dark:'#000000'
 }
 
 export const avatarTheme = {

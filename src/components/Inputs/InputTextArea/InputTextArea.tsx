@@ -20,13 +20,13 @@ const InputTextArea: React.FC<InputTextAreaProps> = ({
 }) => {
 	return (
 		<InputContainer>
-			<StyledLabel isError={error}>{label}</StyledLabel>
+			<StyledLabel is_error={error}>{label}</StyledLabel>
 			<StyledInput
-				isError={error}
+				is_error={error}
 				placeholder={placeholder}
 				aria-label={name}
 			/>
-			<ErrorText isError={error}>This field is required.</ErrorText>
+			<ErrorText is_error={error}>This field is required.</ErrorText>
 		</InputContainer>
 	);
 };

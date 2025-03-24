@@ -7,6 +7,7 @@ interface ButtonProps {
   onClick: () => void;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  type?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,7 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   ariaLabel,
   onClick,
   leftIcon,
-  rightIcon,
+  rightIcon
 }) => {
 
   const isOutlined = color === 'outlined';

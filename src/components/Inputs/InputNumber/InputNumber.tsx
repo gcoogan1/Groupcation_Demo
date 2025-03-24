@@ -18,39 +18,36 @@ interface InputNumberProps {
 const InputNumber: React.FC<InputNumberProps> = ({
 	label,
 	name,
-  value,
-  onChange,
+	value,
+	onChange,
 	error,
 }) => {
-   const [displayValue, setDisplayValue] = useState((value / 100).toFixed(2));
-  
-    const formatCurrency = (num: number) => (num / 100).toFixed(2);
-  
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-			// Numbers only
-      const rawValue = event.target.value.replace(/\D/g, '');
-			// Convert to int
-      const numericValue = parseInt(rawValue || '0', 10);
-			
-      setDisplayValue(formatCurrency(numericValue));
-      onChange(numericValue);
-    };
+	const [displayValue, setDisplayValue] = useState((value / 100).toFixed(2));
+
+	const formatCurrency = (num: number) => (num / 100).toFixed(2);
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		// Numbers only
+		const rawValue = event.target.value.replace(/\D/g, "");
+		// Convert to int
+		const numericValue = parseInt(rawValue || "0", 10);
+
+		setDisplayValue(formatCurrency(numericValue));
+		onChange(numericValue);
+	};
 
 	return (
 		<InputContainer>
-			<StyledLabel isError={error}>{label}</StyledLabel>
-			<InputSymbol
-      >
-        $
-      </InputSymbol>
+			<StyledLabel is_error={error}>{label}</StyledLabel>
+			<InputSymbol>$</InputSymbol>
 			<StyledInput
-        type="text"
-				isError={error}
+				type="text"
+				is_error={error}
 				value={displayValue}
 				aria-label={name}
-        onChange={handleChange}
+				onChange={handleChange}
 			/>
-			<ErrorText isError={error}>This field is required.</ErrorText>
+			<ErrorText is_error={error}>This field is required.</ErrorText>
 		</InputContainer>
 	);
 };
