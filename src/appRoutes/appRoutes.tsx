@@ -1,3 +1,4 @@
+import BoatScreen from "../screens/Boat/BoatScreen";
 import BusScreen from "../screens/Bus/BusScreen";
 import FlightScreen from "../screens/Flight/FlightScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
@@ -45,5 +46,13 @@ export const ROUTES: Route[] = [
   {
     path: '/bus-form/:busId',
     element: <BusScreen /> 
+  },
+  {
+    path: '/boat-form',
+    element: <BoatScreen /> 
+  },
+  {
+    path: '/boat-form/:boatId',
+    element: <BoatScreen /> 
   },
 ];

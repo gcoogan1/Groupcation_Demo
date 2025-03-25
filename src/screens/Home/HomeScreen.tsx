@@ -69,7 +69,10 @@ const HomeScreen = () => {
       <Link to="/flight-form/ce79403c-ad1d-4eab-b0bb-bb1ad2725aee">Update Flight</Link>
 
       <Link to="/bus-form">Add Bus</Link>
-      <Link to="/bus-form/61c6f7dd-d57d-4206-af0c-c87d233d9e65">Update Bus</Link>
+      <Link to="/bus-form/52e3e2cd-09b0-460a-bc36-0be5a5c7bca8">Update Bus</Link>
+
+      <Link to="/boat-form">Add Boat</Link>
+      <Link to="/boat-form/694ef18b-eb44-449c-832a-e71569a4ddae">Update Boat</Link>
 
       {/* <div style={{ minHeight: "600px" }}>
         <Note

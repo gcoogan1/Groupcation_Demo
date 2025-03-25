@@ -9,12 +9,12 @@ interface Bus {
 	id: string;
 	// groupcationId: string;
 	// createdBy: string;
-	railwayLine: string;
-	class: string;
-	departureStation: string;
+	busRoute: string;
+	busClass: string;
+	departureBusStop: string;
 	departureDate: string;
 	departureTime: string;
-	arrivalStation: string;
+	arrivalBusStop: string;
 	arrivalDate: string;
 	arrivalTime: string;
 	travelers?: Traveler[];
