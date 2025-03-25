@@ -12,11 +12,11 @@ interface Train {
 	railwayLine: string;
 	class: string;
 	departureStation: string;
-	departureDate: Date;
-	departureTime: Date;
+	departureDate: string;
+	departureTime: string;
 	arrivalStation: string;
-	arrivalDate: Date;
-	arrivalTime: Date;
+	arrivalDate: string;
+	arrivalTime: string;
 	travelers?: Traveler[];
 	cost?: string;
 	attachments?: File[];

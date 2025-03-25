@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../../../store";
-import { addTrain, updateTrain } from "../slice/trainSlice";
-import { trainSchema } from "../schema/trainSchema";
+import { addStay, updateStay } from "../slice/staySlice";
+import { staySchema } from "../schema/staySchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -21,7 +21,7 @@ import {
   SectionGraphics,
   SectionGraphicsLine,
   SectionInputs,
-} from "./TrainForm.styles";
+} from "./StayForm.styles";
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
@@ -30,7 +30,7 @@ import InputSelect from "../../../../components/Inputs/InputSelect/InputSelect";
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
-import RailwayIcon from "../../../../assets/Train.svg?react";
+import PlaceIcon from "../../../../assets/Stay.svg?react";
 import UsersIcon from "../../../../assets/Users.svg?react";
 import CostIcon from "../../../../assets/Cost.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
@@ -40,30 +40,30 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import {
-  convertFormDatesToString,
-} from "../../../../utils/dateFunctions/dateFunctions";
+import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
 
-// NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
+// NOTE: ALL stay DATA (see staySchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)
 
-type TrainFormData = z.infer<typeof trainSchema>;
+type StayFormData = z.infer<typeof staySchema>;
 
-interface TrainFormProps {
-  trainId?: string;
+interface StayFormProps {
+  stayId?: string;
 }
 
-const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
+const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
   const dispatch = useDispatch();
-  const existingTrain = useSelector((state: RootState) =>
-    state.train.trains.find((train) => train.id === trainId)
+  const existingStay = useSelector((state: RootState) =>
+    state.stay.stays.find((stay) => stay.id === stayId)
   );
-  const [showCost, setShowCost] = useState(!!existingTrain?.cost);
-  const [showAttachments, setShowAttachments] = useState(!!existingTrain?.attachments);
-  const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
+
+  const [showCost, setShowCost] = useState(!!existingStay?.cost);
+  const [showAttachments, setShowAttachments] = useState(!!existingStay?.attachments);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingStay?.notes);
   const [amount, setAmount] = useState(0);
 
-  const allDetailsShown = (showCost && showAddNotes && showAttachments);
+  const allDetailsShown = showCost && showAddNotes && showAttachments;
+
 
   const {
     register,
@@ -72,46 +72,46 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<TrainFormData>({
-    resolver: zodResolver(trainSchema),
+  } = useForm<StayFormData>({
+    resolver: zodResolver(staySchema),
   });
 
   useEffect(() => {
-    if (existingTrain) {
-      // Reset to todays date/time if remaining train date/time is not present
-      const convertedTrain = {
-        ...existingTrain,
-        departureDate: existingTrain.departureDate
-          ? new Date(existingTrain.departureDate)
+    if (existingStay) {
+      const convertedStay = {
+        ...existingStay,
+        checkInDate: existingStay.checkInDate
+          ? new Date(existingStay.checkInDate)
           : new Date(),
-        arrivalDate: existingTrain.arrivalDate
-          ? new Date(existingTrain.arrivalDate)
+        checkInTime: existingStay.checkInTime
+          ? new Date(existingStay.checkInTime)
           : new Date(),
-        departureTime: existingTrain.departureTime
-          ? new Date(existingTrain.departureTime)
+        checkOutDate: existingStay.checkOutDate
+          ? new Date(existingStay.checkOutDate)
           : new Date(),
-        arrivalTime: existingTrain.arrivalTime
-          ? new Date(existingTrain.arrivalTime)
+        checkOutTime: existingStay.checkOutTime
+          ? new Date(existingStay.checkOutTime)
           : new Date(),
       };
 
-      reset(convertedTrain);
+      reset(convertedStay);
     } else {
       reset();
     }
-  }, [existingTrain, reset]);
-  const onSubmit = (data: TrainFormData) => {
+  }, [existingStay, reset]);
+
+  const onSubmit = (data: StayFormData) => {
     // Convert the dates in the form data to ISO strings
     const convertedData = convertFormDatesToString(data);
 
-    if (trainId) {
-      const updatedTrain = { ...existingTrain, ...convertedData, id: trainId };
-      console.log("Updated train:", updatedTrain);
-      dispatch(updateTrain(updatedTrain));
+    if (stayId) {
+      const updatedStay = { ...existingStay, ...convertedData, id: stayId };
+      console.log("Updated train:", updatedStay);
+      dispatch(updateStay(updatedStay));
     } else {
-      const newTrain = { id: uuidv4(), ...convertedData };
-      console.log("New train:", newTrain);
-      dispatch(addTrain(newTrain));
+      const newStay = { id: uuidv4(), ...convertedData };
+      console.log("New train:", newStay);
+      dispatch(addStay(newStay));
     }
   };
 
@@ -130,8 +130,6 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     },
   ];
 
-  console.log(showCost)
-
   return (
     <FormContainer
       onSubmit={handleSubmit((data) => {
@@ -146,28 +144,21 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Departure</ContentTitle>
+              <ContentTitle>Check-in</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputText
-                error={errors.departureStation}
-                register={register}
-                label={"Station"}
-                name={"departureStation"}
-                placeholder="Enter name of train station"
-              />
               <InputDatesRow>
                 <InputDate
                   control={control}
-                  error={errors.departureDate}
-                  label={"Date"}
-                  name={"departureDate"}
+                  error={errors.checkInDate}
+                  label={"Check-in Date"}
+                  name={"checkInDate"}
                 />
                 <InputTime
                   control={control}
-                  error={errors.departureTime}
-                  label={"Time"}
-                  name={"departureTime"}
+                  error={errors.checkInTime}
+                  label={"Check-in Time"}
+                  name={"checkInTime"}
                 />
               </InputDatesRow>
             </SectionInputs>
@@ -180,28 +171,21 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Arrival</ContentTitle>
+              <ContentTitle>Check-out</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputText
-                error={errors.arrivalStation}
-                register={register}
-                label={"Station"}
-                name={"arrivalStation"}
-                placeholder="Enter name of train station"
-              />
               <InputDatesRow>
                 <InputDate
                   control={control}
-                  error={errors.arrivalDate}
-                  label={"Date"}
-                  name={"arrivalDate"}
+                  error={errors.checkOutDate}
+                  label={"Check-out Date"}
+                  name={"checkOutDate"}
                 />
                 <InputTime
                   control={control}
-                  error={errors.arrivalTime}
-                  label={"Time"}
-                  name={"arrivalTime"}
+                  error={errors.checkOutTime}
+                  label={"Check-out Time"}
+                  name={"checkOutTime"}
                 />
               </InputDatesRow>
             </SectionInputs>
@@ -209,27 +193,27 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
         </Section>
         <Section>
           <SectionGraphics>
-            <RailwayIcon color={theme.iconText} />
+            <PlaceIcon color={theme.iconText} />
             <SectionGraphicsLine />
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Railway</ContentTitle>
+              <ContentTitle>Place</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.railwayLine}
+                error={errors.placeName}
                 register={register}
-                label={"Train Line"}
-                name={"railwayLine"}
-                placeholder="Enter name of the train line"
+                label={"Name of Place"}
+                name={"placeName"}
+                placeholder="Enter name of the hotel / homestay"
               />
               <InputText
-                error={errors.class}
+                error={errors.placeAddress}
                 register={register}
-                label={"Class"}
-                name={"class"}
-                placeholder="Enter a class name for this journey"
+                label={"Address if Place"}
+                name={"placeAddress"}
+                placeholder="Enter address of the hotel / homestay"
               />
             </SectionInputs>
           </SectionContents>
@@ -254,7 +238,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showCost || (!!showCost && !!existingTrain?.cost)) && (
+        {(!!showCost || (!!showCost && !!existingStay?.cost)) && (
           <Section>
             <SectionGraphics>
               <CostIcon color={theme.iconText} />
@@ -282,7 +266,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
             </SectionContents>
           </Section>
         )}
-        {(!!showAttachments || (!!showAttachments && !!existingTrain?.attachments)) && (
+        {(!!showAttachments || (!!showAttachments && !!existingStay?.attachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -303,13 +287,13 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
-                  defaultFiles={existingTrain?.attachments || []}
+                  defaultFiles={existingStay?.attachments || []}
                 />
               </SectionInputs>
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingTrain?.notes)) && (
+        {(!!showAddNotes || (!!showAddNotes && !!existingStay?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />
@@ -392,10 +376,10 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
         ariaLabel="submit"
         type="submit"
       >
-        {!trainId ? "Add Train" : "Update Train"}
+        {!stayId ? "Add stay" : "Update stay"}
       </Button>
     </FormContainer>
   );
 };
 
-export default TrainForm;
+export default StayForm;

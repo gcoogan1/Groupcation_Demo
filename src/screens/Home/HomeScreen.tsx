@@ -39,8 +39,9 @@ const HomeScreen = () => {
   // 	],
   // };
   const trains = useSelector((state: RootState) => state.train.trains);
+  const stays = useSelector((state: RootState) => state.stay.stays);
 
-  console.log("trains", trains)
+  console.log("trains", stays)
 
 
   return (
@@ -58,7 +59,10 @@ const HomeScreen = () => {
     >
       <h1>Groupcation - To The Alps</h1>
       <Link to="/train-form">Add Train</Link>
-      <Link to="/train-form/b4a637e1-d717-4826-818f-87f848e7d2cf">Update Train</Link>
+      <Link to="/train-form/1e5e6a36-8c01-4b68-bbbb-5c1813fe77d3">Update Train</Link>
+
+      <Link to="/stay-form">Add Stay</Link>
+      <Link to="/stay-form/437f28c6-1d5b-445b-999c-7c6cabcd968b">Update Stay</Link>
 
       {/* <div style={{ minHeight: "600px" }}>
         <Note

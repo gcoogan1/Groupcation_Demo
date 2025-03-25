@@ -1,4 +1,5 @@
 import HomeScreen from "../screens/Home/HomeScreen";
+import StayScreen from "../screens/Stay/StayScreen";
 import TrainScreen from "../screens/Train/TrainScreen";
 
 type Route = {
@@ -18,5 +19,13 @@ export const ROUTES: Route[] = [
   {
     path: '/train-form/:trainId',
     element: <TrainScreen /> 
+  },
+  {
+    path: '/stay-form',
+    element: <StayScreen /> 
+  },
+  {
+    path: '/stay-form/:stayId',
+    element: <StayScreen /> 
   },
 ];

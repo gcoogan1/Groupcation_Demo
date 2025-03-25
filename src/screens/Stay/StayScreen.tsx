@@ -1,25 +1,27 @@
 import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import TrainForm from "../../modules/activities/train/components/TrainForm";
+import StayForm from "../../modules/activities/stay/components/StayForm";
 import { useNavigate, useParams } from "react-router-dom";
 
-const TrainScreen = () => {
-	const { trainId } = useParams();
+const StayScreen = () => {
+	const { stayId } = useParams();
 	const navigate = useNavigate();
 
 	const handleOnClose = () => {
 		navigate("/");
 	};
 
+  console.log(stayId)
+
 	return (
 		<PageWrapper
 			onClose={handleOnClose}
 			groupcationTitle={`Hiren & Gen's "To The Alps" Wedding`}
-			formTitle={trainId ? "Update" : "Add New"}
-			formTitleAction="Train"
+			formTitle={stayId ? "Update" : "Add New"}
+			formTitleAction="Stay"
 		>
-			<TrainForm trainId={trainId} />
+			<StayForm stayId={stayId} />
 		</PageWrapper>
 	);
 };
 
-export default TrainScreen;
+export default StayScreen;
