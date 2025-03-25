@@ -26,7 +26,7 @@ import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
 import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelect from "../../../../components/Inputs/InputSelect/InputSelect";
+import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
@@ -58,12 +58,13 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
   );
 
   const [showCost, setShowCost] = useState(!!existingStay?.cost);
-  const [showAttachments, setShowAttachments] = useState(!!existingStay?.attachments);
+  const [showAttachments, setShowAttachments] = useState(
+    !!existingStay?.attachments
+  );
   const [showAddNotes, setShowAddNotes] = useState(!!existingStay?.notes);
   const [amount, setAmount] = useState(0);
 
   const allDetailsShown = showCost && showAddNotes && showAttachments;
-
 
   const {
     register,
@@ -266,7 +267,8 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
             </SectionContents>
           </Section>
         )}
-        {(!!showAttachments || (!!showAttachments && !!existingStay?.attachments)) && (
+        {(!!showAttachments ||
+          (!!showAttachments && !!existingStay?.attachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />

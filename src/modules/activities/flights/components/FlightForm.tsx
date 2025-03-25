@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../../../store";
-import { addTrain, updateTrain } from "../slice/trainSlice";
-import { trainSchema } from "../schema/trainSchema";
+import { addFlight, updateFlight } from "../slice/flightSlice";
+import { flightSchema } from "../schema/flightSchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -16,21 +16,22 @@ import {
   FormContainer,
   FormSections,
   InputDatesRow,
+  InputTextRows,
   Section,
   SectionContents,
   SectionGraphics,
   SectionGraphicsLine,
   SectionInputs,
-} from "./TrainForm.styles";
+} from "./FlightForm.styles";
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
 import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import InputSelectCheckbox from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
-import RailwayIcon from "../../../../assets/Train.svg?react";
+import RailwayIcon from "../../../../assets/Flight.svg?react";
 import UsersIcon from "../../../../assets/Users.svg?react";
 import CostIcon from "../../../../assets/Cost.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
@@ -41,27 +42,27 @@ import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
 import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import InputSelect from "../../../../components/Inputs/InputSelect/InputSelect";
 
-// NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
+// NOTE: ALL TRAIN DATA (see flightSchema) MUST BE PRESENT FOR SUBMIT TO WORK
+//TODO: grab friends from database for this groupcation (options)                                                               
 
-type TrainFormData = z.infer<typeof trainSchema>;
+type FlightFormData = z.infer<typeof flightSchema>;
 
-interface TrainFormProps {
-  trainId?: string;
+interface FlightFormProps {
+  flightId?: string;
 }
 
-const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
+const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   const dispatch = useDispatch();
-  const existingTrain = useSelector((state: RootState) =>
-    state.train.trains.find((train) => train.id === trainId)
+  const existingFlight = useSelector((state: RootState) =>
+    state.flight.flights.find((flight) => flight.id === flightId)
   );
-  const [showCost, setShowCost] = useState(!!existingTrain?.cost);
+  const [showCost, setShowCost] = useState(!!existingFlight?.cost);
   const [showAttachments, setShowAttachments] = useState(
-    !!existingTrain?.attachments
+    !!existingFlight?.attachments
   );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingFlight?.notes);
   const [amount, setAmount] = useState(0);
 
   const allDetailsShown = showCost && showAddNotes && showAttachments;
@@ -73,46 +74,50 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<TrainFormData>({
-    resolver: zodResolver(trainSchema),
+  } = useForm<FlightFormData>({
+    resolver: zodResolver(flightSchema),
   });
 
   useEffect(() => {
-    if (existingTrain) {
-      // Reset to todays date/time if remaining train date/time is not present
-      const convertedTrain = {
-        ...existingTrain,
-        departureDate: existingTrain.departureDate
-          ? new Date(existingTrain.departureDate)
+    if (existingFlight) {
+      // Reset to todays date/time if remaining flight date/time is not present
+      const convertedFlight = {
+        ...existingFlight,
+        departureDate: existingFlight.departureDate
+          ? new Date(existingFlight.departureDate)
           : new Date(),
-        arrivalDate: existingTrain.arrivalDate
-          ? new Date(existingTrain.arrivalDate)
+        arrivalDate: existingFlight.arrivalDate
+          ? new Date(existingFlight.arrivalDate)
           : new Date(),
-        departureTime: existingTrain.departureTime
-          ? new Date(existingTrain.departureTime)
+        departureTime: existingFlight.departureTime
+          ? new Date(existingFlight.departureTime)
           : new Date(),
-        arrivalTime: existingTrain.arrivalTime
-          ? new Date(existingTrain.arrivalTime)
+        arrivalTime: existingFlight.arrivalTime
+          ? new Date(existingFlight.arrivalTime)
           : new Date(),
       };
 
-      reset(convertedTrain);
+      reset(convertedFlight);
     } else {
       reset();
     }
-  }, [existingTrain, reset]);
-  const onSubmit = (data: TrainFormData) => {
+  }, [existingFlight, reset]);
+  const onSubmit = (data: FlightFormData) => {
     // Convert the dates in the form data to ISO strings
     const convertedData = convertFormDatesToString(data);
 
-    if (trainId) {
-      const updatedTrain = { ...existingTrain, ...convertedData, id: trainId };
-      console.log("Updated train:", updatedTrain);
-      dispatch(updateTrain(updatedTrain));
+    if (flightId) {
+      const updatedFlight = {
+        ...existingFlight,
+        ...convertedData,
+        id: flightId,
+      };
+      console.log("Updated flight:", updatedFlight);
+      dispatch(updateFlight(updatedFlight));
     } else {
-      const newTrain = { id: uuidv4(), ...convertedData };
-      console.log("New train:", newTrain);
-      dispatch(addTrain(newTrain));
+      const newFlight = { id: uuidv4(), ...convertedData };
+      console.log("New flight:", newFlight);
+      dispatch(addFlight(newFlight));
     }
   };
 
@@ -128,6 +133,25 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     {
       value: "friendId3",
       label: "Lis Mcneal",
+    },
+  ];
+
+  const classOptions = [
+    {
+      value: "economy",
+      label: "Economy",
+    },
+    {
+      value: "premiumEconomy",
+      label: "Premium Economy",
+    },
+    {
+      value: "business",
+      label: "Business",
+    },
+    {
+      value: "firstClass",
+      label: "First Class",
     },
   ];
 
@@ -149,11 +173,11 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.departureStation}
+                error={errors.departureAirport}
                 register={register}
                 label={"Station"}
-                name={"departureStation"}
-                placeholder="Enter name of train station"
+                name={"departureAirport"}
+                placeholder="Enter name of the departure airport"
               />
               <InputDatesRow>
                 <InputDate
@@ -183,11 +207,11 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.arrivalStation}
+                error={errors.arrivalAirport}
                 register={register}
                 label={"Station"}
-                name={"arrivalStation"}
-                placeholder="Enter name of train station"
+                name={"arrivalAirport"}
+                placeholder="Enter name of arrival airport"
               />
               <InputDatesRow>
                 <InputDate
@@ -213,22 +237,30 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Railway</ContentTitle>
+              <ContentTitle>Airline</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputText
-                error={errors.railwayLine}
-                register={register}
-                label={"Train Line"}
-                name={"railwayLine"}
-                placeholder="Enter name of the train line"
-              />
-              <InputText
-                error={errors.class}
-                register={register}
+              <InputTextRows>
+                <InputText
+                  error={errors.airline}
+                  register={register}
+                  label={"Airline"}
+                  name={"airline"}
+                  placeholder="e.g. Swiss Airways"
+                />
+                <InputText
+                  error={errors.flightNumber}
+                  register={register}
+                  label={"Flight Number"}
+                  name={"flightNumber"}
+                  placeholder="e.g. SW 123"
+                />
+              </InputTextRows>
+              <InputSelect
                 label={"Class"}
-                name={"class"}
-                placeholder="Enter a class name for this journey"
+                name={"flightClass"}
+                options={classOptions}
+                register={register}
               />
             </SectionInputs>
           </SectionContents>
@@ -243,7 +275,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
               <ContentTitle>Travelers</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputSelect
+              <InputSelectCheckbox
                 label="Select Travelers"
                 name="travelers"
                 options={options}
@@ -253,7 +285,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showCost || (!!showCost && !!existingTrain?.cost)) && (
+        {(!!showCost || (!!showCost && !!existingFlight?.cost)) && (
           <Section>
             <SectionGraphics>
               <CostIcon color={theme.iconText} />
@@ -282,7 +314,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingTrain?.attachments)) && (
+          (!!showAttachments && !!existingFlight?.attachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -303,13 +335,13 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
-                  defaultFiles={existingTrain?.attachments || []}
+                  defaultFiles={existingFlight?.attachments || []}
                 />
               </SectionInputs>
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingTrain?.notes)) && (
+        {(!!showAddNotes || (!!showAddNotes && !!existingFlight?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />
@@ -392,10 +424,10 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
         ariaLabel="submit"
         type="submit"
       >
-        {!trainId ? "Add Train" : "Update Train"}
+        {!flightId ? "Add Flight" : "Update Flight"}
       </Button>
     </FormContainer>
   );
 };
 
-export default TrainForm;
+export default FlightForm;

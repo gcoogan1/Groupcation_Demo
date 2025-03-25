@@ -35,7 +35,6 @@ export const convertFormDatesToString = (data: any) => {
   // Loop over the date fields and apply the conversion
   dateFields.forEach((field) => {
     if (convertedData[field]) {
-      console.log(convertedData[field] = convertDateToString(convertedData[field]))
       convertedData[field] = convertDateToString(convertedData[field]);
     }
   });

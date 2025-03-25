@@ -1,3 +1,4 @@
+import FlightScreen from "../screens/Flight/FlightScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
 import StayScreen from "../screens/Stay/StayScreen";
 import TrainScreen from "../screens/Train/TrainScreen";
@@ -27,5 +28,13 @@ export const ROUTES: Route[] = [
   {
     path: '/stay-form/:stayId',
     element: <StayScreen /> 
+  },
+  {
+    path: '/flight-form',
+    element: <FlightScreen /> 
+  },
+  {
+    path: '/flight-form/:flightId',
+    element: <FlightScreen /> 
   },
 ];

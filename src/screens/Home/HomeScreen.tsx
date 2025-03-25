@@ -40,8 +40,9 @@ const HomeScreen = () => {
   // };
   const trains = useSelector((state: RootState) => state.train.trains);
   const stays = useSelector((state: RootState) => state.stay.stays);
+  const flights = useSelector((state: RootState) => state.flight.flights);
 
-  console.log("trains", stays)
+  console.log("flights:", flights)
 
 
   return (
@@ -63,6 +64,9 @@ const HomeScreen = () => {
 
       <Link to="/stay-form">Add Stay</Link>
       <Link to="/stay-form/437f28c6-1d5b-445b-999c-7c6cabcd968b">Update Stay</Link>
+
+      <Link to="/flight-form">Add Flight</Link>
+      <Link to="/flight-form/ce79403c-ad1d-4eab-b0bb-bb1ad2725aee">Update Flight</Link>
 
       {/* <div style={{ minHeight: "600px" }}>
         <Note
