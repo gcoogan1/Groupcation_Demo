@@ -15,13 +15,15 @@ export const convertFormDatesToString = (data: any) => {
   // All the date fields that need to be converted
   const dateFields = [
     'departureDate',
+    'departureTime',
     'arrivalDate',
+    'arrivalTime',
     'checkInDate',
     'checkInTime',
     'checkOutDate',
     'checkOutTime',
-    'departureTime',
-    'arrivalTime',
+    'pickUpDate',
+    'pickUpTime',
     'dropOffDate',
     'dropOffTime',
     'reservationDate',

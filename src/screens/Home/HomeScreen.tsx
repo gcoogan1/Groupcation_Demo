@@ -74,6 +74,9 @@ const HomeScreen = () => {
       <Link to="/boat-form">Add Boat</Link>
       <Link to="/boat-form/694ef18b-eb44-449c-832a-e71569a4ddae">Update Boat</Link>
 
+      <Link to="/rental-form">Add Rental</Link>
+      <Link to="/rental-form/8c179fa3-6fe9-409e-921e-e4f1572569f3">Update Rental</Link>
+
       {/* <div style={{ minHeight: "600px" }}>
         <Note
           onEditClick={() => console.log("Edit")}

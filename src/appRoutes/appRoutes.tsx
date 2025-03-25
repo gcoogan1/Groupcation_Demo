@@ -2,6 +2,7 @@ import BoatScreen from "../screens/Boat/BoatScreen";
 import BusScreen from "../screens/Bus/BusScreen";
 import FlightScreen from "../screens/Flight/FlightScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
+import RentalScreen from "../screens/Rental/RentalScreen";
 import StayScreen from "../screens/Stay/StayScreen";
 import TrainScreen from "../screens/Train/TrainScreen";
 
@@ -54,5 +55,13 @@ export const ROUTES: Route[] = [
   {
     path: '/boat-form/:boatId',
     element: <BoatScreen /> 
+  },
+  {
+    path: '/rental-form',
+    element: <RentalScreen /> 
+  },
+  {
+    path: '/rental-form/:rentalId',
+    element: <RentalScreen /> 
   },
 ];
