@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../../../store";
-import { addFlight, updateFlight } from "../slice/flightSlice";
-import { flightSchema } from "../schema/flightSchema";
+import { addBus, updateBus } from "../slice/busSlice";
+import { busSchema } from "../schema/busSchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -16,22 +16,21 @@ import {
   FormContainer,
   FormSections,
   InputDatesRow,
-  InputTextRows,
   Section,
   SectionContents,
   SectionGraphics,
   SectionGraphicsLine,
   SectionInputs,
-} from "./FlightForm.styles";
+} from "./BusForm.styles";
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
 import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelectCheckbox from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
-import FlightIcon from "../../../../assets/Flight.svg?react";
+import BusIcon from "../../../../assets/Bus.svg?react";
 import UsersIcon from "../../../../assets/Users.svg?react";
 import CostIcon from "../../../../assets/Cost.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
@@ -42,27 +41,27 @@ import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
 import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import InputSelect from "../../../../components/Inputs/InputSelect/InputSelect";
 
-// NOTE: ALL TRAIN DATA (see flightSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)                                                               
+// NOTE: ALL TRAIN DATA (see busSchema) MUST BE PRESENT FOR SUBMIT TO WORK
+//TODO: grab friends from database for this groupcation (options)
+//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
 
-type FlightFormData = z.infer<typeof flightSchema>;
+type BusFormData = z.infer<typeof busSchema>;
 
-interface FlightFormProps {
-  flightId?: string;
+interface BusFormProps {
+  busId?: string;
 }
 
-const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
+const BusForm: React.FC<BusFormProps> = ({ busId }) => {
   const dispatch = useDispatch();
-  const existingFlight = useSelector((state: RootState) =>
-    state.flight.flights.find((flight) => flight.id === flightId)
+  const existingBus = useSelector((state: RootState) =>
+    state.bus.buses.find((bus) => bus.id === busId)
   );
-  const [showCost, setShowCost] = useState(!!existingFlight?.cost);
+  const [showCost, setShowCost] = useState(!!existingBus?.cost);
   const [showAttachments, setShowAttachments] = useState(
-    !!existingFlight?.attachments
+    !!existingBus?.attachments
   );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingFlight?.notes);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingBus?.notes);
   const [amount, setAmount] = useState(0);
 
   const allDetailsShown = showCost && showAddNotes && showAttachments;
@@ -74,50 +73,46 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FlightFormData>({
-    resolver: zodResolver(flightSchema),
+  } = useForm<BusFormData>({
+    resolver: zodResolver(busSchema),
   });
 
   useEffect(() => {
-    if (existingFlight) {
-      // Reset to todays date/time if remaining flight date/time is not present
-      const convertedFlight = {
-        ...existingFlight,
-        departureDate: existingFlight.departureDate
-          ? new Date(existingFlight.departureDate)
+    if (existingBus) {
+      // Reset to todays date/time if remaining bus date/time is not present
+      const convertedBus = {
+        ...existingBus,
+        departureDate: existingBus.departureDate
+          ? new Date(existingBus.departureDate)
           : new Date(),
-        arrivalDate: existingFlight.arrivalDate
-          ? new Date(existingFlight.arrivalDate)
+        arrivalDate: existingBus.arrivalDate
+          ? new Date(existingBus.arrivalDate)
           : new Date(),
-        departureTime: existingFlight.departureTime
-          ? new Date(existingFlight.departureTime)
+        departureTime: existingBus.departureTime
+          ? new Date(existingBus.departureTime)
           : new Date(),
-        arrivalTime: existingFlight.arrivalTime
-          ? new Date(existingFlight.arrivalTime)
+        arrivalTime: existingBus.arrivalTime
+          ? new Date(existingBus.arrivalTime)
           : new Date(),
       };
 
-      reset(convertedFlight);
+      reset(convertedBus);
     } else {
       reset();
     }
-  }, [existingFlight, reset]);
-  const onSubmit = (data: FlightFormData) => {
+  }, [existingBus, reset]);
+  const onSubmit = (data: BusFormData) => {
     // Convert the dates in the form data to ISO strings
     const convertedData = convertFormDatesToString(data);
 
-    if (flightId) {
-      const updatedFlight = {
-        ...existingFlight,
-        ...convertedData,
-        id: flightId,
-      };
-      console.log("Updated flight:", updatedFlight);
-      dispatch(updateFlight(updatedFlight));
+    if (busId) {
+      const updatedBus = { ...existingBus, ...convertedData, id: busId };
+      console.log("Updated bus:", updatedBus);
+      dispatch(updateBus(updatedBus));
     } else {
-      const newFlight = { id: uuidv4(), ...convertedData };
-      console.log("New flight:", newFlight);
-      dispatch(addFlight(newFlight));
+      const newBus = { id: uuidv4(), ...convertedData };
+      console.log("New bus:", newBus);
+      dispatch(addBus(newBus));
     }
   };
 
@@ -133,25 +128,6 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
     {
       value: "friendId3",
       label: "Lis Mcneal",
-    },
-  ];
-
-  const classOptions = [
-    {
-      value: "economy",
-      label: "Economy",
-    },
-    {
-      value: "premiumEconomy",
-      label: "Premium Economy",
-    },
-    {
-      value: "business",
-      label: "Business",
-    },
-    {
-      value: "firstClass",
-      label: "First Class",
     },
   ];
 
@@ -173,11 +149,11 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.departureAirport}
+                error={errors.departureBusStop}
                 register={register}
-                label={"Station"}
-                name={"departureAirport"}
-                placeholder="Enter name of the departure airport"
+                label={"Departure Bus Stop"}
+                name={"departureBusStop"}
+                placeholder="Enter name of bus stop"
               />
               <InputDatesRow>
                 <InputDate
@@ -207,11 +183,11 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.arrivalAirport}
+                error={errors.arrivalBusStop}
                 register={register}
-                label={"Station"}
-                name={"arrivalAirport"}
-                placeholder="Enter name of arrival airport"
+                label={"Arrival Bus Stop"}
+                name={"arrivalBusStop"}
+                placeholder="Enter name of bus stop"
               />
               <InputDatesRow>
                 <InputDate
@@ -232,35 +208,27 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
         </Section>
         <Section>
           <SectionGraphics>
-            <FlightIcon color={theme.iconText} />
+            <BusIcon color={theme.iconText} />
             <SectionGraphicsLine />
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Airline</ContentTitle>
+              <ContentTitle>Operator</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputTextRows>
-                <InputText
-                  error={errors.airline}
-                  register={register}
-                  label={"Airline"}
-                  name={"airline"}
-                  placeholder="e.g. Swiss Airways"
-                />
-                <InputText
-                  error={errors.flightNumber}
-                  register={register}
-                  label={"Flight Number"}
-                  name={"flightNumber"}
-                  placeholder="e.g. SW 123"
-                />
-              </InputTextRows>
-              <InputSelect
-                label={"Class"}
-                name={"flightClass"}
-                options={classOptions}
+              <InputText
+                error={errors.busRoute}
                 register={register}
+                label={"Bus Route"}
+                name={"busRoute"}
+                placeholder="Enter name of the bus route"
+              />
+              <InputText
+                error={errors.busClass}
+                register={register}
+                label={"Class"}
+                name={"busClass"}
+                placeholder="Enter a class name for this journey"
               />
             </SectionInputs>
           </SectionContents>
@@ -275,7 +243,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
               <ContentTitle>Travelers</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputSelectCheckbox
+              <InputSelect
                 label="Select Travelers"
                 name="travelers"
                 options={options}
@@ -285,7 +253,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showCost || (!!showCost && !!existingFlight?.cost)) && (
+        {(!!showCost || (!!showCost && !!existingBus?.cost)) && (
           <Section>
             <SectionGraphics>
               <CostIcon color={theme.iconText} />
@@ -314,7 +282,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingFlight?.attachments)) && (
+          (!!showAttachments && !!existingBus?.attachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -335,13 +303,13 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
-                  defaultFiles={existingFlight?.attachments || []}
+                  defaultFiles={existingBus?.attachments || []}
                 />
               </SectionInputs>
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingFlight?.notes)) && (
+        {(!!showAddNotes || (!!showAddNotes && !!existingBus?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />
@@ -424,10 +392,10 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
         ariaLabel="submit"
         type="submit"
       >
-        {!flightId ? "Add Flight" : "Update Flight"}
+        {!busId ? "Add Bus" : "Update Bus"}
       </Button>
     </FormContainer>
   );
 };
 
-export default FlightForm;
+export default BusForm;

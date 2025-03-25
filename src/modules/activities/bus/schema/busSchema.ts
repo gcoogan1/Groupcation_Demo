@@ -1,17 +1,14 @@
 import { z } from "zod";
 
-export const flightSchema = z.object({
-  departureAirport: z.string().min(2, "Departure airport is required."),
+export const busSchema = z.object({
+  busRoute: z.string().min(3, "Bus route is required."),
+  busClass: z.string().optional(),
+  departureBusStop: z.string().min(2, "Departure bus stop is required."),
   departureDate: z.date({ required_error: "Departure date is required." }),
   departureTime: z.date({ required_error: "Departure time is required." }),
-  arrivalAirport: z.string().min(2, "Arrival airport is required."),
+  arrivalBusStop: z.string().min(2, "Arrival bus stop is required."),
   arrivalDate: z.date({ required_error: "Arrival date is required." }),
   arrivalTime: z.date({ required_error: "Arrival time is required." }),
-  airline: z.string().min(3, "Name of airline required."),
-  flightNumber: z.string().min(3, "Must have at least 2 characters").optional(),
-  flightClass: z.enum(["economy" , "premiumEconomy" , "business" , "firstClass"], {
-    errorMap: () => ({ message: "Flight class is required." }),
-  }),
   travelers: z
     .array(
       z.object({
