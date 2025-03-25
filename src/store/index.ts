@@ -6,6 +6,7 @@ import busReducer from "../modules/activities/bus/slice/busSlice";
 import boatReducer from "../modules/activities/boat/slice/boatSlice";
 import rentalReducer from "../modules/activities/rental/slice/rentalSlice";
 import restaurantReducer from "../modules/activities/restaurant/slice/restaurantSlice";
+import eventReducer from "../modules/activities/event/slice/eventSlice";
 
 
 export const store = configureStore({
@@ -16,7 +17,8 @@ export const store = configureStore({
     bus: busReducer,
     boat: boatReducer,
     rental: rentalReducer,
-    restaurant: restaurantReducer
+    restaurant: restaurantReducer,
+    event: eventReducer
   }
 });
 

@@ -4,8 +4,8 @@ export const restaurantSchema = z.object({
   restaurantName: z.string().min(3, "Restaurant name is required."),
   restaurantAddress: z.string().min(3, "Restaurant address is required."),
   tableType: z.string().min(3, "Must have at least 3 characters."),
-  reservationDate: z.date({ required_error: "Departure date is required." }),
-  reservationTime: z.date({ required_error: "Departure time is required." }),
+  reservationDate: z.date({ required_error: "Reservation date is required." }),
+  reservationTime: z.date({ required_error: "Reservation time is required." }),
   travelers: z
     .array(
       z.object({
