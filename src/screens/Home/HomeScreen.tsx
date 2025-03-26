@@ -83,6 +83,12 @@ const HomeScreen = () => {
       <Link to="/event-form">Add Event</Link>
       <Link to="/event-form/2f0402d6-e36b-41ee-adf5-0b0759c63f90">Update Event</Link>
 
+      <Link to="/walking-form">Add Walking</Link>
+      <Link to="/walking-form/a72a3b1e-4f1a-4581-9746-af29c3322feb">Update Walking</Link>
+
+      <Link to="/driving-form">Add Driving</Link>
+      <Link to="/driving-form/897cbed1-4456-4496-a781-266b1bc6eee8">Update Driving</Link>
+
       {/* <div style={{ minHeight: "600px" }}>
         <Note
           onEditClick={() => console.log("Edit")}
