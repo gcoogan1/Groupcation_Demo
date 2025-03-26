@@ -9,6 +9,8 @@ import restaurantReducer from "../modules/activities/restaurant/slice/restaurant
 import eventReducer from "../modules/activities/event/slice/eventSlice";
 import walkingRouteReducer from "../modules/routes/walking/slice/walkingRouteSlice";
 import drivingRouteReducer from "../modules/routes/driving/slice/drivingRouteSlice";
+import noteReducer from "../modules/extras/note/slice/noteSlice";
+import linkedTripReducer from "../modules/extras/linkedTrip/slice/linkedTripSlice";
 
 export const store = configureStore({
   reducer: {
@@ -21,7 +23,9 @@ export const store = configureStore({
     restaurant: restaurantReducer,
     event: eventReducer,
     walkingRoute: walkingRouteReducer,
-    drivingRoute: drivingRouteReducer
+    drivingRoute: drivingRouteReducer,
+    note: noteReducer,
+    linkedTrip: linkedTripReducer
   },
 });
 

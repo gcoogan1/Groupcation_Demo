@@ -4,6 +4,8 @@ import DrivingScreen from "../screens/Driving/DrivingScreen";
 import EventScreen from "../screens/Event/EventScreen";
 import FlightScreen from "../screens/Flight/FlightScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
+import LinkedTripScreen from "../screens/LinkedTrip/LinkedTrip";
+import NoteScreen from "../screens/Note/NoteScreen";
 import RentalScreen from "../screens/Rental/RentalScreen";
 import RestaurantScreen from "../screens/Restaurant/RestaurantScreen";
 import StayScreen from "../screens/Stay/StayScreen";
@@ -99,5 +101,21 @@ export const ROUTES: Route[] = [
   {
     path: '/driving-form/:drivingId',
     element: <DrivingScreen /> 
+  },
+  {
+    path: '/note-form',
+    element: <NoteScreen /> 
+  },
+  {
+    path: '/note-form/:noteId',
+    element: <NoteScreen /> 
+  },
+  {
+    path: '/linked-trip-form',
+    element: <LinkedTripScreen /> 
+  },
+  {
+    path: '/linked-trip-form/:linkedTripId',
+    element: <LinkedTripScreen /> 
   },
 ];

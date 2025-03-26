@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../../../store";
-import { addWalking, updateWalking } from "../slice/drivingRouteSlice";
+import { addDriving, updateDriving } from "../slice/drivingRouteSlice";
 import { DrivingRouteSchema } from "../schema/drivingRouteSchema";
 import { z } from "zod";
 import {
@@ -69,11 +69,11 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     if (drivingId) {
       const updatedDrivingRoute = { ...existingDrivingRoute, ...data, id: drivingId };
       console.log("Updated DrivingRoute:", updatedDrivingRoute);
-      dispatch(updateWalking(updatedDrivingRoute));
+      dispatch(updateDriving(updatedDrivingRoute));
     } else {
       const newDrivingRoute = { id: uuidv4(), ...data };
       console.log("New DrivingRoute:", newDrivingRoute);
-      dispatch(addWalking(newDrivingRoute));
+      dispatch(addDriving(newDrivingRoute));
     }
   };
 

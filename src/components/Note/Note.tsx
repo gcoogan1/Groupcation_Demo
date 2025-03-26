@@ -33,7 +33,6 @@ interface NotesProps {
 const Note: React.FC<NotesProps> = ({
 	onEditClick,
 	hightlightedNoteAction,
-	noteText,
 	extendedNotesTitle,
 	extendedNoteText,
 	footerText,
@@ -63,7 +62,7 @@ const Note: React.FC<NotesProps> = ({
 						<NoteIcon color={theme.note} />
 						<NoteText>
 							<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
-							{noteText}
+							{extendedNoteText}
 						</NoteText>
 					</NoteItemContent>
 					{expanded && (

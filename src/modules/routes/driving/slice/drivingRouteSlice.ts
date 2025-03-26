@@ -21,25 +21,25 @@ const drivingRouteSlice = createSlice({
   name: "driving",
   initialState,
   reducers: {
-    addWalking: (state, action: PayloadAction<DrivingRoute>) => {
+    addDriving: (state, action: PayloadAction<DrivingRoute>) => {
       state.drivingRoutes.push(action.payload);
     },
-    updateWalking: (state, action: PayloadAction<DrivingRoute>) => {
+    updateDriving: (state, action: PayloadAction<DrivingRoute>) => {
       const index = state.drivingRoutes.findIndex(
-        (walking) => walking.id === action.payload.id
+        (driving) => driving.id === action.payload.id
       );
       if (index !== -1) {
         state.drivingRoutes[index] = action.payload;
       }
     },
 
-    deleteWalking: (state, action: PayloadAction<string>) => {
+    deleteDriving: (state, action: PayloadAction<string>) => {
       state.drivingRoutes = state.drivingRoutes.filter(
-        (walking) => walking.id !== action.payload
+        (driving) => driving.id !== action.payload
       );
     },
   },
 });
 
-export const { addWalking, updateWalking, deleteWalking } = drivingRouteSlice.actions;
+export const { addDriving, updateDriving, deleteDriving } = drivingRouteSlice.actions;
 export default drivingRouteSlice.reducer;
