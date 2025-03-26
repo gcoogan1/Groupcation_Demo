@@ -154,7 +154,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
                   label={"Start Date"}
                   name={"startDate"}
                 />
-                <InputTime
+                <InputDate
                   control={control}
                   error={errors.endDate}
                   label={"End Date"}
