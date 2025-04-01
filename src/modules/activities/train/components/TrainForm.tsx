@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addTrain, updateTrain } from "../slice/trainSlice";
+import { AppDispatch, RootState } from "../../../../store";
+// import { addTrain, updateTrain } from "../slice/trainSlice";
 import { trainSchema } from "../schema/trainSchema";
 import { z } from "zod";
 import {
@@ -26,7 +26,7 @@ import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
 import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import InputSelectCheckbox from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
@@ -40,7 +40,13 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import {
+  addTrainTable,
+  fetchTrainTable,
+  updateTrainTable,
+} from "../thunk/trainThunk";
+import { fetchUsersTable } from "../../../../store/thunk/usersThunk";
+import { convertUsersToTravelers } from "../../../../utils/conversionFunctions/conversionFunctions";
 
 // NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)
@@ -53,16 +59,21 @@ interface TrainFormProps {
 }
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const existingTrain = useSelector((state: RootState) =>
     state.train.trains.find((train) => train.id === trainId)
   );
-  const [showCost, setShowCost] = useState(!!existingTrain?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingTrain?.attachments
+  const users = useSelector((state: RootState) =>
+    convertUsersToTravelers(state.user.users)
   );
+
+  const existingAttachments = !!existingTrain?.attachments && existingTrain.attachments.length > 0
+
+  const [showCost, setShowCost] = useState(!!existingTrain?.cost);
+  const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
   const [amount, setAmount] = useState(0);
+  const [travelers, setTravelers] = useState(users);
 
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
@@ -76,6 +87,13 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   } = useForm<TrainFormData>({
     resolver: zodResolver(trainSchema),
   });
+
+  useEffect(() => {
+    if (trainId) {
+      dispatch(fetchTrainTable(trainId));
+    }
+    dispatch(fetchUsersTable());
+  }, [dispatch, trainId]);
 
   useEffect(() => {
     if (existingTrain) {
@@ -95,41 +113,39 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           ? new Date(existingTrain.arrivalTime)
           : new Date(),
       };
-
       reset(convertedTrain);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
     } else {
       reset();
     }
-  }, [existingTrain, reset]);
+  }, [existingTrain, existingAttachments, reset]);
+
   const onSubmit = (data: TrainFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+    const { attachments, travelers, ...rest } = data;
 
+    //UPDATE TRAIN 
     if (trainId) {
-      const updatedTrain = { ...existingTrain, ...convertedData, id: trainId };
-      console.log("Updated train:", updatedTrain);
-      dispatch(updateTrain(updatedTrain));
-    } else {
-      const newTrain = { id: uuidv4(), ...convertedData };
-      console.log("New train:", newTrain);
-      dispatch(addTrain(newTrain));
+      const updatedTrain = {
+        ...existingTrain,
+        ...rest,
+        id: Number(existingTrain?.id),
+      };
+  
+      dispatch(updateTrainTable({ train: updatedTrain, files: attachments }));
+      return;
     }
-  };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+    // ADD TRAIN
+    const newData = {
+      groupcationId: 333,
+      createdBy: 3,
+      ...rest,
+    };
+    dispatch(addTrainTable({ train: newData, files: attachments }));
+  };
 
   return (
     <FormContainer
@@ -243,10 +259,10 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
               <ContentTitle>Travelers</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-              <InputSelect
+              <InputSelectCheckbox
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -265,7 +281,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -282,7 +298,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingTrain?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -294,7 +310,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
@@ -321,7 +337,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>

@@ -11,6 +11,10 @@ import walkingRouteReducer from "../modules/routes/walking/slice/walkingRouteSli
 import drivingRouteReducer from "../modules/routes/driving/slice/drivingRouteSlice";
 import noteReducer from "../modules/extras/note/slice/noteSlice";
 import linkedTripReducer from "../modules/extras/linkedTrip/slice/linkedTripSlice";
+import groupcationReducer from "./slice/groupcationSlice";
+import userReducer from "./slice/usersSlice";
+
+// FIX ERROR WITH FILE BEING ADDED TO STATE
 
 export const store = configureStore({
   reducer: {
@@ -25,8 +29,17 @@ export const store = configureStore({
     walkingRoute: walkingRouteReducer,
     drivingRoute: drivingRouteReducer,
     note: noteReducer,
-    linkedTrip: linkedTripReducer
+    linkedTrip: linkedTripReducer,
+    groupcation: groupcationReducer,
+    user: userReducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ['train.attachments'],
+        ignoredActions: ['train/addTrainAttachment/fulfilled'],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

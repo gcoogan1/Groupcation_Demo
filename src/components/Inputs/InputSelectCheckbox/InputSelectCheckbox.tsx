@@ -8,7 +8,7 @@ import CheckboxSelected from "../../../assets/Checkbox_Selected.svg?react";
 import CheckboxUnselected from "../../../assets/Checkbox_Unselected.svg?react";
 
 interface Option {
-	value: string;
+	value: string | number;
 	label: string;
 }
 
