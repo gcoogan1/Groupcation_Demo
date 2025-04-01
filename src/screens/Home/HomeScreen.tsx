@@ -8,6 +8,7 @@ import { fetchGroupcationTable } from "../../store/thunk/groupcationThunk";
 import { fetchTrainByGroupcationId } from "../../modules/activities/train/thunk/trainThunk";
 import { fetchUsersTable } from "../../store/thunk/usersThunk";
 import { convertUsersToTravelers } from "../../utils/conversionFunctions/conversionFunctions";
+import { selectGroupcationById, selectTrains } from "../../store/selectors/selectors";
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +18,9 @@ const HomeScreen = () => {
     dispatch(fetchTrainByGroupcationId(333))
     dispatch(fetchUsersTable())
   }, [dispatch]);
+
+  const groupcation = useSelector((state: RootState) => selectGroupcationById(state, 333));
+  const trains = useSelector(selectTrains);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -84,15 +88,15 @@ const HomeScreen = () => {
   // 		{ initials: "pv", color: "gold" },
   // 	],
   // };
-  const trains = useSelector((state: RootState) => state.train.trains);
-  const groupcations = useSelector((state: RootState) => state.groupcation.groupcations);
+  // const trains = useSelector((state: RootState) => state.train.trains);
+  // const groupcations = useSelector((state: RootState) => state.groupcation.groupcations);
   const users = useSelector((state: RootState) => state.user.users);
   // const stays = useSelector((state: RootState) => state.stay.stays);
   // const flights = useSelector((state: RootState) => state.flight.flights);
 
-  // console.log("Groupcations:", groupcations)
-  // console.log("Trains:", trains);
-  // console.log("Users:", convertUsersToTravelers(users))
+  console.log("Groupcations:", groupcation)
+  console.log("Trains:", trains);
+  console.log("Users:", convertUsersToTravelers(users))
 
   return (
     <div

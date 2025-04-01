@@ -47,6 +47,7 @@ import {
 } from "../thunk/trainThunk";
 import { fetchUsersTable } from "../../../../store/thunk/usersThunk";
 import { convertUsersToTravelers } from "../../../../utils/conversionFunctions/conversionFunctions";
+import { selectConvertedUsers, selectTrainById, selectTrains } from "../../../../store/selectors/selectors";
 
 // NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)
@@ -60,12 +61,19 @@ interface TrainFormProps {
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  // const existingTrain = useSelector((state: RootState) =>
+  //   state.train.trains.find((train) => train.id === trainId)
+  // );
+
+  // const users = useSelector((state: RootState) =>
+  //   convertUsersToTravelers(state.user.users)
+  // );
   const existingTrain = useSelector((state: RootState) =>
-    state.train.trains.find((train) => train.id === trainId)
+    selectTrainById(state, trainId)
   );
-  const users = useSelector((state: RootState) =>
-    convertUsersToTravelers(state.user.users)
-  );
+  
+  const users = useSelector(selectConvertedUsers);  
 
   const existingAttachments = !!existingTrain?.attachments && existingTrain.attachments.length > 0
 
@@ -92,7 +100,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     if (trainId) {
       dispatch(fetchTrainTable(trainId));
     }
-    dispatch(fetchUsersTable());
+    // dispatch(fetchUsersTable());
   }, [dispatch, trainId]);
 
   useEffect(() => {
