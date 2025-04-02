@@ -12,7 +12,7 @@ export const trainSchema = z.object({
   travelers: z
     .array(
       z.object({
-        value: z.string(),
+        value: z.number(),
         label: z.string(),
       })
     )

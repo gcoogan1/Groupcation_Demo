@@ -9,6 +9,7 @@ import { supabase } from "../../../../lib/supabase";
 import {
   TrainTable,
   TrainAttachments,
+  TrainTraveler,
 } from "../../../../types/trainTable.types";
 
 // ----> NOTES <---- //
@@ -16,7 +17,7 @@ import {
 // TRAIN DB TABLE: snake_case
 
 type Traveler = {
-  value: string;
+  value: string | number;
   label: string;
 };
 
@@ -97,12 +98,33 @@ export const fetchTrainTable = createAsyncThunk(
     if (attachmentError)
       console.warn("Error fetching attachments:", attachmentError.message);
 
-    // --- STEP 4: COMBINE TRAIN & TRAIN ATTACHMENTS TABLE DATA FOR STATE UPDATE --- ///
+    // --- STEP 4: FETCH TRAIN TRAVELERS (train travelers table) --- //
+    const { data: travelerData, error: travelerError } = await supabase
+      .from("train_travelers")
+      .select("*")
+      .eq("train_id", trainId);
+
+    // IF ERROR
+    if (travelerError)
+      console.warn("Error fetching travelers:", travelerError.message);
+
+    // Convert travelers table data to match state
+    const convertedTravelers =
+      travelerData &&
+      travelerData.map((traveler) => {
+        return {
+          label: traveler.traveler_full_name,
+          value: traveler.traveler_id,
+        };
+      });
+
+    // --- STEP 5: COMBINE TRAIN, TRAIN ATTACHMENTS, & TRAIN TRAVELERS TABLE DATA FOR STATE UPDATE --- ///
     return returnData.map((train) => ({
       ...train,
       attachments: attachmentData
         ? attachmentData.map((att) => transformToCamelCase(att))
         : [],
+      travelers: convertedTravelers ? convertedTravelers : [],
     }));
   }
 );
@@ -110,7 +132,15 @@ export const fetchTrainTable = createAsyncThunk(
 export const addTrainTable = createAsyncThunk(
   "train/addTrain",
   async (
-    { train, files }: { train: TrainTable; files?: TrainAttachments[] },
+    {
+      train,
+      files,
+      travelers,
+    }: {
+      train: TrainTable;
+      files?: TrainAttachments[];
+      travelers?: Traveler[];
+    },
     { dispatch }
   ) => {
     // --- STEP 1: CONVERT PASSED IN DATA TO MATCH TRAIN TABLE (for storage in supabase) --- ///
@@ -157,6 +187,12 @@ export const addTrainTable = createAsyncThunk(
       );
     }
 
+    if (travelers && travelers.length > 0) {
+      await dispatch(
+        addTrainTravelersTable({ travelers, trainId: convertedData.id })
+      );
+    }
+
     // --- STEP 6: RETURN CONVERTED DATA FOR STATE UPDATE --- //
     return convertedData;
   }
@@ -165,11 +201,20 @@ export const addTrainTable = createAsyncThunk(
 export const updateTrainTable = createAsyncThunk(
   "train/updateTrain",
   async (
-    { train, files }: { train: TrainTable; files?: TrainAttachments[] },
+    {
+      train,
+      files,
+      selectedTravelers,
+    }: {
+      train: TrainTable;
+      files?: TrainAttachments[];
+      selectedTravelers?: Traveler[];
+    },
     { dispatch }
   ) => {
     // --- STEP 1: TRANFORM DATA FOR TRAIN TABLE UPDATE --- //
-    const { id, attachments, ...trainData } = transformToSnakeCase(train);
+    const { id, attachments, travelers, ...trainData } =
+      transformToSnakeCase(train);
 
     // --- STEP 2: UPDATE AND RETURN TRAIN TABLE DATA FROM SUPABASE --- //
     const { data, error } = await supabase
@@ -193,18 +238,18 @@ export const updateTrainTable = createAsyncThunk(
 
     // --- STEP 3: FETCH EXISTING ATTACHMENTS ---
     // Find existing attachments table (if any)
-    const { data: existingAttachments, error: fetchError } = await supabase
+    const { data: existingAttachments, error: fetchAttachmentError } = await supabase
       .from("train_attachments")
       .select("id, file_name")
       .eq("train_id", id);
 
     // IF ERROR
-    if (fetchError)
+    if (fetchAttachmentError)
       throw new Error(
-        `Failed to fetch existing attachments: ${fetchError.message}`
+        `Failed to fetch existing attachments: ${fetchAttachmentError.message}`
       );
 
-    // --- STEP 4: IDENTIFY ATTACHMENTS TO DELETE ---
+    // --- STEP 4: IDENTIFY ATTACHMENTS TO DELETE --- //
     // Compare attachments passed from form to those in database
     const passedFileNames = new Set(files?.map((file) => file.fileName) || []);
 
@@ -212,7 +257,7 @@ export const updateTrainTable = createAsyncThunk(
       .filter((attachment) => !passedFileNames.has(attachment.file_name))
       .map((attachment) => attachment.id);
 
-    // --- STEP 5: DELETE ATTACHMENTS  ---
+    // --- STEP 5: DELETE ATTACHMENTS  --- //
     // Delete those arrachments that are not needed
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
@@ -222,7 +267,41 @@ export const updateTrainTable = createAsyncThunk(
       );
     }
 
-    // --- STEP 6: UPLOAD NEW ATTACHMENTS ---
+    // --- STEP 6: FETCH EXISTING TRAVELERS --- //
+    const { data: existingTravelers, error: fetchTravelerError } = await supabase
+      .from("train_travelers")
+      .select("traveler_id")
+      .eq("train_id", id);
+
+    // IF ERROR
+    if (fetchTravelerError)
+      console.error("Error fetching existing travelers:", fetchTravelerError);
+
+    const existingTravelerIds = new Set(
+      existingTravelers?.map((t) => t.traveler_id) || []
+    );
+    const selectedTravelerIds = new Set(
+      selectedTravelers?.map((t) => t.value) || []
+    );
+
+    // --- STEP 7: IDENTIFY TRAVELERS TO DELETE --- //
+    // Find travelers that exist in DB but were removed from the form
+    const travelersToDelete = [...existingTravelerIds].filter(
+      (travelerId) => !selectedTravelerIds.has(travelerId)
+    );
+
+    console.log("DELETE TRAVELERS:" ,travelersToDelete)
+
+    // --- STEP 8: DELETE TRAVELERS --- //
+    if (travelersToDelete.length > 0) {
+      await Promise.all(
+        travelersToDelete.map(async (travelerId) => {
+          await dispatch(deleteTrainTraveler({ travelerId, trainId: id }));
+        })
+      );
+    }
+
+    // --- STEP 9: UPLOAD NEW ATTACHMENTS --- //
     if (files && files.length > 0) {
       await dispatch(
         addTrainAttachmentsTable({
@@ -233,7 +312,16 @@ export const updateTrainTable = createAsyncThunk(
       );
     }
 
-    // --- STEP 7: RETURN CONVERTED TRAIN DATA --- //
+    if (selectedTravelers && selectedTravelers.length > 0) {
+      await dispatch(
+        addTrainTravelersTable({
+          travelers: selectedTravelers,
+          trainId: convertedReturnData.id,
+        })
+      );
+    }
+
+    // --- STEP 10: RETURN CONVERTED TRAIN DATA --- //
     return convertedReturnData;
   }
 );
@@ -421,6 +509,103 @@ export const deleteTrainAttachment = createAsyncThunk(
       return { attachmentId, trainId };
     } catch (error) {
       console.error("Error deleting train attachment:", error);
+      throw error;
+    }
+  }
+);
+
+// --- TRAIN TRAVELERS --- //
+export const addTrainTravelersTable = createAsyncThunk(
+  "train/addTrainTravelers",
+  async ({
+    travelers,
+    trainId,
+  }: {
+    travelers: Traveler[];
+    trainId: string;
+  }) => {
+    try {
+      // --- STEP 1: FETCH TRAVELERS BY TRAIN ID --- //
+      const { data: existingTravelers, error: fetchError } = await supabase
+        .from("train_travelers")
+        .select("traveler_id")
+        .eq("train_id", trainId);
+
+      // IF ERROR
+      if (fetchError) console.error("Error fetching travelers:", fetchError);
+
+      // -- STEP 2: FILTER OUT TRAVELERS THAT HAVE ALREADY BEEN ADDED -- //
+      // GET EXISITING TRAVELER IDS
+      const existingTravelerIds = new Set(
+        existingTravelers?.map((t) => t.traveler_id)
+      );
+
+      // FILTER OUT REPEATING TRAVELERS
+      const newTravelers = travelers.filter(
+        (traveler) => !existingTravelerIds.has(traveler.value)
+      );
+
+      // IF NO NEW TRAVELERS
+      if (newTravelers.length === 0) {
+        console.log("No new travelers to add.");
+        return { travelers: [], trainId }; // Return early to prevent unnecessary insert
+      }
+
+      // --- STEP 2: FORMAT TRAVELER OBJECTS FOR TRAIN TRAVELERS TABLE --- //
+      const travelerToAdd = newTravelers.map((traveler) => {
+        return {
+          train_id: trainId,
+          traveler_id: traveler.value,
+          traveler_full_name: traveler.label,
+        };
+      });
+
+      // --- STEP 3: ADD TRAVELERS TO TRAIN TRAVELERS TABLE  --- //
+      const { data, error } = await supabase
+        .from("train_travelers")
+        .insert(travelerToAdd)
+        .select();
+
+      // IF ERROR
+      if (error) console.log("ERROR:", error);
+
+      console.log("Sucess:", data);
+
+      // --- STEP 5: RETURN TRAVELERS & TRAIN ID TO STATE --- ///
+      return { travelers, trainId };
+    } catch (error) {
+      console.error("Error adding train travelers:", error);
+      throw error;
+    }
+  }
+);
+
+export const deleteTrainTraveler = createAsyncThunk(
+  "train/deleteTrainTraveler",
+  async ({
+    travelerId,
+    trainId,
+  }: {
+    travelerId: number | string;
+    trainId: string;
+  }) => {
+    try {
+      // --- STEP 1: DETELE TRAIN TRAVELER BASED ON TRAVELER ID --- //
+      const { error } = await supabase
+        .from("train_travelers")
+        .delete()
+        .eq("traveler_id", travelerId)
+        .eq("train_id", trainId);
+
+      // IF ERROR
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // --- STEP 2: RETURN TO STATE (so state can delete traveler) --- //
+      return { travelerId, trainId };
+    } catch (error) {
+      console.error("Error deleting train traveler:", error);
       throw error;
     }
   }

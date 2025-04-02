@@ -2,8 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   addTrainAttachmentsTable,
   addTrainTable,
+  addTrainTravelersTable,
   deleteTrainAttachment,
   deleteTrainTable,
+  deleteTrainTraveler,
   fetchTrainByGroupcationId,
   fetchTrainTable,
   updateTrainTable,
@@ -11,7 +13,7 @@ import {
 import { TrainAttachments } from "../../../../types/trainTable.types";
 
 type Traveler = {
-  value: string;
+  value: string | number;
   label: string;
 };
 
@@ -60,7 +62,7 @@ const trainSlice = createSlice({
             if (index !== -1) {
               state.trains[index] = newTrain;
             } else {
-             // Add new train to state
+              // Add new train to state
               state.trains.push(newTrain);
             }
           });
@@ -132,7 +134,7 @@ const trainSlice = createSlice({
           >
         ) => {
           // Avoids breaking if payload is undefined
-          if (!action.payload) return; 
+          if (!action.payload) return;
 
           const { attachmentId, trainId } = action.payload;
 
@@ -144,6 +146,51 @@ const trainSlice = createSlice({
             // Remove deleted attachment from the train's attachments
             train.attachments =
               train.attachments?.filter((att) => att.id !== attachmentId) || [];
+          }
+        }
+      )
+      // ADD TRAIN TRAVELERS
+      .addCase(
+        addTrainTravelersTable.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ travelers: Traveler[]; trainId: string }>
+        ) => {
+          const { travelers, trainId } = action.payload;
+
+          // Find the train associated with this trainId
+          const train = state.trains.find(
+            (t) => String(t.id) === String(trainId)
+          );
+
+          if (train) {
+            // Append new travelers to the existing list
+            train.travelers = [...(train.travelers || []), ...travelers];
+          }
+        }
+      )
+      // DELETE TRAIN TRAVELER
+      .addCase(
+        deleteTrainTraveler.fulfilled,
+        (
+          state,
+          action: PayloadAction<
+            { travelerId: number | string; trainId: string } | undefined
+          >
+        ) => {
+          if (!action.payload) return;
+
+          const { travelerId, trainId } = action.payload;
+
+          // Find the train
+          const train = state.trains.find(
+            (t) => Number(t.id) === Number(trainId)
+          );
+
+          if (train) {
+            // Remove deleted traveler from the train's travelers
+            train.travelers =
+              train.travelers?.filter((att) => att.value !== travelerId) || [];
           }
         }
       );

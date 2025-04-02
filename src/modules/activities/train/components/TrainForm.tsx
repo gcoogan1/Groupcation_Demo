@@ -61,14 +61,6 @@ interface TrainFormProps {
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  // const existingTrain = useSelector((state: RootState) =>
-  //   state.train.trains.find((train) => train.id === trainId)
-  // );
-
-  // const users = useSelector((state: RootState) =>
-  //   convertUsersToTravelers(state.user.users)
-  // );
   const existingTrain = useSelector((state: RootState) =>
     selectTrainById(state, trainId)
   );
@@ -96,11 +88,13 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     resolver: zodResolver(trainSchema),
   });
 
+  console.log("errors:" ,errors)
+  console.log("Existing:", existingTrain)
+
   useEffect(() => {
     if (trainId) {
       dispatch(fetchTrainTable(trainId));
     }
-    // dispatch(fetchUsersTable());
   }, [dispatch, trainId]);
 
   useEffect(() => {
@@ -134,15 +128,15 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const onSubmit = (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
 
-    //UPDATE TRAIN 
+    // UPDATE TRAIN 
     if (trainId) {
       const updatedTrain = {
         ...existingTrain,
-        ...rest,
+        ...rest, 
         id: Number(existingTrain?.id),
       };
   
-      dispatch(updateTrainTable({ train: updatedTrain, files: attachments }));
+      dispatch(updateTrainTable({ train: updatedTrain, files: attachments, selectedTravelers: travelers }));
       return;
     }
 
@@ -152,7 +146,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       createdBy: 3,
       ...rest,
     };
-    dispatch(addTrainTable({ train: newData, files: attachments }));
+    dispatch(addTrainTable({ train: newData, files: attachments, travelers }));
   };
 
   return (

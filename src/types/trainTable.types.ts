@@ -23,17 +23,8 @@ export type TrainTraveler = {
   createdAt?: Date;
   train_id: number;
   traveler_id: number;
+  traveler_full_name: string;
 };
-
-// export type TrainAttachments = {
-//   id?: number;
-//   createdAt?: Date;
-//   trainId: number;
-//   addedBy: number;
-//   fileUrl: string;
-//   fileType: string;
-//   fileSize: number;
-// }
 
 export type TrainAttachments = {
   id?: number | string;
