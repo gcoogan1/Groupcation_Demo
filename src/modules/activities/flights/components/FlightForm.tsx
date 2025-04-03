@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addFlight, updateFlight } from "../slice/flightSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { flightSchema } from "../schema/flightSchema";
 import { z } from "zod";
 import {
@@ -41,11 +39,19 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
 import InputSelect from "../../../../components/Inputs/InputSelect/InputSelect";
+import {
+  selectConvertedUsers,
+  selectFlightById,
+} from "../../../../store/selectors/selectors";
+import {
+  addFlightTable,
+  fetchFlightTable,
+  updateFlightTable,
+} from "../thunk/flightThunk";
 
-// NOTE: ALL TRAIN DATA (see flightSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)                                                               
+// NOTE: ALL FLIGHT DATA (see flightSchema) MUST BE PRESENT FOR SUBMIT TO WORK
+//TODO: grab friends from database for this groupcation (options)
 
 type FlightFormData = z.infer<typeof flightSchema>;
 
@@ -54,19 +60,30 @@ interface FlightFormProps {
 }
 
 const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  // FETCH EXISTING FLIGHT DATA FROM STATE IF ID PASSED
   const existingFlight = useSelector((state: RootState) =>
-    state.flight.flights.find((flight) => flight.id === flightId)
+    selectFlightById(state, flightId)
   );
+
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingFlight?.attachments && existingFlight.attachments.length > 0;
+
+  // FORM STATE
   const [showCost, setShowCost] = useState(!!existingFlight?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingFlight?.attachments
-  );
+  const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingFlight?.notes);
   const [amount, setAmount] = useState(0);
+  const [travelers, setTravelers] = useState(users);
 
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -78,6 +95,14 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
     resolver: zodResolver(flightSchema),
   });
 
+  // FETCH FLIGHT DATA FROM API
+  useEffect(() => {
+    if (flightId) {
+      dispatch(fetchFlightTable(flightId));
+    }
+  }, [dispatch, flightId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingFlight) {
       // Reset to todays date/time if remaining flight date/time is not present
@@ -96,45 +121,47 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
           ? new Date(existingFlight.arrivalTime)
           : new Date(),
       };
-
       reset(convertedFlight);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
     } else {
       reset();
     }
-  }, [existingFlight, reset]);
+  }, [existingFlight, existingAttachments, reset]);
+
+  // SUBMIT FLIGHT FROM DATA
   const onSubmit = (data: FlightFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+    const { attachments, travelers, ...rest } = data;
 
     if (flightId) {
       const updatedFlight = {
         ...existingFlight,
-        ...convertedData,
-        id: flightId,
+        ...rest,
+        id: Number(existingFlight?.id),
       };
-      console.log("Updated flight:", updatedFlight);
-      dispatch(updateFlight(updatedFlight));
+
+      dispatch(
+        updateFlightTable({
+          flight: updatedFlight,
+          files: attachments,
+          selectedTravelers: travelers,
+        })
+      );
+      return;
     } else {
-      const newFlight = { id: uuidv4(), ...convertedData };
-      console.log("New flight:", newFlight);
-      dispatch(addFlight(newFlight));
+      // ADD FLIGHT
+      const newData = {
+        groupcationId: 333,
+        createdBy: 3,
+        ...rest,
+      };
+      dispatch(
+        addFlightTable({ flight: newData, files: attachments, travelers })
+      );
     }
   };
-
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
 
   const classOptions = [
     {
@@ -278,7 +305,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
               <InputSelectCheckbox
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -297,7 +324,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -326,7 +353,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
@@ -353,7 +380,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>

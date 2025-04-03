@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 import { AppDispatch, RootState } from "../../../../store";
-// import { addTrain, updateTrain } from "../slice/trainSlice";
 import { trainSchema } from "../schema/trainSchema";
 import { z } from "zod";
 import {
@@ -45,13 +43,9 @@ import {
   fetchTrainTable,
   updateTrainTable,
 } from "../thunk/trainThunk";
-import { fetchUsersTable } from "../../../../store/thunk/usersThunk";
-import { convertUsersToTravelers } from "../../../../utils/conversionFunctions/conversionFunctions";
-import { selectConvertedUsers, selectTrainById, selectTrains } from "../../../../store/selectors/selectors";
+import { selectConvertedUsers, selectTrainById } from "../../../../store/selectors/selectors";
 
 // NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
 
 type TrainFormData = z.infer<typeof trainSchema>;
 
@@ -61,22 +55,27 @@ interface TrainFormProps {
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const dispatch = useDispatch<AppDispatch>();
+
+  // FETCH EXISTING TRAIN DATA FROM STATE IF ID PASSED
   const existingTrain = useSelector((state: RootState) =>
     selectTrainById(state, trainId)
   );
-  
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
   const users = useSelector(selectConvertedUsers);  
-
+  // FETCH ANY EXISTING ATTACHMENTS 
   const existingAttachments = !!existingTrain?.attachments && existingTrain.attachments.length > 0
 
+  // FORM STATE
   const [showCost, setShowCost] = useState(!!existingTrain?.cost);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
   const [amount, setAmount] = useState(0);
   const [travelers, setTravelers] = useState(users);
 
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -88,15 +87,15 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     resolver: zodResolver(trainSchema),
   });
 
-  console.log("errors:" ,errors)
-  console.log("Existing:", existingTrain)
 
+  // FETCH TRAIN DATA FROM API
   useEffect(() => {
     if (trainId) {
       dispatch(fetchTrainTable(trainId));
     }
   }, [dispatch, trainId]);
 
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingTrain) {
       // Reset to todays date/time if remaining train date/time is not present
@@ -125,6 +124,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     }
   }, [existingTrain, existingAttachments, reset]);
 
+  // SUBMIT TRAIN FROM DATA
   const onSubmit = (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
 

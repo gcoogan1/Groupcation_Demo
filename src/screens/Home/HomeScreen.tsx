@@ -8,7 +8,8 @@ import { fetchGroupcationTable } from "../../store/thunk/groupcationThunk";
 import { fetchTrainByGroupcationId } from "../../modules/activities/train/thunk/trainThunk";
 import { fetchUsersTable } from "../../store/thunk/usersThunk";
 import { convertUsersToTravelers } from "../../utils/conversionFunctions/conversionFunctions";
-import { selectGroupcationById, selectTrains } from "../../store/selectors/selectors";
+import { selectFlights, selectGroupcationById, selectTrains } from "../../store/selectors/selectors";
+import { fetchFlightByGroupcationId } from "../../modules/activities/flights/thunk/flightThunk";
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,11 +17,13 @@ const HomeScreen = () => {
   useEffect(() => {
     dispatch(fetchGroupcationTable(333));
     dispatch(fetchTrainByGroupcationId(333))
+    dispatch(fetchFlightByGroupcationId(333))
     dispatch(fetchUsersTable())
   }, [dispatch]);
 
   const groupcation = useSelector((state: RootState) => selectGroupcationById(state, 333));
   const trains = useSelector(selectTrains);
+  const flights = useSelector(selectFlights);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -97,6 +100,7 @@ const HomeScreen = () => {
   console.log("Groupcations:", groupcation)
   console.log("Trains:", trains);
   console.log("Users:", convertUsersToTravelers(users))
+  console.log("Flights:", flights)
 
   return (
     <div
@@ -121,7 +125,7 @@ const HomeScreen = () => {
       </Link>
 
       <Link to="/flight-form">Add Flight</Link>
-      <Link to="/flight-form/ce79403c-ad1d-4eab-b0bb-bb1ad2725aee">
+      <Link to="/flight-form/1">
         Update Flight
       </Link>
 

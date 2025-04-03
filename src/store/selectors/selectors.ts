@@ -27,3 +27,15 @@ export const selectTrainById = createSelector(
   [(state: RootState) => state.train.trains, (_, trainId?: string) => trainId],
   (trains, trainId) => (trainId ? trains.find((train) => train.id === trainId) : undefined)
 );
+
+// Memoized selector for flights
+export const selectFlights = createSelector(
+  [(state: RootState) => state.flight.flights],
+  (flights) => [...flights] // Creates a new array reference only if `flights` changes
+);
+
+// Memoized selector for flight (found by flight id)
+export const selectFlightById = createSelector(
+  [(state: RootState) => state.flight.flights, (_, flightId?: string) => flightId],
+  (flights, flightId) => (flightId ? flights.find((flight) => flight.id === flightId) : undefined)
+);
