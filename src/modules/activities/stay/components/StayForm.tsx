@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addStay, updateStay } from "../slice/staySlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { staySchema } from "../schema/staySchema";
 import { z } from "zod";
 import {
@@ -40,10 +38,17 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import {
+  selectConvertedUsers,
+  selectStayById,
+} from "../../../../store/selectors/selectors";
+import {
+  addStayTable,
+  fetchStayTable,
+  updateStayTable,
+} from "../thunk/stayThunk";
 
-// NOTE: ALL stay DATA (see staySchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
+// NOTE: ALL STAY DATA (see staySchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
 type StayFormData = z.infer<typeof staySchema>;
 
@@ -52,20 +57,31 @@ interface StayFormProps {
 }
 
 const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  // FETCH EXISTING STAY DATA FROM STATE IF ID PASSED
   const existingStay = useSelector((state: RootState) =>
-    state.stay.stays.find((stay) => stay.id === stayId)
+    selectStayById(state, stayId)
   );
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
 
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingStay?.attachments && existingStay.attachments.length > 0;
+
+  // FORM STATE
   const [showCost, setShowCost] = useState(!!existingStay?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingStay?.attachments
-  );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingStay?.notes);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showAddNotes, setShowAddNotes] = useState(false);
   const [amount, setAmount] = useState(0);
+  const [travelers, setTravelers] = useState(users);
 
+
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -77,6 +93,14 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
     resolver: zodResolver(staySchema),
   });
 
+  // FETCH STAY DATA FROM API
+  useEffect(() => {
+    if (stayId) {
+      dispatch(fetchStayTable(stayId));
+    }
+  }, [dispatch, stayId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingStay) {
       const convertedStay = {
@@ -96,40 +120,45 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
       };
 
       reset(convertedStay);
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingStay.notes) {
+        setShowAddNotes(true)
+      }
     } else {
       reset();
     }
-  }, [existingStay, reset]);
+  }, [existingStay, existingAttachments, reset]);
 
+  // SUBMIT STAY FORM DATA
   const onSubmit = (data: StayFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+    const { attachments, travelers, ...rest } = data;
 
     if (stayId) {
-      const updatedStay = { ...existingStay, ...convertedData, id: stayId };
-      console.log("Updated train:", updatedStay);
-      dispatch(updateStay(updatedStay));
+      const updatedStay = {
+        ...existingStay,
+        ...rest,
+        id: Number(existingStay?.id),
+      };
+
+      dispatch(
+        updateStayTable({
+          stay: updatedStay,
+          files: attachments,
+          selectedTravelers: travelers,
+        })
+      );
     } else {
-      const newStay = { id: uuidv4(), ...convertedData };
-      console.log("New train:", newStay);
-      dispatch(addStay(newStay));
+      // ADD STAY
+      const newData = {
+        groupcationId: 333,
+        createdBy: 3,
+        ...rest,
+      };
+      dispatch(addStayTable({ stay: newData, files: attachments, travelers }));
     }
   };
-
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
 
   return (
     <FormContainer
@@ -232,7 +261,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -251,7 +280,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -280,7 +309,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
@@ -307,7 +336,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>

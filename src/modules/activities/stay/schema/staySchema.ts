@@ -10,15 +10,30 @@ export const staySchema = z.object({
   travelers: z
     .array(
       z.object({
-        value: z.string(),
+        value: z.number(),
         label: z.string(),
       })
     )
     .optional(),
-  cost: z.string().optional(),
+  cost: z.string().nullable().optional(),
   attachments: z
-    .array(z.instanceof(File))
-    .max(5, "You can upload a maximum of 5 files")
+    .array(
+      z.object({
+        id: z.union([z.string(), z.number()]).optional(),
+        createdAt: z.string().optional(),
+        fileName: z.string(),
+        trainId: z.number().optional(),
+        addedBy: z.number().optional(),
+        file: z.instanceof(File).optional(),
+        fileUrl: z.string().url("File URL is invalid"),
+        fileType: z.string(),
+        fileSize: z.number().min(0, "File size cannot be negative"),
+      })
+    )
     .optional(),
-  notes: z.string().min(10, "Must have at least 10 characters.").optional(),
+  notes: z
+    .string()
+    .min(10, "Must have at least 10 characters.")
+    .nullable()
+    .optional(),
 });

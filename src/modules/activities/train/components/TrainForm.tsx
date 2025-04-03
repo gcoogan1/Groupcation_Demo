@@ -119,12 +119,15 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       if (existingAttachments) {
         setShowAttachments(true);
       }
+      if (existingTrain.notes) {
+        setShowAddNotes(true)
+      }
     } else {
       reset();
     }
   }, [existingTrain, existingAttachments, reset]);
 
-  // SUBMIT TRAIN FROM DATA
+  // SUBMIT TRAIN FORM DATA
   const onSubmit = (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
 

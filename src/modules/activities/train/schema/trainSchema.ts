@@ -21,7 +21,7 @@ export const trainSchema = z.object({
   attachments: z
     .array(
       z.object({
-        id: z.union([z.string(), z.number()]).optional(), // You can use id if provided
+        id: z.union([z.string(), z.number()]).optional(),
         createdAt: z.string().optional(),
         fileName: z.string(),
         trainId: z.number().optional(),

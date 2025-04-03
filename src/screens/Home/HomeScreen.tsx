@@ -11,6 +11,8 @@ import { convertUsersToTravelers } from "../../utils/conversionFunctions/convers
 import { selectFlights, selectGroupcationById, selectTrains } from "../../store/selectors/selectors";
 import { fetchFlightByGroupcationId } from "../../modules/activities/flights/thunk/flightThunk";
 
+//TODO: DO NOT NEED TO GRAB ALL FORMS
+
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -120,7 +122,7 @@ const HomeScreen = () => {
       <Link to="/train-form/44">Update Train</Link>
 
       <Link to="/stay-form">Add Stay</Link>
-      <Link to="/stay-form/437f28c6-1d5b-445b-999c-7c6cabcd968b">
+      <Link to="/stay-form/1">
         Update Stay
       </Link>
 

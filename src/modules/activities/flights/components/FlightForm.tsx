@@ -126,12 +126,15 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
       if (existingAttachments) {
         setShowAttachments(true);
       }
+      if (existingFlight.notes) {
+        setShowAddNotes(true)
+      }
     } else {
       reset();
     }
   }, [existingFlight, existingAttachments, reset]);
 
-  // SUBMIT FLIGHT FROM DATA
+  // SUBMIT FLIGHT FORM DATA
   const onSubmit = (data: FlightFormData) => {
     const { attachments, travelers, ...rest } = data;
 

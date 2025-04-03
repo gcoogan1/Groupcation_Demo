@@ -196,7 +196,7 @@ const trainSlice = createSlice({
           }
         }
       );
-  },
+  }
 });
 
 export default trainSlice.reducer;
