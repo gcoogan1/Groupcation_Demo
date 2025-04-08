@@ -43,24 +43,64 @@ export const fetchFlightByGroupcationId = createAsyncThunk(
   "flight/fetchFlightsByGroupcation",
   async (groupcationId: number) => {
     // --- STEP 1: FETCH FLIGHT TABLE BASED ON ITS GROUPCATION ID --- //
-    const { data, error } = await supabase
+    const { data: flights, error: flightError } = await supabase
       .from("flights")
       .select("*")
       .eq("groupcation_id", groupcationId);
 
     // IF ERROR OR NO DATA
-    if (error) throw new Error(error.message);
-    if (!data || data.length === 0) return [];
+    if (flightError) throw new Error(flightError.message);
+    if (!flights || flights.length === 0) return [];
 
-    // --- STEP 2: RETURN DATA TO STATE (data is converted to match state) --- //
-    return data.map((flight) => {
+    // --- STEP 2: FETCH TRAVELER DATA BASED ON FLIGHT ID --- //
+    const { data: travelers, error: travelerError } = await supabase
+      .from("flight_travelers")
+      .select("*")
+      .in(
+        "flight_id",
+        flights.map((flight) => flight.id)
+      );
+
+    if (travelerError) throw new Error(travelerError.message);
+
+    // --- STEP 3: FETCH ATTACHMENTS BASED ON FLIGHT ID --- //
+    const { data: attachments, error: attachmentError } = await supabase
+      .from("flight_attachments")
+      .select("*")
+      .in(
+        "flight_id",
+        flights.map((flight) => flight.id)
+      );
+
+    if (attachmentError) throw new Error(attachmentError.message);
+
+    // --- STEP 4: COMBINE DATA: FLIGHT + TRAVELERS + ATTACHMENTS --- //
+    const result = flights.map((flight) => {
+      // Get travelers for the current flight
+      const flightTravelers = travelers.filter(
+        (traveler) => traveler.flight_id === flight.id
+      );
+
+      // Get attachments for the current flight
+      const flightAttachments = attachments.filter(
+        (attachment) => attachment.flight_id === flight.id
+      );
+
+      // Combine the train data with its associated travelers and attachments
       const sanitizedFlight = replaceNullWithUndefined(flight);
       const convertedDataDates = convertFormDatesToString(sanitizedFlight);
-      return transformToCamelCase({
+      const combinedFlightData = transformToCamelCase({
         ...convertedDataDates,
         id: flight.id.toString(),
+        travelers: flightTravelers,
+        attachments: flightAttachments,
       });
+
+      return combinedFlightData;
     });
+
+    // --- STEP 5: RETURN COMBINED DATA TO STATE --- //
+    return result;
   }
 );
 

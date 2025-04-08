@@ -43,24 +43,64 @@ export const fetchStayByGroupcationId = createAsyncThunk(
   "stay/fetchStaysByGroupcation",
   async (groupcationId: number) => {
     // --- STEP 1: FETCH STAY TABLE BASED ON ITS GROUPCATION ID --- //
-    const { data, error } = await supabase
+    const { data: stays, error: stayError } = await supabase
       .from("stays")
       .select("*")
       .eq("groupcation_id", groupcationId);
 
     // IF ERROR OR NO DATA
-    if (error) throw new Error(error.message);
-    if (!data || data.length === 0) return [];
+    if (stayError) throw new Error(stayError.message);
+    if (!stays || stays.length === 0) return [];
 
-    // --- STEP 2: RETURN DATA TO STATE (data is converted to match state) --- //
-    return data.map((stay) => {
-      const sanitizedStay = replaceNullWithUndefined(stay);
-      const convertedDataDates = convertFormDatesToString(sanitizedStay);
-      return transformToCamelCase({
-        ...convertedDataDates,
-        id: stay.id.toString(),
+    // --- STEP 2: FETCH TRAVELER DATA BASED ON STAY ID --- //
+    const { data: travelers, error: travelerError } = await supabase
+      .from("stay_travelers")
+      .select("*")
+      .in(
+        "stay_id",
+        stays.map((stay) => stay.id)
+      );
+
+    if (travelerError) throw new Error(travelerError.message);
+
+    // --- STEP 3: FETCH ATTACHMENTS BASED ON STAY ID --- //
+    const { data: attachments, error: attachmentError } = await supabase
+      .from("stay_attachments")
+      .select("*")
+      .in(
+        "stay_id",
+        stays.map((stay) => stay.id)
+      );
+
+    if (attachmentError) throw new Error(attachmentError.message);
+
+      // --- STEP 4: COMBINE DATA: STAY + TRAVELERS + ATTACHMENTS --- //
+      const result = stays.map((stay) => {
+        // Get travelers for the current stay
+        const stayTravelers = travelers.filter(
+          (traveler) => traveler.stay_id === stay.id
+        );
+  
+        // Get attachments for the current stay
+        const stayAttachments = attachments.filter(
+          (attachment) => attachment.stay_id === stay.id
+        );
+  
+        // Combine the stay data with its associated travelers and attachments
+        const sanitizedStay = replaceNullWithUndefined(stay);
+        const convertedDataDates = convertFormDatesToString(sanitizedStay);
+        const combinedStayData = transformToCamelCase({
+          ...convertedDataDates,
+          id: stay.id.toString(),
+          travelers: stayTravelers,
+          attachments: stayAttachments,
+        });
+  
+        return combinedStayData;
       });
-    });
+  
+      // --- STEP 5: RETURN COMBINED DATA TO STATE --- //
+      return result;
   }
 );
 
