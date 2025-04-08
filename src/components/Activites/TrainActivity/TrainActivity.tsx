@@ -20,16 +20,19 @@ import {
   SecondaryLink,
   LinkTextContainer,
   CollapseButtonContainer,
-} from "./Activity.styles";
-import { avatarTheme, theme } from "../../styles/theme";
-import CollapaseButton from "../CollapaseButton/CollapaseButton";
-import Button from "../Button/Button";
-import Edit from "../../assets/Edit.svg?react";
-import Cost from "../../assets/Cost.svg?react";
-import ChevRight from "../../assets/Chevron_Right.svg?react";
-import Attachments from "../../assets/Attachments.svg?react";
-import Notes from "../../assets/AdditionalNotes.svg?react";
-import ActivityCard from "./ActivityCard/ActivityCard";
+} from "./TrainActivity.styles";
+import { avatarTheme, theme } from "../../../styles/theme";
+import CollapaseButton from "../../CollapaseButton/CollapaseButton";
+import Button from "../../Button/Button";
+import Edit from "../../../assets/Edit.svg?react";
+import TrainIcon from "../../../assets/Train.svg?react";
+import Cost from "../../../assets/Cost.svg?react";
+import ChevRight from "../../../assets/Chevron_Right.svg?react";
+import Attachments from "../../../assets/Attachments.svg?react";
+import Notes from "../../../assets/AdditionalNotes.svg?react";
+import TrainCard from "./TrainCard/TrainCard";
+import Pictogram from "../../Pictogram/Pictogram";
+import { TrainAttachments } from "../../../types/trainTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -38,9 +41,9 @@ type Traveler = {
   color: AvatarThemeKeys;
 };
 
-interface ActivityCardDetails {
+export type TrainActivityCardDetails = {
   activityTitle: string;
-  activitySubTitle: string;
+  activitySubTitle?: string;
   depatureTime: string;
   departureLocation: string;
   durationTime: string;
@@ -49,10 +52,9 @@ interface ActivityCardDetails {
   travelers: Traveler[];
 }
 
-interface ActivitysProps {
-  pictogram: React.ReactNode;
+interface TrainActivitysProps {
   onEditClick: () => void;
-  cost: string;
+  cost?: string;
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
@@ -60,13 +62,12 @@ interface ActivitysProps {
   hightlightedActivityAction: string;
   activityText: string;
   departureTime: string;
-  attachments?: File[];
+  attachments?: TrainAttachments[];
   footerText: string;
-  activityCardDetails: ActivityCardDetails;
+  activityCardDetails: TrainActivityCardDetails;
 }
 
-const Activity: React.FC<ActivitysProps> = ({
-  pictogram,
+const TrainActivity: React.FC<TrainActivitysProps> = ({
   onEditClick,
   cost,
   onCostClick,
@@ -111,7 +112,9 @@ const Activity: React.FC<ActivitysProps> = ({
     >
       <ActivityItem isExpanded={expanded}>
         <ActivityItemContent>
-          {pictogram}
+          <Pictogram type={"train"}>
+            <TrainIcon color={theme.base} />
+          </Pictogram>
           <div>
             <ActivityText>
               <ActivityHighlightText>
@@ -140,7 +143,7 @@ const Activity: React.FC<ActivitysProps> = ({
         style={{ maxHeight: expanded ? contentRef.current?.scrollHeight : 0 }}
       >
         <ContentContainer>
-          <ActivityCard
+          <TrainCard
             activityTitle={activityTitle}
             activitySubTitle={activitySubTitle}
             depatureTime={depatureTime}
@@ -216,4 +219,4 @@ const Activity: React.FC<ActivitysProps> = ({
   );
 };
 
-export default Activity;
+export default TrainActivity;
