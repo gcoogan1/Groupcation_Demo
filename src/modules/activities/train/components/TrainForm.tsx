@@ -71,6 +71,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
   const [amount, setAmount] = useState(0);
   const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
@@ -90,6 +91,9 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
 
   // FETCH TRAIN DATA FROM API
   useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     if (trainId) {
       dispatch(fetchTrainTable(trainId));
     }
@@ -130,6 +134,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   // SUBMIT TRAIN FORM DATA
   const onSubmit = (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
+    setIsLoading(true)
 
     // UPDATE TRAIN 
     if (trainId) {
@@ -140,6 +145,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       };
   
       dispatch(updateTrainTable({ train: updatedTrain, files: attachments, selectedTravelers: travelers }));
+      setIsLoading(false)
       return;
     }
 
@@ -150,7 +156,10 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       ...rest,
     };
     dispatch(addTrainTable({ train: newData, files: attachments, travelers }));
+    setIsLoading(false)
   };
+
+  if (trainId && !existingTrain) return <div>Loading...</div>
 
   return (
     <FormContainer
@@ -321,6 +330,8 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  // Key tells React to completely re-render the component if the file names change, avoiding stale props
+                  key={existingTrain?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -412,6 +423,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!trainId ? "Add Train" : "Update Train"}
       </Button>
