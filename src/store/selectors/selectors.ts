@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
-import { convertUsersToTravelers } from "../../utils/conversionFunctions/conversionFunctions";
+import { convertUsersToTravelers, convertUsersToTravelersFilter } from "../../utils/conversionFunctions/conversionFunctions";
 
 // MEMORIZED SELECTOR FUNCTIONS TO PREVENT RE-RENDERS WHEN FETCHING STATE
 
@@ -14,6 +14,17 @@ export const selectGroupcationById = createSelector(
 export const selectConvertedUsers = createSelector(
   (state: RootState) => state.user.users,
   (users) => convertUsersToTravelers(users) // Runs only when `users` change
+);
+
+export const selectTableUsers = createSelector(
+  (state: RootState) => state.user.users,
+  (users) => users
+);
+
+//  Memoized selector for converted users for filter
+export const selectConvertedUsersForFilters = createSelector(
+  (state: RootState) => state.user.users,
+  (users) => convertUsersToTravelersFilter(users) 
 );
 
 // Memoized selector for trains
