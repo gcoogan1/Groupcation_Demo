@@ -1,4 +1,26 @@
+type Traveler = {
+  value: number;
+  label: string;
+};
 
+export type TrainUITable = {
+  id: string;
+  createdAt: string;
+  createdBy: number;
+  groupcationId?: number;
+  railwayLine: string;
+  class?: string;
+  departureStation: string;
+  departureDate: string | Date; 
+  departureTime: string;
+  arrivalStation: string;
+  arrivalDate: string;
+  arrivalTime: string;
+  cost?: string;
+  notes?: string;
+  attachments?: TrainAttachments[],
+  travelers?: TrainTraveler[];
+}
 
 export type TrainTable = {
   id?: number;
@@ -15,7 +37,8 @@ export type TrainTable = {
   arrivalTime: Date;
   cost?: string | null;
   notes?: string | null;
-  attachments?: TrainAttachments[]
+  attachments?: TrainAttachments[], // ONLY FOR UI
+  travelers?: Traveler[]; // ONLY FOR UI
 };
 
 export type TrainTraveler = {

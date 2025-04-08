@@ -1,4 +1,8 @@
 
+type Traveler = {
+  value: number;
+  label: string;
+};
 
 export type StayTable = {
   id?: number;
@@ -13,7 +17,8 @@ export type StayTable = {
 	checkOutTime: Date;
   cost?: string | null;
   notes?: string | null;
-  attachments?: StayAttachments[]
+  attachments?: StayAttachments[] // ONLY FOR UI
+  travelers?: Traveler[]; // ONLY FOR UI
 };
 
 export type StayTraveler = {

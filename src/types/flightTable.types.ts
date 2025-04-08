@@ -1,5 +1,10 @@
 type FlightClass = "economy" | "premiumEconomy" | "business" | "firstClass";
 
+type Traveler = {
+  value: number;
+  label: string;
+};
+
 export type FlightTable = {
   id?: number;
   createdAt?: Date;
@@ -16,6 +21,8 @@ export type FlightTable = {
   arrivalTime: Date;
   cost?: string | null;
   notes?: string | null;
+  attachments?: FlightAttachments[]; //ONLY FOR UI
+  travelers?: Traveler[];  // ONLY FOR UI
 };
 
 export type FlightTraveler = {
