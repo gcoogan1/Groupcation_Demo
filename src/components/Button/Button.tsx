@@ -8,6 +8,8 @@ interface ButtonProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   type?: 'button' | 'submit' | 'reset';
+  isLoading?: boolean;
+  isDisabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,7 +19,9 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   leftIcon,
   rightIcon,
-  type
+  type,
+  isLoading,
+  isDisabled
 }) => {
 
   const isOutlined = color === 'outlined';
@@ -36,9 +40,10 @@ const Button: React.FC<ButtonProps> = ({
       onClick={(e) => handleOnClick(e)}
       showBorder={isOutlined}
       type={type ? type : 'button'}
+      disabled={isDisabled}
     >
       {leftIcon && leftIcon}
-      <ButtonText primary={isPrimary}>{children}</ButtonText>
+      <ButtonText primary={isPrimary}>{isLoading ? 'Loading...' : children}</ButtonText>
       {rightIcon && rightIcon}
     </ButtonContainer>
   );

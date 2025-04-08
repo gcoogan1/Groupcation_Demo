@@ -83,7 +83,6 @@ const InputAttachment: React.FC<InputAttachmentProps> = ({
                 </FileIconWrapper>
                 <div>
                   <FileName>{attachment.fileName}</FileName>{" "}
-                  {/* Display file name or URL */}
                   <FileSize>
                     {(attachment.fileSize / 1024 / 1024).toFixed(2)} MB
                   </FileSize>

@@ -6,7 +6,7 @@ interface FilterItemProps {
 }
 
 export const FilterItemContainer = styled.div<FilterItemProps>`
-  width: 200px;
+  width: 100%;
   background: ${({ addBackground }) => addBackground ? '#FAFAFA' : 'transparent'};
   padding: 8px;
   display: flex;
