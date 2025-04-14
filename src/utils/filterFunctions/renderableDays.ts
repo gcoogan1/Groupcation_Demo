@@ -1,4 +1,9 @@
-import { GroupcationDate, GroupedTravelItems, RenderableDay, TravelItem } from "../../types/filter.types";
+import {
+  GroupcationDate,
+  GroupedTravelItems,
+  RenderableDay,
+  TravelItem,
+} from "../../types/filter.types";
 
 /**
  * Returns renderable days with all groupcation "during" dates,
@@ -10,7 +15,10 @@ export const getRenderableDays = (
 ): RenderableDay[] => {
   const renderable: RenderableDay[] = [];
 
-  // Add all groupcation "during" dates (always show these even if no items)
+  // Create a Set of "during" dates to avoid duplicates later
+  const duringDates = new Set(groupcationDates.map(({ date }) => date));
+
+  // Add all groupcation "during" dates (always shown)
   groupcationDates.forEach(({ date, dow, dayNumber }) => {
     const items = (filteredGrouped[date] as TravelItem[]) || [];
 
@@ -23,18 +31,20 @@ export const getRenderableDays = (
     });
   });
 
-  // Add only "before" and "after" dates IF they exist in filteredGrouped AND have items
+  // Add only "before" and "after" dates if they exist and aren't already included
   Object.entries(filteredGrouped).forEach(([dateKey, itemsRaw]) => {
     const items = itemsRaw as TravelItem[];
     const period = items[0].period;
 
-    // Skip if period is 'during' since that's already handled above
+    // Skip "during" dates that were already added above
+    if (duringDates.has(dateKey)) return;
+
     if ((period === "before" || period === "after") && items.length > 0) {
       renderable.push({
         date: dateKey,
-        dow: items[0].date.toLocaleDateString("en-US", { weekday: "short" }),
+        dow: items[0].date.toLocaleDateString("en-US", { weekday: "long" }),
         period,
-        dayNumber: undefined, // No day number for before/after
+        dayNumber: undefined,
         items,
       });
     }
