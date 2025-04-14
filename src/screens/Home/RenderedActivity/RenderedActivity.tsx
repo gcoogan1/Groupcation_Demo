@@ -22,8 +22,7 @@ export const activityRenderMap = {
   train: (
     item: TravelItem,
     users: UserTable[],
-    openModal: { open: boolean; type: string | null },
-    handleOpenModal: (type: "cost" | "attachments" | "notes") => void,
+    handleOpenModal: (type: "cost" | "attachments" | "notes", item: TravelItem) => void,
     handleCloseModal: () => void,
     handleEditClick: (type: string, id: string) => void
   ) => {
@@ -57,9 +56,9 @@ export const activityRenderMap = {
           cost={train?.cost}
           attachments={train.attachments}
           noteText={train.notes}
-          onCostClick={() => handleOpenModal("cost")}
-          onAttachmentClick={() => handleOpenModal("attachments")}
-          onAddNotesClick={() => handleOpenModal("notes")}
+          onCostClick={() => handleOpenModal("cost", train)}
+          onAttachmentClick={() => handleOpenModal("attachments", train)}
+          onAddNotesClick={() => handleOpenModal("notes", train)}
           hightlightedActivityAction="Train"
           activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
           departureTime={`Leaves at ${departureTime}`}
@@ -74,13 +73,6 @@ export const activityRenderMap = {
             arrivalLocation: train.arrivalStation,
             travelers: travelers,
           }}
-        />
-        <Modal
-          openModal={openModal}
-          onClose={handleCloseModal}
-          cost={train.cost}
-          attachments={train.attachments}
-          notes={train.notes}
         />
       </>
     );

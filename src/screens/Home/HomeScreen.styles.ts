@@ -3,7 +3,7 @@ import { theme } from "../../styles/theme";
 import switzerlandBackground from "../../assets/switzerland.jpeg";
 
 interface NumberIconProps {
-  period: string
+  period: string;
 }
 
 export const ScreenContainer = styled.div`
@@ -177,6 +177,50 @@ export const BodyContentContainer = styled.div`
   }
 `;
 
+export const PanelOverlay = styled.div`
+  @media (max-width: 512px) {
+    display: flex;
+    padding: 54px 32px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+  }
+`;
+
+export const PanelWrapper = styled.div`
+  position: absolute;
+  top: 100%; /* Position modal just below the button */
+  left: 0;
+  margin-top: 10px;
+  width: 100%;
+  z-index: 1000;
+
+  @media (max-width: 512px) {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    justify-items: center;
+    align-content: center;
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 16px;
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+display: none;
+  @media (max-width: 512px) {
+    padding: 8px 0px;
+    display: block;
+    width: 256px;
+    justify-items: flex-end;
+  }
+`;
+
 export const Filters = styled.div`
   width: 240px;
   border-radius: 8px;
@@ -192,6 +236,16 @@ export const Filters = styled.div`
   }
 `;
 
+export const FiltersModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 8px;
+  border: 1px solid ${theme.line};
+  overflow: hidden;
+`
+
 export const Filter = styled.div`
   width: 100%;
   box-shadow: inset 0 -1px 0 0 ${theme.line}; /* bottom border */
@@ -199,7 +253,7 @@ export const Filter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-`
+`;
 
 export const FilterHeader = styled.div`
   width: 100%;
@@ -210,7 +264,7 @@ export const FilterHeader = styled.div`
   justify-content: space-between;
   background-color: ${theme.base};
   box-shadow: 0px 8px 16px -8px rgba(0, 0, 0, 0.08);
-`
+`;
 
 export const FilterBody = styled.div`
   width: 100%;
@@ -220,14 +274,14 @@ export const FilterBody = styled.div`
   overflow: hidden;
   flex-direction: column;
   align-items: flex-start;
-`
+`;
 
 export const FilterHeaderText = styled.p`
   color: ${theme.secondary};
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
-`
+`;
 
 export const ItineraryContainer = styled.div`
   display: flex;
@@ -243,16 +297,21 @@ export const ItineraryContainer = styled.div`
   @media (max-width: 512px) {
     border-bottom: 0px;
   }
-`
+`;
 
 export const ItineraryActions = styled.div`
   display: flex;
   align-items: center;
   align-content: center;
   gap: 16px;
+  min-height: 52px;
   align-self: stretch;
   flex-wrap: wrap;
-`
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+  }
+`;
 
 export const ActionFilters = styled.div`
   display: flex;
@@ -261,13 +320,47 @@ export const ActionFilters = styled.div`
   gap: 4px;
   flex: 1 0 0;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex: auto;
+  } 
+`;
+
+export const ActionButtonsContainer = styled.div`
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+    border-radius: 8px;
+  }
+`
+
+export const FilterItineraryButton = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    flex: 1;
+  };
 `
 
 export const ActionFilterLabelContainer = styled.div`
   display: flex;
   padding: 6px 0px;
+  height: 34px; // not in docs
   justify-content: center;
   align-items: center;
+`;
+
+export const FilterChipContainer = styled.div`
+  display: flex;
+  align-items: center;
+  align-content: center;
+  gap: 4px;
+  /* flex: 1 0 0; */
+  flex-wrap: wrap;
 `
 
 export const ActionFilterLabel = styled.p`
@@ -275,7 +368,7 @@ export const ActionFilterLabel = styled.p`
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
-`
+`;
 
 export const ActionFilterChipsContainer = styled.div`
   display: flex;
@@ -284,15 +377,16 @@ export const ActionFilterChipsContainer = styled.div`
   gap: 4px;
   flex: 1 0 0;
   flex-wrap: wrap;
-`
+`;
 
 export const DaysContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 32px;
-  align-self: stretch;
-`
+  width: 100%;
+  /* align-self: stretch; */
+`;
 
 export const Day = styled.div`
   display: flex;
@@ -300,13 +394,13 @@ export const Day = styled.div`
   gap: 8px;
   align-self: stretch;
   align-items: stretch; // Makes line expand when activity does
-`
+`;
 
 export const DayNumber = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
 export const NumberContainer = styled.div<NumberIconProps>`
   display: flex;
@@ -316,9 +410,12 @@ export const NumberContainer = styled.div<NumberIconProps>`
   justify-content: center;
   align-items: center;
   border-radius: 99px;
-  border: ${({ period }) => (period === 'during') ? `4px solid transparent` : `4px solid ${theme.surface}`};
-  background: ${({ period }) => (period === 'during') ? `#e400780d`  : 'none'};
-`
+  border: ${({ period }) =>
+    period === "during"
+      ? `4px solid transparent`
+      : `4px solid ${theme.surface}`};
+  background: ${({ period }) => (period === "during" ? `#e400780d` : "none")};
+`;
 
 export const NumberText = styled.p`
   color: ${theme.primary};
@@ -326,7 +423,7 @@ export const NumberText = styled.p`
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
-`
+`;
 
 export const NumberLine = styled.div<NumberIconProps>`
   width: 4px;
@@ -334,8 +431,8 @@ export const NumberLine = styled.div<NumberIconProps>`
   flex: 1;
   background: ${({ period }) =>
     period === "during"
-      ? 'linear-gradient(180deg, rgba(228, 0, 120, 0.05) 0%, rgba(228, 0, 120, 0.00) 100%)'
-      : 'linear-gradient(180deg, #F4F4F4 0%, rgba(244, 244, 244, 0.00) 100%)'};
+      ? "linear-gradient(180deg, rgba(228, 0, 120, 0.05) 0%, rgba(228, 0, 120, 0.00) 100%)"
+      : "linear-gradient(180deg, #F4F4F4 0%, rgba(244, 244, 244, 0.00) 100%)"};
 `;
 
 export const DayList = styled.div`
@@ -345,7 +442,7 @@ export const DayList = styled.div`
   gap: 4px;
   flex: 1 0 0;
   min-height: 100px; // not in docs
-`
+`;
 
 export const ListDateContent = styled.div`
   display: flex;
@@ -353,7 +450,7 @@ export const ListDateContent = styled.div`
   padding: 8px 0px;
   align-items: center;
   gap: 8px;
-`
+`;
 
 export const ListDate = styled.p`
   counter-reset: ${theme.secondary};
@@ -361,14 +458,14 @@ export const ListDate = styled.p`
   font-weight: 600;
   line-height: 20px;
   flex: 1;
-`
+`;
 
 export const ListDay = styled.p`
   color: ${theme.iconText};
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-`
+`;
 
 export const ListItemsContainer = styled.div`
   display: flex;
@@ -376,7 +473,7 @@ export const ListItemsContainer = styled.div`
   align-items: flex-start;
   gap: 8px;
   width: 100%;
-`
+`;
 
 export const ListItemsEmpty = styled.div`
   display: flex;
@@ -387,7 +484,7 @@ export const ListItemsEmpty = styled.div`
   width: 100%;
   border-radius: 8px;
   border: 1px dashed ${theme.line};
-`
+`;
 
 export const EmptyText = styled.div`
   overflow: hidden;
@@ -397,7 +494,7 @@ export const EmptyText = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-`
+`;
 
 // -- FOOTER -- //
 

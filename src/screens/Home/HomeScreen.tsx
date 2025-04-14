@@ -2,21 +2,18 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/index";
-// import { Link } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchGroupcationTable } from "../../store/thunk/groupcationThunk";
 import { fetchTrainByGroupcationId } from "../../modules/activities/train/thunk/trainThunk";
-// import { fetchUsersTable } from "../../store/thunk/usersThunk";
-// import { convertUsersToTravelers } from "../../utils/conversionFunctions/conversionFunctions";
-// import { selectFlights, selectGroupcationById, selectTrains } from "../../store/selectors/selectors";
-// import { fetchFlightByGroupcationId } from "../../modules/activities/flights/thunk/flightThunk";
 import {
+  ActionButtonsContainer,
   ActionFilterChipsContainer,
   ActionFilterLabel,
   ActionFilterLabelContainer,
   ActionFilters,
   BodyContainer,
   BodyContentContainer,
+  ButtonWrapper,
   Day,
   DayList,
   DayNumber,
@@ -27,9 +24,12 @@ import {
   EmptyText,
   Filter,
   FilterBody,
+  FilterChipContainer,
   FilterHeader,
   FilterHeaderText,
+  FilterItineraryButton,
   Filters,
+  FiltersModalContainer,
   Footer,
   FooterText,
   HeaderContent,
@@ -49,6 +49,8 @@ import {
   NumberContainer,
   NumberLine,
   NumberText,
+  PanelOverlay,
+  PanelWrapper,
   ScreenContainer,
   Title,
   TopContainer,
@@ -57,14 +59,12 @@ import SwissFlag from "../../assets/Switzerland.svg?react";
 import {
   formatDateToDayMonthYear,
   getDaysRemaining,
-  getDurationInHoursAndMinutes,
   getInBetweenDates,
 } from "../../utils/dateFunctions/dateFunctions";
 import ChevronDown from "../../assets/Chevron_Down.svg?react";
 import ChevronUp from "../../assets/Chevron_Up.svg?react";
 import { theme } from "../../styles/theme";
 import {
-  selectConvertedUsers,
   selectConvertedUsersForFilters,
   selectFlights,
   selectGroupcationById,
@@ -72,7 +72,11 @@ import {
   selectTableUsers,
   selectTrains,
 } from "../../store/selectors/selectors";
-import { ACTIVITY_OPTIONS, GroupcationDate } from "../../types/filter.types";
+import {
+  ACTIVITY_OPTIONS,
+  GroupcationDate,
+  TravelItem,
+} from "../../types/filter.types";
 import Button from "../../components/Button/Button";
 import FilterItem from "../../components/FilterItem/FilterItem";
 import Pictogram from "../../components/Pictogram/Pictogram";
@@ -81,15 +85,20 @@ import Add from "../../assets/Add.svg?react";
 import DateBefore from "../../assets/Date_Before.svg?react";
 import DateAfter from "../../assets/Date_After.svg?react";
 import { groupTravelItemsByDate } from "../../utils/conversionFunctions/conversionFunctions";
-import {
-  filterGroups
-} from "../../utils/filterFunctions/filterFunctions";
+import { filterGroups } from "../../utils/filterFunctions/filterFunctions";
 import { fetchFlightByGroupcationId } from "../../modules/activities/flights/thunk/flightThunk";
 import { fetchUsersTable } from "../../store/thunk/usersThunk";
 import { getRenderableDays } from "../../utils/filterFunctions/renderableDays";
 import { fetchStayByGroupcationId } from "../../modules/activities/stay/thunk/stayThunk";
 import { activityRenderMap } from "./RenderedActivity/RenderedActivity";
 import { useNavigate } from "react-router-dom";
+import Panel from "../../components/Panel/Panel";
+import CloseButton from "../../components/CloseButton/CloseButton";
+import FilterChip from "../../components/FilterChip/FilterChip";
+import FilterIcon from "../../assets/Filter.svg?react";
+import FilterModal from "../../components/FiltersModal/FiltersModal";
+import { fetchAllGroupcationData } from "../../store/thunk/fetchAllThunk";
+import Modal from "../../components/Modal/Modal";
 
 //TODO: NEED TO GRAB ALL FORMS TO UPDATE STATE CORRECTLY
 //TODO: ADD TRAVELERS/ATTACHMENTS TO EACH GET TABLE BY ID
@@ -99,6 +108,7 @@ const HomeScreen = () => {
   const navigate = useNavigate();
   const activityContentRef = useRef<HTMLDivElement>(null);
   const travelersContentRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [activitiesExpanded, setActivitesExpanded] = useState(false);
   const [travelersExpanded, setTravelersExpanded] = useState(false);
@@ -108,13 +118,69 @@ const HomeScreen = () => {
     open: boolean;
     type: "cost" | "attachments" | "notes" | null;
   }>({ open: false, type: null });
-  
-  const handleOpenModal = (type: "cost" | "attachments" | "notes") => {
+  const [openPanel, setOpenPanel] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [openFilterModal, setOpenFilterModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<TravelItem | null>(null);
+
+  useEffect(() => {
+    if (!openPanel) return;
+
+    const handleResize = () => {
+      setOpenPanel(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [openPanel]);
+
+  useEffect(() => {
+    dispatch(fetchAllGroupcationData(333));
+  }, [dispatch]);
+
+  // HELPER FUNCTIONS
+
+  const handleOpenModal = (
+    type: "cost" | "attachments" | "notes",
+    item: TravelItem
+  ) => {
+    setSelectedItem(item);
     setOpenModal({ open: true, type });
   };
-  
+
   const handleCloseModal = () => {
     setOpenModal({ open: false, type: null });
+    setSelectedItem(null);
+  };
+
+  const handleTogglePanel = () => {
+    if (buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      setModalPosition({
+        top: buttonRect.bottom + window.scrollY, // Position the modal just below the button
+        left: buttonRect.left + window.scrollX - 136, // Align with the button
+      });
+    }
+    setOpenPanel((prev) => !prev);
+  };
+
+  const handleOpenFilterModal = () => {
+    if (openPanel) {
+      setOpenPanel(false);
+    }
+    setOpenFilterModal(true);
+    return;
+  };
+
+  const handleCloseFilterModal = () => {
+    setSelectedActivities([]);
+    setSelectedTravelers([]);
+    setOpenFilterModal(false);
+    // if (activitiesExpanded) setActivitesExpanded(false)
+    // if (travelersExpanded) setTravelersExpanded(false)
+    return;
   };
 
   const handleActivityToggle = useCallback(
@@ -147,32 +213,21 @@ const HomeScreen = () => {
     []
   );
 
-  const handleEditCardClick = (type:string, id: string) => {
-    const path = `/${type}-form/${id}`
-    console.log("path:", path)
-    return navigate(path)
-  }
+  const handleEditCardClick = (type: string, id: string) => {
+    const path = `/${type}-form/${id}`;
+    return navigate(path);
+  };
 
+  // FILTER FUNCTIONS
   const toggleActivityExpand = () => {
-    if (activityContentRef.current) {
-      setActivitesExpanded((prev) => !prev);
-    }
+    setActivitesExpanded((prev) => !prev);
   };
 
   const toggleTravelersExpand = () => {
-    if (travelersContentRef.current) {
-      setTravelersExpanded((prev) => !prev);
-    }
+    setTravelersExpanded((prev) => !prev);
   };
 
-  useEffect(() => {
-    dispatch(fetchGroupcationTable(333));
-    dispatch(fetchTrainByGroupcationId(333));
-    dispatch(fetchFlightByGroupcationId(333));
-    dispatch(fetchStayByGroupcationId(333));
-    dispatch(fetchUsersTable());
-  }, [dispatch]);
-
+  // SELECTOR FUNCTIONS
   const groupcation = useSelector((state: RootState) =>
     selectGroupcationById(state, 333)
   );
@@ -181,19 +236,22 @@ const HomeScreen = () => {
     selectConvertedUsersForFilters(state)
   );
 
-  const remainingDays =
-    groupcation?.startDate && getDaysRemaining(groupcation?.startDate);
   const trains = useSelector(selectTrains);
   const flights = useSelector(selectFlights);
   const stays = useSelector(selectStays);
-  const users = useSelector(selectTableUsers)
+  const users = useSelector(selectTableUsers);
 
-  const grouped = groupTravelItemsByDate(stays, flights, trains, groupcation);
-  const filteredGrouped = filterGroups(
-    grouped,
-    selectedActivities,
-    selectedTravelers
+  // ITINIARY DISPLAY FUNCTIONS
+  const grouped = useMemo(
+    () => groupTravelItemsByDate(stays, flights, trains, groupcation),
+    [stays, flights, trains, groupcation]
   );
+
+  const filteredGrouped = useMemo(
+    () => filterGroups(grouped, selectedActivities, selectedTravelers),
+    [grouped, selectedActivities, selectedTravelers]
+  );
+
   const groupcationFullDates: GroupcationDate[] =
     groupcation &&
     getInBetweenDates(groupcation?.startDate, groupcation?.endDate);
@@ -203,16 +261,18 @@ const HomeScreen = () => {
     groupcationFullDates
   );
 
-  console.log("GROUPED", grouped);
-  console.log("FILTERED GROUP:", filteredGrouped);
-  // console.log("GROUPCATION:", groupcation)
+  const remainingDays =
+    groupcation?.startDate && getDaysRemaining(groupcation?.startDate);
 
-  // console.log("GROUPCATION DATES:", groupcationFullDates);
+  const filterChipTravelers =
+    selectedTravelers.length > 1
+      ? `${selectedTravelers.length} Travelers`
+      : `${selectedTravelers.length} Traveler`;
 
-  // console.log("TRAINS", trains);
-  // console.log("selected", selectedActivities);
-  // console.log(selectedActivities.includes("trains"));
-  // console.log(selectedTravelers)
+  const filterChipActivities =
+    selectedActivities.length > 1
+      ? `${selectedActivities.length} Activities`
+      : `${selectedActivities.length} Activity`;
 
   return (
     <ScreenContainer>
@@ -316,18 +376,51 @@ const HomeScreen = () => {
             <ItineraryActions>
               <ActionFilters>
                 <ActionFilterLabelContainer>
-                  <ActionFilterLabel>Showing:</ActionFilterLabel>
+                  <ActionFilterLabel>
+                    {selectedTravelers.length > 0 ||
+                    selectedActivities.length > 0
+                      ? "Showing:"
+                      : "Showing All"}
+                  </ActionFilterLabel>
                 </ActionFilterLabelContainer>
+                <FilterChipContainer>
+                  {selectedTravelers.length > 0 && (
+                    <FilterChip
+                      filterText={filterChipTravelers}
+                      onClick={() => setSelectedTravelers([])}
+                    />
+                  )}
+                  {selectedActivities.length > 0 && (
+                    <FilterChip
+                      filterText={filterChipActivities}
+                      onClick={() => setSelectedActivities([])}
+                    />
+                  )}
+                </FilterChipContainer>
                 <ActionFilterChipsContainer></ActionFilterChipsContainer>
+              </ActionFilters>
+              <ActionButtonsContainer>
+                <FilterItineraryButton>
+                  <Button
+                    color={"secondary"}
+                    ariaLabel={"Filter Itinerary"}
+                    leftIcon={<FilterIcon color={theme.secondary} />}
+                    onClick={handleOpenFilterModal}
+                    styles={{ width: "100%" }}
+                  >
+                    Filter Itinerary
+                  </Button>
+                </FilterItineraryButton>
                 <Button
+                  buttonRef={buttonRef}
                   color={"primary"}
                   ariaLabel={"Add new"}
                   leftIcon={<Add color={theme.base} />}
-                  onClick={() => console.log("clicked")}
+                  onClick={handleTogglePanel}
                 >
                   Add New
                 </Button>
-              </ActionFilters>
+              </ActionButtonsContainer>
             </ItineraryActions>
             <DaysContainer>
               {renderableDays.map((day) => (
@@ -356,27 +449,27 @@ const HomeScreen = () => {
                     {day.items.length > 0 ? (
                       <ListItemsContainer>
                         {day.items.map((item) => {
-
+                          console.log("ITEM", item);
                           return (
                             <>
-                              {activityRenderMap[item.type]?.(item, users, openModal, handleOpenModal, handleCloseModal, handleEditCardClick)}
+                              {activityRenderMap[item.type]?.(
+                                item,
+                                users,
+                                handleOpenModal,
+                                handleCloseModal,
+                                handleEditCardClick
+                              )}
+                              {openModal.open &&
+                                selectedItem?.type === "train" && (
+                                  <Modal
+                                    openModal={openModal}
+                                    onClose={handleCloseModal}
+                                    cost={selectedItem.cost}
+                                    attachments={selectedItem.attachments}
+                                    notes={selectedItem.notes}
+                                  />
+                                )}
                             </>
-                            // <>
-                            //   {item.type === "train" && (
-                            //     <TrainActivity
-                            //       onEditClick={() => console.log("EDIT")}
-                            //       cost={item?.cost}
-                            //       onCostClick={() => console.log("COST")}
-                            //       onAttachmentClick={() => console.log("ATTACHMENTS")}
-                            //       onAddNotesClick={() => console.log("ADD NOTES")}
-                            //       hightlightedActivityAction={item.type}
-                            //       activityText={"from to"}
-                            //       departureTime={item?.departureTime}
-                            //       footerText={"Departs at"}
-                            //       activityCardDetails={activityCard}
-                            //     />
-                            //   )}
-                            // </>
                           );
                         })}
                       </ListItemsContainer>
@@ -397,6 +490,94 @@ const HomeScreen = () => {
       <Footer>
         <FooterText>Custom Trip Created in Groupcation</FooterText>
       </Footer>
+      {openPanel && (
+        <PanelOverlay>
+          <PanelWrapper
+            style={{
+              top: `${modalPosition.top}px`,
+              left: `${modalPosition.left}px`,
+            }}
+          >
+            <ButtonWrapper>
+              <CloseButton onClose={() => setOpenPanel(false)} />
+            </ButtonWrapper>
+            <Panel />
+          </PanelWrapper>
+        </PanelOverlay>
+      )}
+      {openFilterModal && (
+        <FilterModal
+          openModal={openFilterModal}
+          onClose={handleCloseFilterModal}
+          onConfirm={() => setOpenFilterModal(false)}
+        >
+          <FiltersModalContainer>
+            <Filter>
+              <FilterHeader onClick={toggleActivityExpand}>
+                <FilterHeaderText>Activities</FilterHeaderText>
+                {activitiesExpanded ? (
+                  <ChevronDown color={theme.iconText} />
+                ) : (
+                  <ChevronUp color={theme.iconText} />
+                )}
+              </FilterHeader>
+              <FilterBody
+                ref={activityContentRef}
+                style={{ display: activitiesExpanded ? "flex" : "none" }}
+              >
+                {ACTIVITY_OPTIONS.map((activity) => (
+                  <FilterItem
+                    key={activity.value}
+                    action={activity.action}
+                    icon={
+                      <Pictogram type={activity.value}>
+                        {activity.icon}
+                      </Pictogram>
+                    }
+                    label={activity.label}
+                    value={activity.value}
+                    selected={selectedActivities.includes(activity.value)}
+                    onToggle={handleActivityToggle}
+                  />
+                ))}
+              </FilterBody>
+            </Filter>
+            <Filter>
+              <FilterHeader onClick={toggleTravelersExpand}>
+                <FilterHeaderText>Travelers</FilterHeaderText>
+                {travelersExpanded ? (
+                  <ChevronDown color={theme.iconText} />
+                ) : (
+                  <ChevronUp color={theme.iconText} />
+                )}
+              </FilterHeader>
+              <FilterBody
+                ref={travelersContentRef}
+                style={{ display: travelersExpanded ? "flex" : "none" }}
+              >
+                {filterTravelerList?.map((traveler) => {
+                  const stringVal = traveler.value.toString();
+                  return (
+                    <FilterItem
+                      action={"checkbox"}
+                      icon={
+                        <Avatar
+                          initials={traveler.initials}
+                          color={traveler.color}
+                        />
+                      }
+                      label={traveler.label}
+                      value={stringVal}
+                      selected={selectedTravelers.includes(stringVal)}
+                      onToggle={handleTravelerToggle}
+                    />
+                  );
+                })}
+              </FilterBody>
+            </Filter>
+          </FiltersModalContainer>
+        </FilterModal>
+      )}
     </ScreenContainer>
   );
 };
