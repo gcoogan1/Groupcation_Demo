@@ -79,6 +79,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   const [showAddNotes, setShowAddNotes] = useState(!!existingFlight?.notes);
   const [amount, setAmount] = useState(0);
   const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
@@ -97,6 +98,8 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
 
   // FETCH FLIGHT DATA FROM API
   useEffect(() => {
+     // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
     if (flightId) {
       dispatch(fetchFlightTable(flightId));
     }
@@ -137,6 +140,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   // SUBMIT FLIGHT FORM DATA
   const onSubmit = (data: FlightFormData) => {
     const { attachments, travelers, ...rest } = data;
+    setIsLoading(true)
 
     if (flightId) {
       const updatedFlight = {
@@ -152,6 +156,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
           selectedTravelers: travelers,
         })
       );
+      setIsLoading(false)
       return;
     } else {
       // ADD FLIGHT
@@ -163,8 +168,11 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
       dispatch(
         addFlightTable({ flight: newData, files: attachments, travelers })
       );
+      setIsLoading(false)
     }
   };
+
+  if (flightId && !existingFlight) return <div>Loading...</div>
 
   const classOptions = [
     {
@@ -362,6 +370,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingFlight?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}

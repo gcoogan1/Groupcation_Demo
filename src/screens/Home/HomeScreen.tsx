@@ -449,26 +449,14 @@ const HomeScreen = () => {
                     {day.items.length > 0 ? (
                       <ListItemsContainer>
                         {day.items.map((item) => {
-                          console.log("ITEM", item);
                           return (
                             <>
                               {activityRenderMap[item.type]?.(
                                 item,
                                 users,
                                 handleOpenModal,
-                                handleCloseModal,
                                 handleEditCardClick
                               )}
-                              {openModal.open &&
-                                selectedItem?.type === "train" && (
-                                  <Modal
-                                    openModal={openModal}
-                                    onClose={handleCloseModal}
-                                    cost={selectedItem.cost}
-                                    attachments={selectedItem.attachments}
-                                    notes={selectedItem.notes}
-                                  />
-                                )}
                             </>
                           );
                         })}
@@ -490,6 +478,15 @@ const HomeScreen = () => {
       <Footer>
         <FooterText>Custom Trip Created in Groupcation</FooterText>
       </Footer>
+      {openModal.open && selectedItem && (
+        <Modal
+          openModal={openModal}
+          onClose={handleCloseModal}
+          cost={selectedItem?.cost}
+          attachments={selectedItem.attachments}
+          notes={selectedItem?.notes}
+        />
+      )}
       {openPanel && (
         <PanelOverlay>
           <PanelWrapper

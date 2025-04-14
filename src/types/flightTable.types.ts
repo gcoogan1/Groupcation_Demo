@@ -5,6 +5,26 @@ type Traveler = {
   label: string;
 };
 
+export type FlightUITable = {
+  id: string;
+  createdAt: string;
+  createdBy: number;
+  groupcationId?: number;
+  airline: string;
+  flightClass?: FlightClass;
+  flightNumber?: string;
+  departureDate: string | Date; 
+  departureTime: string;
+  arrivalDate: string;
+  arrivalTime: string;
+  cost?: string;
+  notes?: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  attachments?: FlightAttachments[],
+  travelers?: FlightTraveler[];
+}
+
 export type FlightTable = {
   id?: number;
   createdAt?: Date;

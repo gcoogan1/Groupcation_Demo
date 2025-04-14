@@ -10,7 +10,7 @@ import Event from "../assets/Event.svg?react";
 import Celebration from "../assets/Celebration.svg?react";
 import Resturant from "../assets/Restaurant.svg?react";
 import { StayTable } from "./stayTable.types";
-import { FlightTable } from "./flightTable.types";
+import { FlightUITable } from "./flightTable.types";
 import { TrainUITable } from "./trainTable.types";
 
 type Actions = "checkbox" | "switch";
@@ -38,7 +38,7 @@ type BaseTravelItem = {
 };
 
 export type TrainItem = TrainUITable & BaseTravelItem & { type: 'train' };
-export type FlightItem = FlightTable & BaseTravelItem & { type: 'flight' };
+export type FlightItem = FlightUITable & BaseTravelItem & { type: 'flight' };
 export type StayItem = StayTable & BaseTravelItem & { type: 'stay' };
 
 export type TravelItem = TrainItem | FlightItem | StayItem;

@@ -21,7 +21,6 @@ export const filterGroups = (
       // Only include items that match selectedActivities
       const filteredItems = items.filter((item) => {
         const selectedTravelerIds = selectedTravelers.map((id) => Number(id));
-        console.log("ITEMS", item);
 
         const matchesActivity =
           selectedActivities.length > 0
