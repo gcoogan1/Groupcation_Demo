@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ContentContainer,
   ExpandableContent,
@@ -50,7 +50,7 @@ export type TrainActivityCardDetails = {
   arrivalTime: string;
   arrivalLocation: string;
   travelers: Traveler[];
-}
+};
 
 interface TrainActivitysProps {
   onEditClick: () => void;
@@ -94,6 +94,18 @@ const TrainActivity: React.FC<TrainActivitysProps> = ({
     arrivalLocation,
     travelers,
   } = activityCardDetails;
+
+  useEffect(() => {
+    if (!expanded) return;
+    const handleResize = () => {
+      setExpanded(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [expanded]);
 
   const toggleExpand = () => {
     if (expanded) return;

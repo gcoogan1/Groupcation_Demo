@@ -10,6 +10,8 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   isLoading?: boolean;
   isDisabled?: boolean;
+  buttonRef?: React.Ref<HTMLButtonElement>;
+  styles?: React.CSSProperties;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -21,7 +23,9 @@ const Button: React.FC<ButtonProps> = ({
   rightIcon,
   type,
   isLoading,
-  isDisabled
+  isDisabled,
+  buttonRef,
+  styles
 }) => {
 
   const isOutlined = color === 'outlined';
@@ -35,12 +39,14 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <ButtonContainer
+      ref={buttonRef}
       color={color}
       aria-label={ariaLabel}
       onClick={(e) => handleOnClick(e)}
       showBorder={isOutlined}
       type={type ? type : 'button'}
       disabled={isDisabled}
+      style={styles}
     >
       {leftIcon && leftIcon}
       <ButtonText primary={isPrimary}>{isLoading ? 'Loading...' : children}</ButtonText>

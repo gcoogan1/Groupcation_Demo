@@ -10,6 +10,7 @@ export const MenuItemContainer = styled.div`
   border-radius: 8px;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `
 
 export const MenuItemText = styled.p`

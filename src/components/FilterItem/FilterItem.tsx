@@ -26,28 +26,25 @@ const FilterItem: React.FC<FilterItemProps> = ({
   selected = false,
   onToggle,
 }) => {
-  const [showBackground, setShowBackground] = useState(selected);
-
+  
   const handleToggle = () => {
-    const newState = !showBackground;
-    setShowBackground(newState);
       /**
         Pass value (ex. "train") and its 
         new state (which is opposite of its prev state)
         to parent function (onToggle), if present
       */
-    onToggle?.(value, newState);
+    onToggle?.(value, !selected);
   };
   
 
   return (
-    <FilterItemContainer addBackground={showBackground} onClick={handleToggle}>
+    <FilterItemContainer addBackground={selected} onClick={handleToggle}>
       <FilterItemLabel>
         {icon}
         <FilterItemText>{label}</FilterItemText>
       </FilterItemLabel>
       {action === "checkbox" ? (
-        <>{showBackground ? <CheckboxSelected /> : <CheckboxUnselected />}</>
+        <>{selected ? <CheckboxSelected /> : <CheckboxUnselected />}</>
       ) : (
         <Switch onClick={handleToggle} />
       )}

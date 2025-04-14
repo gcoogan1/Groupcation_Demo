@@ -3,11 +3,12 @@ import { MenuItemContainer, MenuItemText } from "./MenuItem.styles";
 interface MenuItemProps {
   pictogram: React.ReactNode;
   text: string;
+  onClick?: () => void;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ pictogram, text }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ pictogram, text, onClick }) => {
   return (
-    <MenuItemContainer>
+    <MenuItemContainer onClick={onClick}>
       {pictogram}
       <MenuItemText>
         {text}
