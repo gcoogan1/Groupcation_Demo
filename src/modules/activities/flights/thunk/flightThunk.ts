@@ -223,13 +223,13 @@ export const addFlightTable = createAsyncThunk(
           flightId: convertedData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (travelers && travelers.length > 0) {
       await dispatch(
         addFlightTravelersTable({ travelers, flightId: convertedData.id })
-      );
+      ).unwrap();
     }
 
     // --- STEP 6: RETURN CONVERTED DATA FOR STATE UPDATE --- //
@@ -301,7 +301,7 @@ export const updateFlightTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteFlightAttachment({ attachmentId, flightId: id }));
+          await dispatch(deleteFlightAttachment({ attachmentId, flightId: id })).unwrap();
         })
       );
     }
@@ -333,7 +333,7 @@ export const updateFlightTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteFlightTraveler({ travelerId, flightId: id }));
+          await dispatch(deleteFlightTraveler({ travelerId, flightId: id })).unwrap();
         })
       );
     }
@@ -346,7 +346,7 @@ export const updateFlightTable = createAsyncThunk(
           flightId: convertedReturnData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (selectedTravelers && selectedTravelers.length > 0) {
@@ -355,7 +355,7 @@ export const updateFlightTable = createAsyncThunk(
           travelers: selectedTravelers,
           flightId: convertedReturnData.id,
         })
-      );
+      ).unwrap();
     }
 
     // --- STEP 10: RETURN CONVERTED FLIGHT DATA --- //

@@ -49,6 +49,7 @@ import {
   fetchFlightTable,
   updateFlightTable,
 } from "../thunk/flightThunk";
+import { useNavigate } from "react-router-dom";
 
 // NOTE: ALL FLIGHT DATA (see flightSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)
@@ -61,6 +62,7 @@ interface FlightFormProps {
 
 const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
 
   // FETCH EXISTING FLIGHT DATA FROM STATE IF ID PASSED
   const existingFlight = useSelector((state: RootState) =>
@@ -138,36 +140,40 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   }, [existingFlight, existingAttachments, reset]);
 
   // SUBMIT FLIGHT FORM DATA
-  const onSubmit = (data: FlightFormData) => {
+  const onSubmit = async (data: FlightFormData) => {
     const { attachments, travelers, ...rest } = data;
     setIsLoading(true)
 
-    if (flightId) {
-      const updatedFlight = {
-        ...existingFlight,
-        ...rest,
-        id: Number(existingFlight?.id),
-      };
-
-      dispatch(
-        updateFlightTable({
-          flight: updatedFlight,
-          files: attachments,
-          selectedTravelers: travelers,
-        })
-      );
-      setIsLoading(false)
-      return;
-    } else {
-      // ADD FLIGHT
-      const newData = {
-        groupcationId: 333,
-        createdBy: 3,
-        ...rest,
-      };
-      dispatch(
-        addFlightTable({ flight: newData, files: attachments, travelers })
-      );
+    try {
+      if (flightId) {
+        const updatedFlight = {
+          ...existingFlight,
+          ...rest,
+          id: Number(existingFlight?.id),
+        };
+  
+        await dispatch(
+          updateFlightTable({
+            flight: updatedFlight,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD FLIGHT
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+        await dispatch(
+          addFlightTable({ flight: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+      navigate("/")
+    } catch (error) {
+      console.error("Failed to save flight:", error)
+    } finally {
       setIsLoading(false)
     }
   };
@@ -462,6 +468,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!flightId ? "Add Flight" : "Update Flight"}
       </Button>
