@@ -44,6 +44,7 @@ import {
   updateTrainTable,
 } from "../thunk/trainThunk";
 import { selectConvertedUsers, selectTrainById } from "../../../../store/selectors/selectors";
+import { useNavigate } from "react-router-dom";
 
 // NOTE: ALL TRAIN DATA (see trainSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -55,6 +56,7 @@ interface TrainFormProps {
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
 
   // FETCH EXISTING TRAIN DATA FROM STATE IF ID PASSED
   const existingTrain = useSelector((state: RootState) =>
@@ -69,7 +71,14 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const [showCost, setShowCost] = useState(!!existingTrain?.cost);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingTrain?.notes);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingTrain?.cost; // something like "123.45"
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100); // convert to cents
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });;
   const [travelers, setTravelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -87,7 +96,6 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   } = useForm<TrainFormData>({
     resolver: zodResolver(trainSchema),
   });
-
 
   // FETCH TRAIN DATA FROM API
   useEffect(() => {
@@ -132,31 +140,42 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   }, [existingTrain, existingAttachments, reset]);
 
   // SUBMIT TRAIN FORM DATA
-  const onSubmit = (data: TrainFormData) => {
+  const onSubmit = async (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
-    setIsLoading(true)
-
-    // UPDATE TRAIN 
-    if (trainId) {
-      const updatedTrain = {
-        ...existingTrain,
-        ...rest, 
-        id: Number(existingTrain?.id),
-      };
+    setIsLoading(true);
   
-      dispatch(updateTrainTable({ train: updatedTrain, files: attachments, selectedTravelers: travelers }));
-      setIsLoading(false)
-      return;
+    try {
+      // UPDATE TRAIN
+      if (trainId) {
+        const updatedTrain = {
+          ...existingTrain,
+          ...rest,
+          id: Number(existingTrain?.id),
+        };
+  
+        await dispatch(
+          updateTrainTable({ train: updatedTrain, files: attachments, selectedTravelers: travelers })
+        ).unwrap();
+      } else {
+        // ADD TRAIN
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+  
+        await dispatch(
+          addTrainTable({ train: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+  
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save train:", error);
+    } finally {
+      setIsLoading(false);
     }
-
-    // ADD TRAIN
-    const newData = {
-      groupcationId: 333,
-      createdBy: 3,
-      ...rest,
-    };
-    dispatch(addTrainTable({ train: newData, files: attachments, travelers }));
-    setIsLoading(false)
   };
 
   if (trainId && !existingTrain) return <div>Loading...</div>

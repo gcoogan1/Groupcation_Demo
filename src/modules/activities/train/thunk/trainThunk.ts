@@ -205,14 +205,10 @@ export const addTrainTable = createAsyncThunk(
       id: data[0].id.toString(),
     } as Train;
 
-    console.log("NEW", newTrain)
-
     // STEP 4: CONVERT TRAIN TABLE DATA TO MATCH STATE --- //
     const convertedData = transformToCamelCase(
       replaceNullWithUndefined(convertFormDatesToString(newTrain))
     );
-
-    console.log("CONVERTED", convertedData)
 
     // --- STEP 5: CHECK FOR ATTACHMENTS (upload them and update state) --- //
     /*
@@ -227,13 +223,13 @@ export const addTrainTable = createAsyncThunk(
           trainId: convertedData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (travelers && travelers.length > 0) {
       await dispatch(
         addTrainTravelersTable({ travelers, trainId: convertedData.id })
-      );
+      ).unwrap();
     }
 
     // --- STEP 6: RETURN CONVERTED DATA FOR STATE UPDATE --- //
@@ -307,7 +303,7 @@ export const updateTrainTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteTrainAttachment({ attachmentId, trainId: id }));
+          await dispatch(deleteTrainAttachment({ attachmentId, trainId: id })).unwrap();
         })
       );
     }
@@ -336,13 +332,11 @@ export const updateTrainTable = createAsyncThunk(
       (travelerId) => !selectedTravelerIds.has(travelerId)
     );
 
-    console.log("DELETE TRAVELERS:", travelersToDelete);
-
     // --- STEP 8: DELETE TRAVELERS --- //
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteTrainTraveler({ travelerId, trainId: id }));
+          await dispatch(deleteTrainTraveler({ travelerId, trainId: id })).unwrap();
         })
       );
     }
@@ -355,7 +349,7 @@ export const updateTrainTable = createAsyncThunk(
           trainId: convertedReturnData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (selectedTravelers && selectedTravelers.length > 0) {
@@ -364,7 +358,7 @@ export const updateTrainTable = createAsyncThunk(
           travelers: selectedTravelers,
           trainId: convertedReturnData.id,
         })
-      );
+      ).unwrap();
     }
 
     // --- STEP 10: RETURN CONVERTED TRAIN DATA --- //
@@ -427,7 +421,6 @@ export const addTrainAttachmentsTable = createAsyncThunk(
 
       // NO NEW FILES
       if (newFiles.length === 0) {
-        console.log("No new files to upload");
         return [];
       }
 
@@ -593,7 +586,6 @@ export const addTrainTravelersTable = createAsyncThunk(
 
       // IF NO NEW TRAVELERS
       if (newTravelers.length === 0) {
-        console.log("No new travelers to add.");
         return { travelers: [], trainId }; // Return early to prevent unnecessary insert
       }
 
@@ -613,9 +605,7 @@ export const addTrainTravelersTable = createAsyncThunk(
         .select();
 
       // IF ERROR
-      if (error) console.log("ERROR:", error);
-
-      console.log("Sucess:", data);
+      if (error) console.error("ERROR:", error);
 
       // --- STEP 5: RETURN TRAVELERS & TRAIN ID TO STATE --- ///
       return { travelers, trainId };
