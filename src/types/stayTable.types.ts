@@ -4,6 +4,23 @@ type Traveler = {
   label: string;
 };
 
+export type StayUITable = {
+  id: string;
+  createdAt: string;
+  createdBy: number;
+  groupcationId?: number;
+	placeName: string;
+	placeAddress: string;
+	checkInDate: string;
+	checkInTime: string;
+	checkOutDate: string;
+	checkOutTime: string;
+  cost?: string;
+  notes?: string;
+  attachments?: StayAttachments[] // ONLY FOR UI
+  travelers?: StayTraveler[]; // ONLY FOR UI
+};
+
 export type StayTable = {
   id?: number;
   createdAt?: Date;

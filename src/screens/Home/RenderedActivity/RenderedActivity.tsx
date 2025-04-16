@@ -14,9 +14,11 @@ import {
   convertTimeToString,
   formatDateToDayMonthYear,
   getDurationInHoursAndMinutes,
+  getNumberOfNights,
 } from "../../../utils/dateFunctions/dateFunctions";
 import { UserTable } from "../../../types/userTable";
 import FlightActivity from "../../../components/Activites/FlightActivity/FlightActivity";
+import StayActivity from "../../../components/Activites/StayActivity/StayActivity";
 
 export const activityRenderMap = {
   train: (
@@ -113,7 +115,7 @@ export const activityRenderMap = {
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
-      <FlightActivity 
+      <FlightActivity
         onEditClick={() => handleEditClick("flight", flight.id)}
         cost={flight?.cost}
         attachments={flight.attachments}
@@ -139,33 +141,62 @@ export const activityRenderMap = {
     );
   },
 
-  stay: (item: TravelItem) => {
+  stay: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
     if (item.type !== "stay") return null;
     const stay = item as StayItem;
 
+    console.log("stay", stay)
+
+    const travelers = stay.travelers
+      ? convertTableTraveler(stay.travelers, users)
+      : [];
+    const duration = getNumberOfNights(
+      stay.checkInDate,
+      stay.checkOutDate
+    );
+    const createdBy = createdByUserInfo(stay.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(stay.createdAt);
+    const checkInTime = convertTimeToString(stay.checkInTime);
+    const cardCheckInDateTime = formatDateTimeForCard(
+      stay.checkInTime,
+      stay.checkInDate
+    );
+    const cardCheckOutDateTime = formatDateTimeForCard(
+      stay.checkOutTime,
+      stay.checkOutDate
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
     return (
-      // <StayActivity
-      //   onEditClick={() => console.log("EDIT")}
-      //   cost={stay.cost}
-      //   onCostClick={() => console.log("COST")}
-      //   onAttachmentClick={() => console.log("ATTACHMENTS")}
-      //   onAddNotesClick={() => console.log("ADD NOTES")}
-      //   hightlightedActivityAction="Staying at"
-      //   activityText={`${stay.hotelName}`}
-      //   departureTime={stay.checkInTime}
-      //   footerText="Check-in"
-      //   activityCardDetails={{
-      //     activityTitle: stay.hotelName,
-      //     activitySubTitle: stay.address,
-      //     depatureTime: stay.checkInTime,
-      //     departureLocation: stay.city,
-      //     durationTime: stay.duration,
-      //     arrivalTime: stay.checkOutTime,
-      //     arrivalLocation: stay.city,
-      //     travelers: stay.travelers || [],
-      //   }}
-      <h1>there</h1>
-      // />
+      <StayActivity
+      onEditClick={() => handleEditClick("stay", stay.id)}
+      cost={stay?.cost}
+      attachments={stay.attachments}
+      noteText={stay.notes}
+      onCostClick={() => handleOpenModal("cost", stay)}
+      onAttachmentClick={() => handleOpenModal("attachments", stay)}
+      onAddNotesClick={() => handleOpenModal("notes", stay)}
+        hightlightedActivityAction="Stay in"
+        activityText={`${stay.placeName}`}
+        checkInTime={`Check-in at ${checkInTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: stay.placeName,
+          checkInDateTime: cardCheckInDateTime,
+          placeAddress: stay.placeAddress,
+          durationTime: (duration > 1) ? `${duration} nights` : `${duration} night`,
+          checkOutDateTime: cardCheckOutDateTime,
+          travelers: travelers,
+        }}
+      />
     );
   },
 };

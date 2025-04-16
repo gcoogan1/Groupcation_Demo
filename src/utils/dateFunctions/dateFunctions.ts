@@ -2,6 +2,27 @@ import { differenceInMinutes, parseISO } from "date-fns";
 import { eachDayOfInterval } from "date-fns";
 import { format } from "date-fns";
 
+// --- HELPER FUNCTIONS --- //
+
+// Format as YYYY-MM-DD
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// Format as HH:mm (24-hour) or h:mm a (12-hour)
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false, // or true if you want AM/PM
+  });
+};
+
+// --- DATE FUNCTIONS --- //
+
 export const convertDateToString = (value: Date | string) => {
   if (value instanceof Date) {
     return value.toISOString();
@@ -76,24 +97,6 @@ export const convertFormDatesToString = (data: any) => {
   return convertedData;
 };
 
-// Format as YYYY-MM-DD
-const formatDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
-// Format as HH:mm (24-hour) or h:mm a (12-hour)
-const formatTime = (date: Date): string => {
-  return date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false, // or true if you want AM/PM
-  });
-};
-
-
 export const formatDateToDayMonthYear = (dateString?: string): string => {
   if (!dateString) return "";
   return format(new Date(dateString), "dd MMMM yyyy");
@@ -154,3 +157,14 @@ export const getDurationInHoursAndMinutes = (
     return "0 minutes";
   }
 };
+
+export const getNumberOfNights = (checkIn: string | Date, checkOut: string | Date): number => {
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+
+  const millisecondsPerNight = 1000 * 60 * 60 * 24;
+  const diffInMilliseconds = checkOutDate.getTime() - checkInDate.getTime();
+
+  return Math.max(0, Math.round(diffInMilliseconds / millisecondsPerNight));
+};
+

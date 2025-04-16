@@ -2,7 +2,7 @@ import { avatarTheme, theme } from "../../../../styles/theme";
 import AvatarStack from "../../../AvatarStack/AvatarStack";
 import Users from "../../../../assets/Users.svg?react";
 import Duration from "../../../../assets/Duration.svg?react"
-import { CardContainer, CardTitle, CardSubTitle, CardContents, ContentDetails, StartEndDetails, DetailsContainer, DetailsTitle, DetailsText, TimeText, LocationText, DurationDetails, Graphics, GraphicsLine, DurationText, ContentFooter, FooterTextContainer, FooterTitle, FooterText, CardHeader } from "./TrainCard.styles";
+import { CardContainer, CardTitle, CardSubTitle, CardContents, ContentDetails, StartEndDetails, DetailsContainer, DetailsTitle, DetailsText, TimeText, LocationText, DurationDetails, Graphics, GraphicsLine, DurationText, ContentFooter, FooterTextContainer, FooterTitle, FooterText, CardHeader } from "./StayCard.styles";
 
 
 
@@ -13,25 +13,23 @@ type Traveler = {
   color: AvatarThemeKeys;
 };
 
-interface TrainCardProps {
+interface StayCardProps {
   activityTitle: string;
   activitySubTitle?: string;
-  depatureTime: string;
-  departureLocation: string;
+  placeAddress: string;
+  checkInTime: string;
+  checkOutTime: string;
   durationTime: string;
-  arrivalTime: string;
-  arrivalLocation: string;
   travelers: Traveler[] | [];
 }
 
-const TrainCard: React.FC<TrainCardProps> = ({
+const StayCard: React.FC<StayCardProps> = ({
   activityTitle,
   activitySubTitle,
-  depatureTime,
-  departureLocation,
+  placeAddress,
+  checkInTime,
   durationTime,
-  arrivalTime,
-  arrivalLocation,
+  checkOutTime,
   travelers
 }) => {
     const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
@@ -46,10 +44,10 @@ const TrainCard: React.FC<TrainCardProps> = ({
         <ContentDetails>
           <StartEndDetails>
             <DetailsContainer>
-              <DetailsTitle>Departs at</DetailsTitle>
+              <DetailsTitle>Check-in at</DetailsTitle>
               <DetailsText>
-                <TimeText>{depatureTime}</TimeText>
-                <LocationText>{departureLocation}</LocationText>
+                <TimeText>{checkInTime}</TimeText>
+                <LocationText>{placeAddress}</LocationText>
               </DetailsText>
             </DetailsContainer>
           </StartEndDetails>
@@ -63,10 +61,9 @@ const TrainCard: React.FC<TrainCardProps> = ({
           </DurationDetails>
           <StartEndDetails>
             <DetailsContainer>
-              <DetailsTitle>Arrives at</DetailsTitle>
+              <DetailsTitle>Check-out at</DetailsTitle>
               <DetailsText>
-                <TimeText>{arrivalTime}</TimeText>
-                <LocationText>{arrivalLocation}</LocationText>
+                <TimeText>{checkOutTime}</TimeText>
               </DetailsText>
             </DetailsContainer>
           </StartEndDetails>
@@ -86,4 +83,4 @@ const TrainCard: React.FC<TrainCardProps> = ({
   )
 }
 
-export default TrainCard
+export default StayCard

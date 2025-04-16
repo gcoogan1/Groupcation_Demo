@@ -223,13 +223,13 @@ export const addStayTable = createAsyncThunk(
           stayId: convertedData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (travelers && travelers.length > 0) {
       await dispatch(
         addStayTravelersTable({ travelers, stayId: convertedData.id })
-      );
+      ).unwrap();
     }
 
     // --- STEP 6: RETURN CONVERTED DATA FOR STATE UPDATE --- //
@@ -301,7 +301,7 @@ export const updateStayTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteStayAttachment({ attachmentId, stayId: id }));
+          await dispatch(deleteStayAttachment({ attachmentId, stayId: id })).unwrap();
         })
       );
     }
@@ -335,7 +335,7 @@ export const updateStayTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteStayTraveler({ travelerId, stayId: id }));
+          await dispatch(deleteStayTraveler({ travelerId, stayId: id })).unwrap();
         })
       );
     }
@@ -348,7 +348,7 @@ export const updateStayTable = createAsyncThunk(
           stayId: convertedReturnData.id,
           addedBy: 3,
         })
-      );
+      ).unwrap();
     }
 
     if (selectedTravelers && selectedTravelers.length > 0) {
@@ -357,7 +357,7 @@ export const updateStayTable = createAsyncThunk(
           travelers: selectedTravelers,
           stayId: convertedReturnData.id,
         })
-      );
+      ).unwrap();
     }
 
     // --- STEP 10: RETURN CONVERTED STAY DATA --- //

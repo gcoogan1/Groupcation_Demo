@@ -7,7 +7,7 @@ import {
 } from "../../types/filter.types";
 import { FlightUITable } from "../../types/flightTable.types";
 import { GroupcationTable } from "../../types/groupcationTable";
-import { StayTable } from "../../types/stayTable.types";
+import { StayUITable } from "../../types/stayTable.types";
 import { TrainUITable } from "../../types/trainTable.types";
 import { UserTable } from "../../types/userTable";
 import {
@@ -117,7 +117,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
-  stays: StayTable[],
+  stays: StayUITable[],
   flights: FlightUITable[],
   trains: TrainUITable[],
   groupcation: GroupcationTable

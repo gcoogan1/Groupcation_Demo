@@ -47,6 +47,7 @@ import {
   fetchStayTable,
   updateStayTable,
 } from "../thunk/stayThunk";
+import { useNavigate } from "react-router-dom";
 
 // NOTE: ALL STAY DATA (see staySchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -58,6 +59,7 @@ interface StayFormProps {
 
 const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   // FETCH EXISTING STAY DATA FROM STATE IF ID PASSED
   const existingStay = useSelector((state: RootState) =>
@@ -76,6 +78,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
   const [showAddNotes, setShowAddNotes] = useState(false);
   const [amount, setAmount] = useState(0);
   const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
@@ -95,6 +98,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
 
   // FETCH STAY DATA FROM API
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     if (stayId) {
       dispatch(fetchStayTable(stayId));
     }
@@ -118,7 +122,6 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
           ? new Date(existingStay.checkOutTime)
           : new Date(),
       };
-
       reset(convertedStay);
       if (existingAttachments) {
         setShowAttachments(true);
@@ -126,37 +129,46 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
       if (existingStay.notes) {
         setShowAddNotes(true)
       }
-    } else {
-      reset();
+      
     }
   }, [existingStay, existingAttachments, reset]);
 
   // SUBMIT STAY FORM DATA
-  const onSubmit = (data: StayFormData) => {
+  const onSubmit = async (data: StayFormData) => {
     const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
 
-    if (stayId) {
-      const updatedStay = {
-        ...existingStay,
-        ...rest,
-        id: Number(existingStay?.id),
-      };
+    try {
+      if (stayId) {
+        const updatedStay = {
+          ...existingStay,
+          ...rest,
+          id: Number(existingStay?.id),
+        };
+  
+        await dispatch(
+          updateStayTable({
+            stay: updatedStay,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD STAY
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+        
+        await dispatch(addStayTable({ stay: newData, files: attachments, travelers })).unwrap();
+      }
 
-      dispatch(
-        updateStayTable({
-          stay: updatedStay,
-          files: attachments,
-          selectedTravelers: travelers,
-        })
-      );
-    } else {
-      // ADD STAY
-      const newData = {
-        groupcationId: 333,
-        createdBy: 3,
-        ...rest,
-      };
-      dispatch(addStayTable({ stay: newData, files: attachments, travelers }));
+      navigate("/")
+    } catch (error) {
+      console.error("Failed to save stay:", error)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -315,6 +327,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingStay?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -406,6 +419,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!stayId ? "Add stay" : "Update stay"}
       </Button>
