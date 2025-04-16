@@ -62,3 +62,15 @@ export const selectStayById = createSelector(
   [(state: RootState) => state.stay.stays, (_, stayId?: string) => stayId],
   (stays, stayId) => (stayId ? stays.find((stay) => stay.id === stayId) : undefined)
 );
+
+// Memoized selector for buses
+export const selectBuses = createSelector(
+  [(state: RootState) => state.bus.buses],
+  (buses) => [...buses]
+);
+
+// Memoized selector for bus (found by bus id)
+export const selectBusById = createSelector(
+  [(state: RootState) => state.bus.buses, (_, busId?: string) => busId],
+  (buses, busId) => (busId ? buses.find((bus) => bus.id === busId) : undefined)
+);

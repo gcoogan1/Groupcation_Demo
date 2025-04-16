@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addBus, updateBus } from "../slice/busSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { busSchema } from "../schema/busSchema";
 import { z } from "zod";
 import {
@@ -40,11 +38,14 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import { useNavigate } from "react-router-dom";
+import {
+  selectBusById,
+  selectConvertedUsers,
+} from "../../../../store/selectors/selectors";
+import { addBusTable, fetchBusTable, updateBusTable } from "../thunk/busThunk";
 
-// NOTE: ALL TRAIN DATA (see busSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
+// NOTE: ALL BUS DATA (see busSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
 type BusFormData = z.infer<typeof busSchema>;
 
@@ -53,19 +54,40 @@ interface BusFormProps {
 }
 
 const BusForm: React.FC<BusFormProps> = ({ busId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING BUS DATA FROM STATE IF ID PASSED
   const existingBus = useSelector((state: RootState) =>
-    state.bus.buses.find((bus) => bus.id === busId)
+    selectBusById(state, busId)
   );
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingBus?.attachments && existingBus.attachments.length > 0;
+
+  // FORM STATE
   const [showCost, setShowCost] = useState(!!existingBus?.cost);
   const [showAttachments, setShowAttachments] = useState(
     !!existingBus?.attachments
   );
   const [showAddNotes, setShowAddNotes] = useState(!!existingBus?.notes);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingBus?.cost;
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -77,6 +99,17 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
     resolver: zodResolver(busSchema),
   });
 
+  // FETCH BUS DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (busId) {
+      dispatch(fetchBusTable(busId));
+    }
+  }, [dispatch, busId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingBus) {
       // Reset to todays date/time if remaining bus date/time is not present
@@ -97,39 +130,61 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
       };
 
       reset(convertedBus);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingBus.notes) {
+        setShowAddNotes(true);
+      }
     } else {
       reset();
     }
-  }, [existingBus, reset]);
-  const onSubmit = (data: BusFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+  }, [existingBus, existingAttachments, reset]);
 
-    if (busId) {
-      const updatedBus = { ...existingBus, ...convertedData, id: busId };
-      console.log("Updated bus:", updatedBus);
-      dispatch(updateBus(updatedBus));
-    } else {
-      const newBus = { id: uuidv4(), ...convertedData };
-      console.log("New bus:", newBus);
-      dispatch(addBus(newBus));
+  const onSubmit = async (data: BusFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE TRAIN
+      if (busId) {
+        const updatedBus = {
+          ...existingBus,
+          ...rest,
+          id: Number(existingBus?.id),
+        };
+
+        await dispatch(
+          updateBusTable({
+            bus: updatedBus,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD TRAIN
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(
+          addBusTable({ bus: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save train:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+  if (busId && !existingBus) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -246,7 +301,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -265,7 +320,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -294,12 +349,17 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={
+                    existingBus?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -321,7 +381,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -391,6 +451,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!busId ? "Add Bus" : "Update Bus"}
       </Button>
