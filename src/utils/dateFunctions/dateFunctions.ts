@@ -131,32 +131,45 @@ export const getInBetweenDates = (startDate: string, endDate: string) => {
   return formatedDates;
 };
 
-export const getDurationInHoursAndMinutes = (
-  startDateStr: string,
-  endDateStr: string
+const combineISODateAndTime = (dateISO: string, timeISO: string): Date => {
+  const date = new Date(dateISO);
+  const time = new Date(timeISO);
+
+  const combined = new Date(date);
+  combined.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), 0);
+
+  return combined;
+};
+
+// Must be ISO string
+export const getDurationInDaysHoursAndMinutes = (
+  departureDateISO: string,
+  departureTimeISO: string,
+  arrivalDateISO: string,
+  arrivalTimeISO: string
 ): string => {
-  // Add 's' to plural values
   const pluralize = (unit: string, value: number) =>
     `${value} ${unit}${value !== 1 ? "s" : ""}`;
 
-  // Convert string to Date object
-  const startDate = parseISO(startDateStr);
-  const endDate = parseISO(endDateStr);
+  const departure = combineISODateAndTime(departureDateISO, departureTimeISO);
+  const arrival = combineISODateAndTime(arrivalDateISO, arrivalTimeISO);
 
-  const totalMinutes = differenceInMinutes(endDate, startDate); // Get total minutes difference
-  const hours = Math.floor(totalMinutes / 60); // Get hours
-  const minutes = totalMinutes % 60; // Get remaining minutes
+  const totalMinutes = differenceInMinutes(arrival, departure);
 
-  if (hours > 0 && minutes > 0) {
-    return `${pluralize("hour", hours)} ${pluralize("minute", minutes)}`;
-  } else if (hours > 0) {
-    return pluralize("hour", hours);
-  } else if (minutes > 0) {
-    return pluralize("minute", minutes);
-  } else {
-    return "0 minutes";
-  }
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(pluralize("day", days));
+  if (hours > 0) parts.push(pluralize("hour", hours));
+  if (minutes > 0) parts.push(pluralize("minute", minutes));
+  if (parts.length === 0) parts.push("0 minutes");
+
+  return parts.join(" ");
 };
+
+
 
 export const getNumberOfNights = (checkIn: string | Date, checkOut: string | Date): number => {
   const checkInDate = new Date(checkIn);
