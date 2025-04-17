@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { BusUITable } from "../../types/busTable.types";
 import {
   GroupedTravelItems,
   TravelItem,
@@ -81,8 +82,11 @@ export const convertUsersToTravelers = (userArray: UserTable[]) => {
   }));
 };
 
-export const createdByUserInfo = (createdBy: number, userArray: UserTable[]) => {
-  return userArray.find(user => user.id === createdBy)
+export const createdByUserInfo = (
+  createdBy: number,
+  userArray: UserTable[]
+) => {
+  return userArray.find((user) => user.id === createdBy);
 };
 
 type TravelerTable = {
@@ -117,6 +121,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  buses: BusUITable[],
   stays: StayUITable[],
   flights: FlightUITable[],
   trains: TrainUITable[],
@@ -146,6 +151,20 @@ export const groupTravelItemsByDate = (
     // Add the item to the array for that date
     grouped[dateKey].push(item);
   };
+
+  // CHECK BUSES TO ADD ENTRY
+  // Loop through all buses and add each with a departureDate to the grouped list
+  buses.forEach((bus) => {
+    if (bus.departureDate) {
+      const date = new Date(bus.departureDate);
+      pushItem({
+        ...bus,
+        type: "bus",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
 
   // CHECK STAYS TO ADD ENTRY
   // Loop through all stays and add each with a checkIn to the grouped list
@@ -192,10 +211,7 @@ export const groupTravelItemsByDate = (
   return grouped;
 };
 
-export const formatDateTimeForCard = (
-  time: string,
-  date: string | Date
-) => {
+export const formatDateTimeForCard = (time: string, date: string | Date) => {
   return `${convertTimeToString(time)} - ${formatDayOfWeek(
     date
   )}, ${formatDateToDayMonthYear(date.toString())}`;

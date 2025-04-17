@@ -65,6 +65,7 @@ import ChevronDown from "../../assets/Chevron_Down.svg?react";
 import ChevronUp from "../../assets/Chevron_Up.svg?react";
 import { theme } from "../../styles/theme";
 import {
+  selectBuses,
   selectConvertedUsersForFilters,
   selectFlights,
   selectGroupcationById,
@@ -86,10 +87,7 @@ import DateBefore from "../../assets/Date_Before.svg?react";
 import DateAfter from "../../assets/Date_After.svg?react";
 import { groupTravelItemsByDate } from "../../utils/conversionFunctions/conversionFunctions";
 import { filterGroups } from "../../utils/filterFunctions/filterFunctions";
-import { fetchFlightByGroupcationId } from "../../modules/activities/flights/thunk/flightThunk";
-import { fetchUsersTable } from "../../store/thunk/usersThunk";
 import { getRenderableDays } from "../../utils/filterFunctions/renderableDays";
-import { fetchStayByGroupcationId } from "../../modules/activities/stay/thunk/stayThunk";
 import { activityRenderMap } from "./RenderedActivity/RenderedActivity";
 import { useNavigate } from "react-router-dom";
 import Panel from "../../components/Panel/Panel";
@@ -239,12 +237,13 @@ const HomeScreen = () => {
   const trains = useSelector(selectTrains);
   const flights = useSelector(selectFlights);
   const stays = useSelector(selectStays);
+  const buses = useSelector(selectBuses);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
-    () => groupTravelItemsByDate(stays, flights, trains, groupcation),
-    [stays, flights, trains, groupcation]
+    () => groupTravelItemsByDate(buses, stays, flights, trains, groupcation),
+    [buses, stays, flights, trains, groupcation]
   );
 
   const filteredGrouped = useMemo(

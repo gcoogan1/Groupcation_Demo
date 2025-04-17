@@ -69,9 +69,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
 
   // FORM STATE
   const [showCost, setShowCost] = useState(!!existingBus?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingBus?.attachments
-  );
+  const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingBus?.notes);
   const [amount, setAmount] = useState(() => {
     const costString = existingBus?.cost;
@@ -337,7 +335,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingBus?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />

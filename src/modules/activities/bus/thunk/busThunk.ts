@@ -1,13 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BusAttachments, BusTable } from "../../../../types/bus.types";
+import { BusAttachments, BusTable } from "../../../../types/busTable.types";
 import { supabase } from "../../../../lib/supabase";
-import { replaceNullWithUndefined, transformToCamelCase, transformToSnakeCase } from "../../../../utils/conversionFunctions/conversionFunctions";
+import {
+  replaceNullWithUndefined,
+  transformToCamelCase,
+  transformToSnakeCase,
+} from "../../../../utils/conversionFunctions/conversionFunctions";
 import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
 
 type Traveler = {
   value: number;
   label: string;
-}
+};
 
 interface Bus {
   id: string;
@@ -291,7 +295,9 @@ export const updateBusTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteBusAttachment({ attachmentId, busId: id })).unwrap();
+          await dispatch(
+            deleteBusAttachment({ attachmentId, busId: id })
+          ).unwrap();
         })
       );
     }
@@ -544,13 +550,7 @@ export const deleteBusAttachment = createAsyncThunk(
 // --- BUS TRAVELERS --- //
 export const addBusTravelersTable = createAsyncThunk(
   "bus/addBusTravelers",
-  async ({
-    travelers,
-    busId,
-  }: {
-    travelers: Traveler[];
-    busId: string;
-  }) => {
+  async ({ travelers, busId }: { travelers: Traveler[]; busId: string }) => {
     try {
       // --- STEP 1: FETCH TRAVELERS BY BUS ID --- //
       const { data: existingTravelers, error: fetchError } = await supabase

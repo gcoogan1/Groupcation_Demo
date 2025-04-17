@@ -1,5 +1,6 @@
 import TrainActivity from "../../../components/Activites/TrainActivity/TrainActivity";
 import {
+  BusItem,
   FlightItem,
   StayItem,
   TrainItem,
@@ -13,12 +14,13 @@ import {
 import {
   convertTimeToString,
   formatDateToDayMonthYear,
-  getDurationInHoursAndMinutes,
+  getDurationInDaysHoursAndMinutes,
   getNumberOfNights,
 } from "../../../utils/dateFunctions/dateFunctions";
 import { UserTable } from "../../../types/userTable";
 import FlightActivity from "../../../components/Activites/FlightActivity/FlightActivity";
 import StayActivity from "../../../components/Activites/StayActivity/StayActivity";
+import BusActivity from "../../../components/Activites/BusActivity/BusActivity";
 
 export const activityRenderMap = {
   train: (
@@ -32,12 +34,16 @@ export const activityRenderMap = {
   ) => {
     if (item.type !== "train") return null;
 
+    
     const train = item as TrainItem;
     const travelers = train.travelers
       ? convertTableTraveler(train.travelers, users)
       : [];
-    const duration = getDurationInHoursAndMinutes(
+
+    const duration = getDurationInDaysHoursAndMinutes(
+      train.departureDate.toLocaleString(),
       train.departureTime,
+      train.arrivalDate,
       train.arrivalTime
     );
     const createdBy = createdByUserInfo(train.createdBy, users);
@@ -54,33 +60,32 @@ export const activityRenderMap = {
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
-      <>
-        <TrainActivity
-          onEditClick={() => handleEditClick("train", train.id)}
-          cost={train?.cost}
-          attachments={train.attachments}
-          noteText={train.notes}
-          onCostClick={() => handleOpenModal("cost", train)}
-          onAttachmentClick={() => handleOpenModal("attachments", train)}
-          onAddNotesClick={() => handleOpenModal("notes", train)}
-          hightlightedActivityAction="Train"
-          activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
-          departureTime={`Leaves at ${departureTime}`}
-          footerText={footer}
-          activityCardDetails={{
-            activityTitle: train.railwayLine,
-            activitySubTitle: `${train.class} Class`,
-            depatureTime: cardDepartureDateTime,
-            departureLocation: train.departureStation,
-            durationTime: duration,
-            arrivalTime: cardArrivalDateTime,
-            arrivalLocation: train.arrivalStation,
-            travelers: travelers,
-          }}
-        />
-      </>
+      <TrainActivity
+        onEditClick={() => handleEditClick("train", train.id)}
+        cost={train?.cost}
+        attachments={train.attachments}
+        noteText={train.notes}
+        onCostClick={() => handleOpenModal("cost", train)}
+        onAttachmentClick={() => handleOpenModal("attachments", train)}
+        onAddNotesClick={() => handleOpenModal("notes", train)}
+        hightlightedActivityAction="Train"
+        activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
+        departureTime={`Leaves at ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: train.railwayLine,
+          activitySubTitle: `${train.class} Class`,
+          depatureTime: cardDepartureDateTime,
+          departureLocation: train.departureStation,
+          durationTime: duration,
+          arrivalTime: cardArrivalDateTime,
+          arrivalLocation: train.arrivalStation,
+          travelers: travelers,
+        }}
+      />
     );
   },
+
   flight: (
     item: TravelItem,
     users: UserTable[],
@@ -97,8 +102,10 @@ export const activityRenderMap = {
     const travelers = flight.travelers
       ? convertTableTraveler(flight.travelers, users)
       : [];
-    const duration = getDurationInHoursAndMinutes(
+    const duration = getDurationInDaysHoursAndMinutes(
+      flight.departureDate.toLocaleString(),
       flight.departureTime,
+      flight.arrivalDate,
       flight.arrivalTime
     );
     const createdBy = createdByUserInfo(flight.createdBy, users);
@@ -153,8 +160,6 @@ export const activityRenderMap = {
     if (item.type !== "stay") return null;
     const stay = item as StayItem;
 
-    console.log("stay", stay)
-
     const travelers = stay.travelers
       ? convertTableTraveler(stay.travelers, users)
       : [];
@@ -199,4 +204,67 @@ export const activityRenderMap = {
       />
     );
   },
+
+  bus: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "bus") return null;
+
+    const bus = item as BusItem;
+    
+    const travelers = bus.travelers
+    ? convertTableTraveler(bus.travelers, users)
+    : [];
+
+    const duration = getDurationInDaysHoursAndMinutes(
+      bus.departureDate.toLocaleString(),
+      bus.departureTime,
+      bus.arrivalDate,
+      bus.arrivalTime
+    );
+    const createdBy = createdByUserInfo(bus.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(bus.createdAt);
+    const departureTime = convertTimeToString(bus.departureTime);
+    const cardDepartureDateTime = formatDateTimeForCard(
+      bus.departureTime,
+      bus.departureDate
+    );
+    const cardArrivalDateTime = formatDateTimeForCard(
+      bus.arrivalTime,
+      bus.arrivalDate
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <BusActivity
+      onEditClick={() => handleEditClick("bus", bus.id)}
+      cost={bus?.cost}
+      attachments={bus.attachments}
+      noteText={bus.notes}
+      onCostClick={() => handleOpenModal("cost", bus)}
+      onAttachmentClick={() => handleOpenModal("attachments", bus)}
+      onAddNotesClick={() => handleOpenModal("notes", bus)}
+      hightlightedActivityAction="Bus"
+      activityText={`from ${bus.departureBusStop} to ${bus.arrivalBusStop}`}
+      departureTime={`Leaves at ${departureTime}`}
+      footerText={footer}
+      activityCardDetails={{
+        activityTitle: bus.busRoute,
+        activitySubTitle: `${bus.busClass} Class`,
+        depatureTime: cardDepartureDateTime,
+        departureLocation: bus.departureBusStop,
+        durationTime: duration,
+        arrivalTime: cardArrivalDateTime,
+        arrivalLocation: bus.arrivalBusStop,
+        travelers: travelers,
+      }}
+    />
+    );
+  }
 };

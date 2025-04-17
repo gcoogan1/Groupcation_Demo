@@ -1,6 +1,6 @@
 import React from "react";
 import { theme } from "../styles/theme";
-import Stay from "../assets/Stay.svg?react"
+import Stay from "../assets/Stay.svg?react";
 import Flight from "../assets/Flight.svg?react";
 import Train from "../assets/Train.svg?react";
 import Bus from "../assets/Bus.svg?react";
@@ -12,36 +12,38 @@ import Resturant from "../assets/Restaurant.svg?react";
 import { StayUITable } from "./stayTable.types";
 import { FlightUITable } from "./flightTable.types";
 import { TrainUITable } from "./trainTable.types";
+import { BusUITable } from "./busTable.types";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
 
 export type FilterItems = {
-  action: Actions,
+  action: Actions;
   icon: React.ReactNode;
-  label: string,
-  value: ThemeKeys
-}
+  label: string;
+  value: ThemeKeys;
+};
 
 export type TravelerItems = {
-  action: Actions,
-  label: string,
-  value: number,
-  color: ThemeKeys
-}
+  action: Actions;
+  label: string;
+  value: number;
+  color: ThemeKeys;
+};
 
-export type TravelPeriod = 'before' | 'during' | 'after';
+export type TravelPeriod = "before" | "during" | "after";
 
 type BaseTravelItem = {
   date: Date;
   period: TravelPeriod;
 };
 
-export type TrainItem = TrainUITable & BaseTravelItem & { type: 'train' };
-export type FlightItem = FlightUITable & BaseTravelItem & { type: 'flight' };
-export type StayItem = StayUITable & BaseTravelItem & { type: 'stay' };
+export type TrainItem = TrainUITable & BaseTravelItem & { type: "train" };
+export type FlightItem = FlightUITable & BaseTravelItem & { type: "flight" };
+export type StayItem = StayUITable & BaseTravelItem & { type: "stay" };
+export type BusItem = BusUITable & BaseTravelItem & { type: "bus" };
 
-export type TravelItem = TrainItem | FlightItem | StayItem;
+export type TravelItem = TrainItem | FlightItem | StayItem | BusItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 
@@ -49,7 +51,7 @@ export type GroupcationDate = {
   date: string;
   dow: string;
   dayNumber: number;
-}
+};
 
 export type RenderableDay = {
   date: string;
@@ -64,54 +66,54 @@ export const ACTIVITY_OPTIONS: FilterItems[] = [
     action: "checkbox",
     icon: <Stay color={theme.base} />,
     label: "Stays",
-    value: "stay"
+    value: "stay",
   },
   {
     action: "checkbox",
     icon: <Flight color={theme.base} />,
     label: "Flights",
-    value: "flight"
+    value: "flight",
   },
   {
     action: "checkbox",
     icon: <Train color={theme.base} />,
     label: "Trains",
-    value: "train"
+    value: "train",
   },
   {
     action: "checkbox",
     icon: <Bus color={theme.base} />,
     label: "Buses",
-    value: "bus"
+    value: "bus",
   },
   {
     action: "checkbox",
     icon: <Boat color={theme.base} />,
     label: "Boats",
-    value: "boat"
+    value: "boat",
   },
   {
     action: "checkbox",
     icon: <Rental color={theme.base} />,
     label: "Rentals",
-    value: "rental"
+    value: "rental",
   },
   {
     action: "checkbox",
     icon: <Event color={theme.base} />,
     label: "Events",
-    value: "event"
+    value: "event",
   },
   {
     action: "checkbox",
     icon: <Celebration color={theme.base} />,
     label: "Celebrations",
-    value: "celebration"
+    value: "celebration",
   },
   {
     action: "checkbox",
     icon: <Resturant color={theme.base} />,
     label: "Restaurants",
-    value: "restaurant"
+    value: "restaurant",
   },
 ];

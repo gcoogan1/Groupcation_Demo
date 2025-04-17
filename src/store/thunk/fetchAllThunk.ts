@@ -5,6 +5,7 @@ import { fetchStayByGroupcationId } from "../../modules/activities/stay/thunk/st
 import { fetchTrainByGroupcationId } from "../../modules/activities/train/thunk/trainThunk";
 import { fetchGroupcationTable } from "./groupcationThunk";
 import { fetchUsersTable } from "./usersThunk";
+import { fetchBusByGroupcationId } from "../../modules/activities/bus/thunk/busThunk";
 
 
 export const fetchAllGroupcationData = createAsyncThunk<
@@ -16,6 +17,7 @@ export const fetchAllGroupcationData = createAsyncThunk<
     dispatch(fetchGroupcationTable(groupcationId)),
     dispatch(fetchTrainByGroupcationId(groupcationId)),
     dispatch(fetchFlightByGroupcationId(groupcationId)),
+    dispatch(fetchBusByGroupcationId(groupcationId)),
     dispatch(fetchStayByGroupcationId(groupcationId)),
     dispatch(fetchUsersTable()),
   ]);
