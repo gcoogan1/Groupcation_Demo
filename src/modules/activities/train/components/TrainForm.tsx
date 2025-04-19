@@ -78,7 +78,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       return isNaN(num) ? 0 : num;
     }
     return 0;
-  });;
+  });
   const [travelers, setTravelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 

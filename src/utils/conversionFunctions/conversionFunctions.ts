@@ -9,6 +9,7 @@ import {
 } from "../../types/filter.types";
 import { FlightUITable } from "../../types/flightTable.types";
 import { GroupcationTable } from "../../types/groupcationTable";
+import { RentalUITable } from "../../types/rentalTable.types";
 import { StayUITable } from "../../types/stayTable.types";
 import { TrainUITable } from "../../types/trainTable.types";
 import { UserTable } from "../../types/userTable";
@@ -122,6 +123,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  rentals: RentalUITable[],
   boats: BoatUITable[],
   buses: BusUITable[],
   stays: StayUITable[],
@@ -153,6 +155,20 @@ export const groupTravelItemsByDate = (
     // Add the item to the array for that date
     grouped[dateKey].push(item);
   };
+
+  // CHECK RENTALS TO ADD ENTRY
+  // Loop through all buses and add each with a departureDate to the grouped list
+  rentals.forEach((rental) => {
+    if (rental.pickUpDate) {
+      const date = new Date(rental.pickUpDate);
+      pushItem({
+        ...rental,
+        type: "rental",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
 
   // CHECK BOATS TO ADD ENTRY
   // Loop through all buses and add each with a departureDate to the grouped list

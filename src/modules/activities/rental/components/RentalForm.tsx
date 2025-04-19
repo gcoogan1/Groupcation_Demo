@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addRental, updateRental } from "../slice/rentalSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { rentalSchema } from "../schema/rentalSchema";
 import { z } from "zod";
 import {
@@ -45,7 +43,13 @@ import CheckboxUnselected from "../../../../assets/Checkbox_Unselected.svg?react
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import { useNavigate } from "react-router-dom";
+import { selectConvertedUsers } from "../../../../store/selectors/selectors";
+import {
+  addRentalTable,
+  fetchRentalTable,
+  updateRentalTable,
+} from "../thunk/rentalThunk";
 
 // NOTE: ALL TRAIN DATA (see rentalSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)
@@ -58,27 +62,49 @@ interface RentalFormProps {
 }
 
 const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING RENTAL DATA FROM STATE IF ID PASSED
   const existingRental = useSelector((state: RootState) =>
     state.rental.rentals.find((rental) => rental.id === rentalId)
   );
-  const [showCost, setShowCost] = useState(!!existingRental?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingRental?.attachments
-  );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingRental?.notes);
-  const [amount, setAmount] = useState(0);
-  const [showDropOffLocal, setShowDropOffLocal] = useState(!!existingRental?.dropOffLocation);
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingRental?.attachments && existingRental.attachments.length > 0;
 
+  // FORM STATE
+  const [showCost, setShowCost] = useState(!!existingRental?.cost);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingRental?.notes);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingRental?.cost; // something like "123.45"
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100); // convert to cents
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });
+  const [showDropOffLocal, setShowDropOffLocal] = useState(
+    !!existingRental?.dropOffLocation
+  );
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // HELPER FUNCTION
   const handleDropoffCheckbox = () => {
-    if(showDropOffLocal) {
+    if (showDropOffLocal) {
       setValue("dropOffLocation", undefined);
     }
     setShowDropOffLocal((prev) => !prev);
   };
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -90,6 +116,17 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
     resolver: zodResolver(rentalSchema),
   });
 
+  // FETCH RENTAL DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (rentalId) {
+      dispatch(fetchRentalTable(rentalId));
+    }
+  }, [dispatch, rentalId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingRental) {
       // Reset to todays date/time if remaining rental date/time is not present
@@ -110,44 +147,62 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
       };
 
       reset(convertedRental);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingRental.notes) {
+        setShowAddNotes(true);
+      }
     } else {
       reset();
     }
-  }, [existingRental, reset]);
+  }, [existingRental, existingAttachments, reset]);
 
-  const onSubmit = (data: RentalFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+  // SUBMIT RENTAL FORM DATA
+  const onSubmit = async (data: RentalFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
 
-    if (rentalId) {
-      const updatedRental = {
-        ...existingRental,
-        ...convertedData,
-        id: rentalId,
-      };
-      console.log("Updated rental:", updatedRental);
-      dispatch(updateRental(updatedRental));
-    } else {
-      const newRental = { id: uuidv4(), ...convertedData };
-      console.log("New rental:", newRental);
-      dispatch(addRental(newRental));
+    try {
+      // UPDATE RENTAL
+      if (rentalId) {
+        const updatedRental = {
+          ...existingRental,
+          ...rest,
+          id: Number(existingRental?.id),
+        };
+
+        await dispatch(
+          updateRentalTable({
+            rental: updatedRental,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+
+        // ADD RENTAL
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(
+          addRentalTable({ rental: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save train:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+  if (rentalId && !existingRental) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -276,7 +331,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -295,7 +350,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -312,7 +367,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingRental?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -324,12 +379,13 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingRental?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -351,7 +407,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -421,6 +477,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!rentalId ? "Add Rental" : "Update Rental"}
       </Button>

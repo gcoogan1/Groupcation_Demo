@@ -86,3 +86,16 @@ export const selectBoatById = createSelector(
   [(state: RootState) => state.boat.boats, (_, boatId?: string) => boatId],
   (boats, boatId) => (boatId ? boats.find((boat) => boat.id === boatId) : undefined)
 );
+
+// Memoized selector for rentals
+export const selectRentals = createSelector(
+  [(state: RootState) => state.rental.rentals],
+  (rentals) => [...rentals]
+);
+
+// Memoized selector for rental (found by rental id)
+export const selectRentalById = createSelector(
+  [(state: RootState) => state.rental.rentals, (_, rentalId?: string) => rentalId],
+  (rentals, rentalId) => (rentalId ? rentals.find((rental) => rental.id === rentalId) : undefined)
+);
+

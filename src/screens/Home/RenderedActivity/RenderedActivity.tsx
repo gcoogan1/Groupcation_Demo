@@ -3,6 +3,7 @@ import {
   BoatItem,
   BusItem,
   FlightItem,
+  RentalItem,
   StayItem,
   TrainItem,
   TravelItem,
@@ -23,6 +24,7 @@ import FlightActivity from "../../../components/Activites/FlightActivity/FlightA
 import StayActivity from "../../../components/Activites/StayActivity/StayActivity";
 import BusActivity from "../../../components/Activites/BusActivity/BusActivity";
 import BoatActivity from "../../../components/Activites/BoatActivity/BoatActivity";
+import RentalActivity from "../../../components/Activites/RentalActivity/RentalActivity";
 
 export const activityRenderMap = {
   train: (
@@ -36,7 +38,6 @@ export const activityRenderMap = {
   ) => {
     if (item.type !== "train") return null;
 
-    
     const train = item as TrainItem;
     const travelers = train.travelers
       ? convertTableTraveler(train.travelers, users)
@@ -165,10 +166,7 @@ export const activityRenderMap = {
     const travelers = stay.travelers
       ? convertTableTraveler(stay.travelers, users)
       : [];
-    const duration = getNumberOfNights(
-      stay.checkInDate,
-      stay.checkOutDate
-    );
+    const duration = getNumberOfNights(stay.checkInDate, stay.checkOutDate);
     const createdBy = createdByUserInfo(stay.createdBy, users);
     const createdAt = formatDateToDayMonthYear(stay.createdAt);
     const checkInTime = convertTimeToString(stay.checkInTime);
@@ -184,13 +182,13 @@ export const activityRenderMap = {
 
     return (
       <StayActivity
-      onEditClick={() => handleEditClick("stay", stay.id)}
-      cost={stay?.cost}
-      attachments={stay.attachments}
-      noteText={stay.notes}
-      onCostClick={() => handleOpenModal("cost", stay)}
-      onAttachmentClick={() => handleOpenModal("attachments", stay)}
-      onAddNotesClick={() => handleOpenModal("notes", stay)}
+        onEditClick={() => handleEditClick("stay", stay.id)}
+        cost={stay?.cost}
+        attachments={stay.attachments}
+        noteText={stay.notes}
+        onCostClick={() => handleOpenModal("cost", stay)}
+        onAttachmentClick={() => handleOpenModal("attachments", stay)}
+        onAddNotesClick={() => handleOpenModal("notes", stay)}
         hightlightedActivityAction="Stay in"
         activityText={`${stay.placeName}`}
         checkInTime={`Check-in at ${checkInTime}`}
@@ -199,7 +197,8 @@ export const activityRenderMap = {
           activityTitle: stay.placeName,
           checkInDateTime: cardCheckInDateTime,
           placeAddress: stay.placeAddress,
-          durationTime: (duration > 1) ? `${duration} nights` : `${duration} night`,
+          durationTime:
+            duration > 1 ? `${duration} nights` : `${duration} night`,
           checkOutDateTime: cardCheckOutDateTime,
           travelers: travelers,
         }}
@@ -219,10 +218,10 @@ export const activityRenderMap = {
     if (item.type !== "bus") return null;
 
     const bus = item as BusItem;
-    
+
     const travelers = bus.travelers
-    ? convertTableTraveler(bus.travelers, users)
-    : [];
+      ? convertTableTraveler(bus.travelers, users)
+      : [];
 
     const duration = getDurationInDaysHoursAndMinutes(
       bus.departureDate.toLocaleString(),
@@ -245,28 +244,28 @@ export const activityRenderMap = {
 
     return (
       <BusActivity
-      onEditClick={() => handleEditClick("bus", bus.id)}
-      cost={bus?.cost}
-      attachments={bus.attachments}
-      noteText={bus.notes}
-      onCostClick={() => handleOpenModal("cost", bus)}
-      onAttachmentClick={() => handleOpenModal("attachments", bus)}
-      onAddNotesClick={() => handleOpenModal("notes", bus)}
-      hightlightedActivityAction="Bus"
-      activityText={`from ${bus.departureBusStop} to ${bus.arrivalBusStop}`}
-      departureTime={`Leaves at ${departureTime}`}
-      footerText={footer}
-      activityCardDetails={{
-        activityTitle: bus.busRoute,
-        activitySubTitle: `${bus.busClass} Class`,
-        depatureTime: cardDepartureDateTime,
-        departureLocation: bus.departureBusStop,
-        durationTime: duration,
-        arrivalTime: cardArrivalDateTime,
-        arrivalLocation: bus.arrivalBusStop,
-        travelers: travelers,
-      }}
-    />
+        onEditClick={() => handleEditClick("bus", bus.id)}
+        cost={bus?.cost}
+        attachments={bus.attachments}
+        noteText={bus.notes}
+        onCostClick={() => handleOpenModal("cost", bus)}
+        onAttachmentClick={() => handleOpenModal("attachments", bus)}
+        onAddNotesClick={() => handleOpenModal("notes", bus)}
+        hightlightedActivityAction="Bus"
+        activityText={`from ${bus.departureBusStop} to ${bus.arrivalBusStop}`}
+        departureTime={`Leaves at ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: bus.busRoute,
+          activitySubTitle: `${bus.busClass} Class`,
+          depatureTime: cardDepartureDateTime,
+          departureLocation: bus.departureBusStop,
+          durationTime: duration,
+          arrivalTime: cardArrivalDateTime,
+          arrivalLocation: bus.arrivalBusStop,
+          travelers: travelers,
+        }}
+      />
     );
   },
   boat: (
@@ -281,10 +280,10 @@ export const activityRenderMap = {
     if (item.type !== "boat") return null;
 
     const boat = item as BoatItem;
-    
+
     const travelers = boat.travelers
-    ? convertTableTraveler(boat.travelers, users)
-    : [];
+      ? convertTableTraveler(boat.travelers, users)
+      : [];
 
     const duration = getDurationInDaysHoursAndMinutes(
       boat.departureDate.toLocaleString(),
@@ -307,28 +306,93 @@ export const activityRenderMap = {
 
     return (
       <BoatActivity
-      onEditClick={() => handleEditClick("boat", boat.id)}
-      cost={boat?.cost}
-      attachments={boat.attachments}
-      noteText={boat.notes}
-      onCostClick={() => handleOpenModal("cost", boat)}
-      onAttachmentClick={() => handleOpenModal("attachments", boat)}
-      onAddNotesClick={() => handleOpenModal("notes", boat)}
-      hightlightedActivityAction="Boat"
-      activityText={`from ${boat.departureDock} to ${boat.arrivalDock}`}
-      departureTime={`Leaves at ${departureTime}`}
-      footerText={footer}
-      activityCardDetails={{
-        activityTitle: boat.boatCruiseLine,
-        activitySubTitle: `${boat.boatCruiseClass} Class`,
-        depatureTime: cardDepartureDateTime,
-        departureLocation: boat.departureDock,
-        durationTime: duration,
-        arrivalTime: cardArrivalDateTime,
-        arrivalLocation: boat.arrivalDock,
-        travelers: travelers,
-      }}
-    />
+        onEditClick={() => handleEditClick("boat", boat.id)}
+        cost={boat?.cost}
+        attachments={boat.attachments}
+        noteText={boat.notes}
+        onCostClick={() => handleOpenModal("cost", boat)}
+        onAttachmentClick={() => handleOpenModal("attachments", boat)}
+        onAddNotesClick={() => handleOpenModal("notes", boat)}
+        hightlightedActivityAction="Boat"
+        activityText={`from ${boat.departureDock} to ${boat.arrivalDock}`}
+        departureTime={`Leaves at ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: boat.boatCruiseLine,
+          activitySubTitle: `${boat.boatCruiseClass} Class`,
+          depatureTime: cardDepartureDateTime,
+          departureLocation: boat.departureDock,
+          durationTime: duration,
+          arrivalTime: cardArrivalDateTime,
+          arrivalLocation: boat.arrivalDock,
+          travelers: travelers,
+        }}
+      />
     );
-  }
+  },
+
+  rental: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "rental") return null;
+
+    const rental = item as RentalItem;
+
+    const travelers = rental.travelers
+      ? convertTableTraveler(rental.travelers, users)
+      : [];
+
+    const duration = getDurationInDaysHoursAndMinutes(
+      rental.pickUpDate.toLocaleString(),
+      rental.pickUpTime,
+      rental.dropOffDate,
+      rental.dropOffTime
+    );
+
+    console.log("duration:", rental)
+    const createdBy = createdByUserInfo(rental.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(rental.createdAt);
+    const departureTime = convertTimeToString(rental.pickUpTime);
+    const cardDepartureDateTime = formatDateTimeForCard(
+      rental.pickUpTime,
+      rental.pickUpDate
+    );
+    const cardArrivalDateTime = formatDateTimeForCard(
+      rental.dropOffTime,
+      rental.dropOffDate
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <RentalActivity
+        onEditClick={() => handleEditClick("rental", rental.id)}
+        cost={rental?.cost}
+        attachments={rental.attachments}
+        noteText={rental.notes}
+        onCostClick={() => handleOpenModal("cost", rental)}
+        onAttachmentClick={() => handleOpenModal("attachments", rental)}
+        onAddNotesClick={() => handleOpenModal("notes", rental)}
+        hightlightedActivityAction="Rental"
+        activityText={`from ${rental.pickUpLocation}`}
+        departureTime={`Pick up at ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: rental.rentalAgency,
+          activitySubTitle: `${rental.carType}`,
+          depatureTime: cardDepartureDateTime,
+          departureLocation: rental.pickUpLocation,
+          durationTime: duration,
+          arrivalTime: cardArrivalDateTime,
+          arrivalLocation: rental.dropOffLocation ? rental.dropOffLocation : 'Same as pick-up',
+          travelers: travelers,
+        }}
+      />
+    );
+  },
 };
