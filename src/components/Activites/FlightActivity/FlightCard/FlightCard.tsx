@@ -47,11 +47,11 @@ const FlightCard: React.FC<FlightCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Takes-off at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{depatureTime}</TimeText>
                 <LocationText>{departureAirport}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
           <DurationDetails>
             <Graphics>
@@ -64,11 +64,11 @@ const FlightCard: React.FC<FlightCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Lands at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{arrivalTime}</TimeText>
                 <LocationText>{arrivalAirport}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
         </ContentDetails>
         <ContentFooter>

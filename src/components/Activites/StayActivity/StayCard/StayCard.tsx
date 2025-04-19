@@ -1,10 +1,29 @@
 import { avatarTheme, theme } from "../../../../styles/theme";
 import AvatarStack from "../../../AvatarStack/AvatarStack";
 import Users from "../../../../assets/Users.svg?react";
-import Duration from "../../../../assets/Duration.svg?react"
-import { CardContainer, CardTitle, CardSubTitle, CardContents, ContentDetails, StartEndDetails, DetailsContainer, DetailsTitle, DetailsText, TimeText, LocationText, DurationDetails, Graphics, GraphicsLine, DurationText, ContentFooter, FooterTextContainer, FooterTitle, FooterText, CardHeader } from "./StayCard.styles";
-
-
+import Duration from "../../../../assets/Duration.svg?react";
+import {
+  CardContainer,
+  CardTitle,
+  CardSubTitle,
+  CardContents,
+  ContentDetails,
+  StartEndDetails,
+  DetailsContainer,
+  DetailsTitle,
+  DetailsText,
+  TimeText,
+  LocationText,
+  DurationDetails,
+  Graphics,
+  GraphicsLine,
+  DurationText,
+  ContentFooter,
+  FooterTextContainer,
+  FooterTitle,
+  FooterText,
+  CardHeader,
+} from "./StayCard.styles";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -30,9 +49,10 @@ const StayCard: React.FC<StayCardProps> = ({
   checkInTime,
   durationTime,
   checkOutTime,
-  travelers
+  travelers,
 }) => {
-    const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
+  const additionalTravelers =
+    travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
 
   return (
     <CardContainer>
@@ -45,11 +65,11 @@ const StayCard: React.FC<StayCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Check-in at</DetailsTitle>
-              <DetailsText>
-                <TimeText>{checkInTime}</TimeText>
-                <LocationText>{placeAddress}</LocationText>
-              </DetailsText>
             </DetailsContainer>
+            <DetailsText>
+              <TimeText>{checkInTime}</TimeText>
+              <LocationText>{placeAddress}</LocationText>
+            </DetailsText>
           </StartEndDetails>
           <DurationDetails>
             <Graphics>
@@ -62,25 +82,28 @@ const StayCard: React.FC<StayCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Check-out at</DetailsTitle>
-              <DetailsText>
-                <TimeText>{checkOutTime}</TimeText>
-              </DetailsText>
             </DetailsContainer>
+            <DetailsText>
+              <TimeText>{checkOutTime}</TimeText>
+            </DetailsText>
           </StartEndDetails>
         </ContentDetails>
         <ContentFooter>
-            <FooterTextContainer>
-            <Users style={{ width: '20px', height: '20px' }} color={theme.iconText} />
-              <div>
+          <FooterTextContainer>
+            <Users
+              style={{ width: "20px", height: "20px" }}
+              color={theme.iconText}
+            />
+            <div>
               <FooterTitle>Travelers</FooterTitle>
               <FooterText>You {additionalTravelers}</FooterText>
-              </div>
-            </FooterTextContainer>
+            </div>
+          </FooterTextContainer>
           <AvatarStack travelers={travelers} />
         </ContentFooter>
       </CardContents>
     </CardContainer>
-  )
-}
+  );
+};
 
-export default StayCard
+export default StayCard;

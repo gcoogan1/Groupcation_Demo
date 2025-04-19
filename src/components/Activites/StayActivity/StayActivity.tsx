@@ -93,7 +93,6 @@ const TrainActivity: React.FC<StayActivitysProps> = ({
     travelers,
   } = activityCardDetails;
 
-
   useEffect(() => {
     if (!expanded) return;
     const handleResize = () => {

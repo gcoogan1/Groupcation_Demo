@@ -46,12 +46,12 @@ const BoatCard: React.FC<BoatCardProps> = ({
         <ContentDetails>
           <StartEndDetails>
             <DetailsContainer>
-              <DetailsTitle>Leaves at</DetailsTitle>
+              <DetailsTitle>Sets sail at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{depatureTime}</TimeText>
                 <LocationText>{departureLocation}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
           <DurationDetails>
             <Graphics>
@@ -63,12 +63,12 @@ const BoatCard: React.FC<BoatCardProps> = ({
           </DurationDetails>
           <StartEndDetails>
             <DetailsContainer>
-              <DetailsTitle>Reaches at</DetailsTitle>
+              <DetailsTitle>Docks at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{arrivalTime}</TimeText>
                 <LocationText>{arrivalLocation}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
         </ContentDetails>
         <ContentFooter>

@@ -314,7 +314,7 @@ export const activityRenderMap = {
       onCostClick={() => handleOpenModal("cost", boat)}
       onAttachmentClick={() => handleOpenModal("attachments", boat)}
       onAddNotesClick={() => handleOpenModal("notes", boat)}
-      hightlightedActivityAction="Bus"
+      hightlightedActivityAction="Boat"
       activityText={`from ${boat.departureDock} to ${boat.arrivalDock}`}
       departureTime={`Leaves at ${departureTime}`}
       footerText={footer}

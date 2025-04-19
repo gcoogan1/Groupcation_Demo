@@ -47,11 +47,11 @@ const BusCard: React.FC<BusCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Leaves at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{depatureTime}</TimeText>
                 <LocationText>{departureLocation}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
           <DurationDetails>
             <Graphics>
@@ -64,11 +64,11 @@ const BusCard: React.FC<BusCardProps> = ({
           <StartEndDetails>
             <DetailsContainer>
               <DetailsTitle>Reaches at</DetailsTitle>
+            </DetailsContainer>
               <DetailsText>
                 <TimeText>{arrivalTime}</TimeText>
                 <LocationText>{arrivalLocation}</LocationText>
               </DetailsText>
-            </DetailsContainer>
           </StartEndDetails>
         </ContentDetails>
         <ContentFooter>

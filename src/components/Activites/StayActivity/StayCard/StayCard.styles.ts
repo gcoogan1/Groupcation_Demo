@@ -46,7 +46,7 @@ export const ContentDetails = styled.div`
 export const StartEndDetails = styled.div`
 	padding: 8px 0px;
 	display: flex;
-	gap: "12px";
+	gap: 12px;
 `;
 
 export const DetailsContainer = styled.div`
@@ -56,6 +56,7 @@ export const DetailsContainer = styled.div`
 `;
 
 export const DetailsTitle = styled.p`
+	width: 80px;
 	font-weight: 400;
 	font-size: 12px;
 	line-height: 16px;
