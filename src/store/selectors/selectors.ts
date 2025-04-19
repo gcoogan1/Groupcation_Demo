@@ -74,3 +74,15 @@ export const selectBusById = createSelector(
   [(state: RootState) => state.bus.buses, (_, busId?: string) => busId],
   (buses, busId) => (busId ? buses.find((bus) => bus.id === busId) : undefined)
 );
+
+// Memoized selector for boats
+export const selectBoats = createSelector(
+  [(state: RootState) => state.boat.boats],
+  (boats) => [...boats]
+);
+
+// Memoized selector for boat (found by boat id)
+export const selectBoatById = createSelector(
+  [(state: RootState) => state.boat.boats, (_, boatId?: string) => boatId],
+  (boats, boatId) => (boatId ? boats.find((boat) => boat.id === boatId) : undefined)
+);

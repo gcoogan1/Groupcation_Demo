@@ -65,6 +65,7 @@ import ChevronDown from "../../assets/Chevron_Down.svg?react";
 import ChevronUp from "../../assets/Chevron_Up.svg?react";
 import { theme } from "../../styles/theme";
 import {
+  selectBoats,
   selectBuses,
   selectConvertedUsersForFilters,
   selectFlights,
@@ -238,12 +239,13 @@ const HomeScreen = () => {
   const flights = useSelector(selectFlights);
   const stays = useSelector(selectStays);
   const buses = useSelector(selectBuses);
+  const boats = useSelector(selectBoats);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
-    () => groupTravelItemsByDate(buses, stays, flights, trains, groupcation),
-    [buses, stays, flights, trains, groupcation]
+    () => groupTravelItemsByDate(boats, buses, stays, flights, trains, groupcation),
+    [boats, buses, stays, flights, trains, groupcation]
   );
 
   const filteredGrouped = useMemo(

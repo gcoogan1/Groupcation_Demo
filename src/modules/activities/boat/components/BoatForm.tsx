@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addBoat, updateBoat } from "../slice/boatSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { boatSchema } from "../schema/boatSchema";
 import { z } from "zod";
 import {
@@ -40,11 +38,14 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import { useNavigate } from "react-router-dom";
+import { selectConvertedUsers } from "../../../../store/selectors/selectors";
+import {
+  addBoatTable,
+  fetchBoatTable,
+  updateBoatTable,
+} from "../thunk/boatThunk";
 
-// NOTE: ALL TRAIN DATA (see boatSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
 
 type BoatFormData = z.infer<typeof boatSchema>;
 
@@ -53,19 +54,38 @@ interface BoatFormProps {
 }
 
 const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING BOAT DATA FROM STATE IF ID PASSED
   const existingBoat = useSelector((state: RootState) =>
     state.boat.boats.find((boat) => boat.id === boatId)
   );
-  const [showCost, setShowCost] = useState(!!existingBoat?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingBoat?.attachments
-  );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingBoat?.notes);
-  const [amount, setAmount] = useState(0);
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingBoat?.attachments && existingBoat.attachments.length > 0;
 
+  // FORM STATE
+  const [showCost, setShowCost] = useState(!!existingBoat?.cost);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingBoat?.notes);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingBoat?.cost;
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -77,13 +97,23 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
     resolver: zodResolver(boatSchema),
   });
 
+  // FETCH BOAT DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (boatId) {
+      dispatch(fetchBoatTable(boatId));
+    }
+  }, [dispatch, boatId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingBoat) {
       // Reset to todays date/time if remaining boat date/time is not present
       const convertedBoat = {
         ...existingBoat,
         departureDate: existingBoat.departureDate
-
           ? new Date(existingBoat.departureDate)
           : new Date(),
         arrivalDate: existingBoat.arrivalDate
@@ -98,39 +128,62 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
       };
 
       reset(convertedBoat);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingBoat.notes) {
+        setShowAddNotes(true);
+      }
     } else {
       reset();
     }
-  }, [existingBoat, reset]);
-  const onSubmit = (data: BoatFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+  }, [existingBoat, existingAttachments, reset]);
 
-    if (boatId) {
-      const updatedBoat = { ...existingBoat, ...convertedData, id: boatId };
-      console.log("Updated boat:", updatedBoat);
-      dispatch(updateBoat(updatedBoat));
-    } else {
-      const newBoat = { id: uuidv4(), ...convertedData };
-      console.log("New boat:", newBoat);
-      dispatch(addBoat(newBoat));
+  // SUBMIT BOAT FORM DATA
+  const onSubmit = async (data: BoatFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE BOAT
+      if (boatId) {
+        const updatedBoat = {
+          ...existingBoat,
+          ...rest,
+          id: Number(existingBoat?.id),
+        };
+
+        await dispatch(
+          updateBoatTable({
+            boat: updatedBoat,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD BOAT
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(
+          addBoatTable({ boat: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save train:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+  if (boatId && !existingBoat) return <div>Loading...</div>
 
   return (
     <FormContainer
@@ -150,8 +203,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.departureDock
-                }
+                error={errors.departureDock}
                 register={register}
                 label={"Departure Dock"}
                 name={"departureDock"}
@@ -248,7 +300,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -267,7 +319,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -284,7 +336,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingBoat?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -296,12 +348,13 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingBoat?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -323,7 +376,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -393,6 +446,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!boatId ? "Add Boat" : "Update Boat"}
       </Button>
