@@ -174,10 +174,9 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
         ).unwrap();
       }
 
-      // Only navigate after the async thunk is fully completed
       navigate("/");
     } catch (error) {
-      console.error("Failed to save train:", error);
+      console.error("Failed to save boat:", error);
     } finally {
       setIsLoading(false);
     }

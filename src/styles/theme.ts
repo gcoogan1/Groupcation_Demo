@@ -4,6 +4,7 @@ export const theme = {
   secondary: '#404040',
   iconText: '#737373',
   base: "#ffff",
+  baseSecond:'#FAFAFA',
   surface: '#F4F4F4',
   line: '#EAEAEA',
   stay: '#009DEC',

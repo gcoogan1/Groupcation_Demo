@@ -99,3 +99,14 @@ export const selectRentalById = createSelector(
   (rentals, rentalId) => (rentalId ? rentals.find((rental) => rental.id === rentalId) : undefined)
 );
 
+// Memoized selector for events
+export const selectEvents = createSelector(
+  [(state: RootState) => state.event.events],
+  (events) => [...events]
+);
+
+// Memoized selector for event (found by event id)
+export const selectEventById = createSelector(
+  [(state: RootState) => state.event.events, (_, eventId?: string) => eventId],
+  (events, eventId) => (eventId ? events.find((event) => event.id === eventId) : undefined)
+);

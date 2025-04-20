@@ -8,6 +8,7 @@ import { fetchUsersTable } from "./usersThunk";
 import { fetchBusByGroupcationId } from "../../modules/activities/bus/thunk/busThunk";
 import { fetchBoatByGroupcationId } from "../../modules/activities/boat/thunk/boatThunk";
 import { fetchRentalByGroupcationId } from "../../modules/activities/rental/thunk/rentalThunk";
+import { fetchEventByGroupcationId } from "../../modules/activities/event/thunk/eventThunk";
 
 
 export const fetchAllGroupcationData = createAsyncThunk<
@@ -23,6 +24,7 @@ export const fetchAllGroupcationData = createAsyncThunk<
     dispatch(fetchBoatByGroupcationId(groupcationId)),
     dispatch(fetchStayByGroupcationId(groupcationId)),
     dispatch(fetchRentalByGroupcationId(groupcationId)),
+    dispatch(fetchEventByGroupcationId(groupcationId)),
     dispatch(fetchUsersTable()),
   ]);
 });

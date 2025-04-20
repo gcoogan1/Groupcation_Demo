@@ -18,7 +18,7 @@ export const ActivityContainer = styled.div<ActivityContainerProps>`
 		isExpanded ? `2px solid ${theme.line}` : "2px solid transparent"};
 	box-shadow: ${({ isExpanded }) =>
 		isExpanded ? "4px 4px 16px 0px rgba(0, 0, 0, 0.04)" : "none"};
-	background-color: ${theme.surface};
+	background-color: ${theme.baseSecond};
 `;
 
 export const ActivityLine = styled.div`

@@ -196,7 +196,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
 
       navigate("/");
     } catch (error) {
-      console.error("Failed to save train:", error);
+      console.error("Failed to save rental:", error);
     } finally {
       setIsLoading(false);
     }

@@ -3,8 +3,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/index";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { fetchGroupcationTable } from "../../store/thunk/groupcationThunk";
-import { fetchTrainByGroupcationId } from "../../modules/activities/train/thunk/trainThunk";
 import {
   ActionButtonsContainer,
   ActionFilterChipsContainer,
@@ -68,6 +66,7 @@ import {
   selectBoats,
   selectBuses,
   selectConvertedUsersForFilters,
+  selectEvents,
   selectFlights,
   selectGroupcationById,
   selectRentals,
@@ -242,12 +241,13 @@ const HomeScreen = () => {
   const buses = useSelector(selectBuses);
   const boats = useSelector(selectBoats);
   const rentals = useSelector(selectRentals);
+  const events = useSelector(selectEvents);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
-    () => groupTravelItemsByDate(rentals, boats, buses, stays, flights, trains, groupcation),
-    [rentals, boats, buses, stays, flights, trains, groupcation]
+    () => groupTravelItemsByDate(events, rentals, boats, buses, stays, flights, trains, groupcation),
+    [events, rentals, boats, buses, stays, flights, trains, groupcation]
   );
 
   const filteredGrouped = useMemo(

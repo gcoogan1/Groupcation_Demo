@@ -2,6 +2,7 @@ import TrainActivity from "../../../components/Activites/TrainActivity/TrainActi
 import {
   BoatItem,
   BusItem,
+  EventItem,
   FlightItem,
   RentalItem,
   StayItem,
@@ -25,6 +26,7 @@ import StayActivity from "../../../components/Activites/StayActivity/StayActivit
 import BusActivity from "../../../components/Activites/BusActivity/BusActivity";
 import BoatActivity from "../../../components/Activites/BoatActivity/BoatActivity";
 import RentalActivity from "../../../components/Activites/RentalActivity/RentalActivity";
+import EventActivity from "../../../components/Activites/EventActivity/EventActivity";
 
 export const activityRenderMap = {
   train: (
@@ -355,7 +357,6 @@ export const activityRenderMap = {
       rental.dropOffTime
     );
 
-    console.log("duration:", rental)
     const createdBy = createdByUserInfo(rental.createdBy, users);
     const createdAt = formatDateToDayMonthYear(rental.createdAt);
     const departureTime = convertTimeToString(rental.pickUpTime);
@@ -390,6 +391,70 @@ export const activityRenderMap = {
           durationTime: duration,
           arrivalTime: cardArrivalDateTime,
           arrivalLocation: rental.dropOffLocation ? rental.dropOffLocation : 'Same as pick-up',
+          travelers: travelers,
+        }}
+      />
+    );
+  },
+
+  event: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "event") return null;
+
+    const event = item as EventItem;
+
+    const travelers = event.travelers
+      ? convertTableTraveler(event.travelers, users)
+      : [];
+
+    const duration = getDurationInDaysHoursAndMinutes(
+      event.startDate.toLocaleString(),
+      event.startTime,
+      event.endDate,
+      event.endTime
+    );
+
+    const createdBy = createdByUserInfo(event.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(event.createdAt);
+    const departureTime = convertTimeToString(event.startTime);
+    const cardDepartureDateTime = formatDateTimeForCard(
+      event.startTime,
+      event.startDate
+    );
+    const cardArrivalDateTime = formatDateTimeForCard(
+      event.endTime,
+      event.endDate
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <EventActivity
+        onEditClick={() => handleEditClick("event", event.id)}
+        cost={event?.cost}
+        attachments={event.attachments}
+        noteText={event.notes}
+        onCostClick={() => handleOpenModal("cost", event)}
+        onAttachmentClick={() => handleOpenModal("attachments", event)}
+        onAddNotesClick={() => handleOpenModal("notes", event)}
+        hightlightedActivityAction=""
+        activityText={`${event.eventName}`}
+        departureTime={`Starts at ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: event.eventOrganizer,
+          activitySubTitle: `${event.ticketType}`,
+          depatureTime: cardDepartureDateTime,
+          departureLocation: event.eventLocation,
+          durationTime: duration,
+          arrivalTime: cardArrivalDateTime,
+          arrivalLocation: '',
           travelers: travelers,
         }}
       />

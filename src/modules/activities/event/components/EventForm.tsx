@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addEvent, updateEvent } from "../slice/eventSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { eventSchema } from "../schema/eventSchema";
 import { z } from "zod";
 import {
@@ -41,10 +40,9 @@ import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
 import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-
-// NOTE: ALL TRAIN DATA (see eventSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
+import { useNavigate } from "react-router-dom";
+import { selectConvertedUsers } from "../../../../store/selectors/selectors";
+import { addEventTable, fetchEventTable, updateEventTable } from "../thunk/eventThunk";
 
 type EventFormData = z.infer<typeof eventSchema>;
 
@@ -53,19 +51,38 @@ interface EventFormProps {
 }
 
 const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING EVENT DATA FROM STATE IF ID PASSED
   const existingEvent = useSelector((state: RootState) =>
     state.event.events.find((event) => event.id === eventId)
   );
-  const [showCost, setShowCost] = useState(!!existingEvent?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingEvent?.attachments
-  );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingEvent?.notes);
-  const [amount, setAmount] = useState(0);
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingEvent?.attachments && existingEvent.attachments.length > 0;
 
+  // FORM STATE
+  const [showCost, setShowCost] = useState(!!existingEvent?.cost);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingEvent?.notes);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingEvent?.cost;
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -77,6 +94,17 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
     resolver: zodResolver(eventSchema),
   });
 
+  // FETCH EVENT DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (eventId) {
+      dispatch(fetchEventTable(eventId));
+    }
+  }, [dispatch, eventId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingEvent) {
       // Reset to todays date/time if remaining event date/time is not present
@@ -97,39 +125,61 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
       };
 
       reset(convertedEvent);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingEvent.notes) {
+        setShowAddNotes(true);
+      }
     } else {
       reset();
     }
-  }, [existingEvent, reset]);
-  const onSubmit = (data: EventFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+  }, [existingEvent, existingAttachments, reset]);
 
-    if (eventId) {
-      const updatedEvent = { ...existingEvent, ...convertedData, id: eventId };
-      console.log("Updated event:", updatedEvent);
-      dispatch(updateEvent(updatedEvent));
-    } else {
-      const newEvent = { id: uuidv4(), ...convertedData };
-      console.log("New event:", newEvent);
-      dispatch(addEvent(newEvent));
+  // SUBMIT EVENT FORM DATA
+  const onSubmit = async (data: EventFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE EVENT
+      if (eventId) {
+        const updatedEvent = {
+          ...existingEvent,
+          ...rest,
+          id: Number(existingEvent?.id),
+        };
+
+        await dispatch(
+          updateEventTable({
+            event: updatedEvent,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD EVENT
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(
+          addEventTable({ event: newData, files: attachments, travelers })
+        ).unwrap();
+      }
+
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save event:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+  if (eventId && !existingEvent) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -175,7 +225,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
               <ContentTitle>Timing</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-            <InputDatesRow>
+              <InputDatesRow>
                 <InputDate
                   control={control}
                   error={errors.startDate}
@@ -246,7 +296,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -265,7 +315,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -282,7 +332,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingEvent?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -294,12 +344,13 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingEvent?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -321,7 +372,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -391,6 +442,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!eventId ? "Add Event" : "Update Event"}
       </Button>

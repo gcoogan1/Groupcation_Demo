@@ -2,6 +2,7 @@
 
 import { BoatUITable } from "../../types/boatTable.types";
 import { BusUITable } from "../../types/busTable.types";
+import { EventUITable } from "../../types/eventTable.types";
 import {
   GroupedTravelItems,
   TravelItem,
@@ -123,6 +124,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  events: EventUITable[],
   rentals: RentalUITable[],
   boats: BoatUITable[],
   buses: BusUITable[],
@@ -155,6 +157,20 @@ export const groupTravelItemsByDate = (
     // Add the item to the array for that date
     grouped[dateKey].push(item);
   };
+
+  // CHECK EVENTS TO ADD ENTRY
+  // Loop through all buses and add each with a departureDate to the grouped list
+  events.forEach((event) => {
+    if (event.startDate) {
+      const date = new Date(event.startDate);
+      pushItem({
+        ...event,
+        type: "event",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
 
   // CHECK RENTALS TO ADD ENTRY
   // Loop through all buses and add each with a departureDate to the grouped list
