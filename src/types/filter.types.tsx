@@ -9,6 +9,10 @@ import Rental from "../assets/Rental.svg?react";
 import Event from "../assets/Event.svg?react";
 import Celebration from "../assets/Celebration.svg?react";
 import Resturant from "../assets/Restaurant.svg?react";
+import Walking from "../assets/Walking.svg?react";
+import Driving from "../assets/Driving.svg?react";
+import Note from "../assets/Note.svg?react";
+import GroupcationIcon from "../assets/Groupcation_icon.svg?react";
 import { StayUITable } from "./stayTable.types";
 import { FlightUITable } from "./flightTable.types";
 import { TrainUITable } from "./trainTable.types";
@@ -50,8 +54,10 @@ export type BusItem = BusUITable & BaseTravelItem & { type: "bus" };
 export type BoatItem = BoatUITable & BaseTravelItem & { type: "boat" };
 export type RentalItem = RentalUITable & BaseTravelItem & { type: "rental" };
 export type EventItem = EventUITable & BaseTravelItem & { type: "event" };
-export type RestaurantItem = RestaurantUITable & BaseTravelItem & { type: "restaurant" };
-export type CelebrationItem = CelebrationUITable & BaseTravelItem & { type: "celebration" };
+export type RestaurantItem = RestaurantUITable &
+  BaseTravelItem & { type: "restaurant" };
+export type CelebrationItem = CelebrationUITable &
+  BaseTravelItem & { type: "celebration" };
 
 export type TravelItem =
   | TrainItem
@@ -136,3 +142,33 @@ export const ACTIVITY_OPTIONS: FilterItems[] = [
     value: "restaurant",
   },
 ];
+
+export const ROUTES_OPTIONS: FilterItems[] = [
+  {
+    action: "checkbox",
+    icon: <Walking color={theme.walking} />,
+    label: "Walking",
+    value: "walking",
+  },
+  {
+    action: "checkbox",
+    icon: <Driving color={theme.driving} />,
+    label: "Driving",
+    value: "driving",
+  },
+];
+
+export const EXTRAS_OPTIONS: FilterItems[] = [
+  {
+    action: "checkbox",
+    icon: <Note color={theme.note} />,
+    label: "Notes",
+    value: "noteOpacity",
+  },
+  {
+    action: "checkbox",
+    icon: <GroupcationIcon color={theme.groupcation} />,
+    label: "Linked Trip",
+    value: "groupcationOpacity",
+  },
+]

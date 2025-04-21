@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Switch from "../Switch/Switch";
 import CheckboxSelected from "../../assets/Checkbox_Selected.svg?react";
 import CheckboxUnselected from "../../assets/Checkbox_Unselected.svg?react";

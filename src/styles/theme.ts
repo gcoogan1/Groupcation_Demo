@@ -21,7 +21,9 @@ export const theme = {
   note: '#CFA629',
   noteOpacity: '#CFA6291A',
   error: '#EB0000',
-  dark:'#000000'
+  dark:'#000000',
+  groupcation: '#E40078',
+  groupcationOpacity: '#E400780D'
 }
 
 export const avatarTheme = {
