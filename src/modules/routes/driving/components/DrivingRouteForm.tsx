@@ -13,8 +13,12 @@ import {
   AddMoreSectionContents,
   ContentTitle,
   ContentTitleContainer,
+  DistinationDateContainer,
+  DestinationDateCheckbox,
+  DestinationDateText,
   FormContainer,
   FormSections,
+  InputDatesRow,
   Section,
   SectionContents,
   SectionGraphics,
@@ -23,15 +27,19 @@ import {
 } from "./DrivingRouteForm.styles";
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
+import CheckboxSelected from "../../../../assets/Checkbox_Selected.svg?react";
+import CheckboxUnselected from "../../../../assets/Checkbox_Unselected.svg?react";
 import Button from "../../../../components/Button/Button";
-import WalkingIcon from "../../../../assets/Walking.svg?react";
+import DrivingIcon from "../../../../assets/Driving.svg?react";
+import DurationIcon from "../../../../assets/Duration.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
 import ChevRight from "../../../../assets/Chevron_Right.svg?react";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
+import InputDate from "../../../../components/Inputs/InputDate/InputDate";
+import InputTime from "../../../../components/Inputs/InputTime/InputTime";
 
 // NOTE: ALL WALKING DATA (see DrivingRouteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-
 
 type DrivingRouteFormData = z.infer<typeof DrivingRouteSchema>;
 
@@ -42,13 +50,20 @@ interface DrivingRouteFormProps {
 const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
   const dispatch = useDispatch();
   const existingDrivingRoute = useSelector((state: RootState) =>
-    state.drivingRoute.drivingRoutes.find((drivingRoute) => drivingRoute.id === drivingId)
+    state.drivingRoute.drivingRoutes.find(
+      (drivingRoute) => drivingRoute.id === drivingId
+    )
   );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingDrivingRoute?.notes);
-
+  const [showArrivalDate, setShowArrivalDate] = useState(
+    !!existingDrivingRoute?.arrivalDate
+  );
+  const [showAddNotes, setShowAddNotes] = useState(
+    !!existingDrivingRoute?.notes
+  );
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -65,14 +80,24 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     }
   }, [existingDrivingRoute, reset]);
 
+    // HELPER FUNCTION
+    const handleDropoffCheckbox = () => {
+      if (showArrivalDate) {
+        setValue("arrivalDate", undefined);
+      }
+      setShowArrivalDate((prev) => !prev);
+    };
+
   const onSubmit = (data: DrivingRouteFormData) => {
     if (drivingId) {
-      const updatedDrivingRoute = { ...existingDrivingRoute, ...data, id: drivingId };
-      console.log("Updated DrivingRoute:", updatedDrivingRoute);
+      const updatedDrivingRoute = {
+        ...existingDrivingRoute,
+        ...data,
+        id: drivingId,
+      };
       dispatch(updateDriving(updatedDrivingRoute));
     } else {
       const newDrivingRoute = { id: uuidv4(), ...data };
-      console.log("New DrivingRoute:", newDrivingRoute);
       dispatch(addDriving(newDrivingRoute));
     }
   };
@@ -86,7 +111,41 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
       <FormSections>
         <Section>
           <SectionGraphics>
-            <WalkingIcon color={theme.iconText} />
+            <DrivingIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Departure</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputText
+                error={errors.departureLocation}
+                register={register}
+                label={"Departure Location"}
+                name={"departureLocation"}
+                placeholder="Enter the departure address"
+              />
+              <InputDatesRow>
+                <InputDate
+                  control={control}
+                  error={errors.departureDate}
+                  label={"Departure Date"}
+                  name={"departureDate"}
+                />
+                <InputTime
+                  control={control}
+                  error={errors.departureTime}
+                  label={"Departure Time"}
+                  name={"departureTime"}
+                />
+              </InputDatesRow>
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        <Section>
+          <SectionGraphics>
+            <DurationIcon color={theme.iconText} />
             <SectionGraphicsLine />
           </SectionGraphics>
           <SectionContents>
@@ -104,7 +163,48 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showAddNotes || (!!showAddNotes && !!existingDrivingRoute?.notes)) && (
+        <Section>
+          <SectionGraphics>
+            <DrivingIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Arrival</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputText
+                error={errors.arrivalLocation}
+                register={register}
+                label={"Arrival Location"}
+                name={"arrivalLocation"}
+                placeholder="Enter the destination address"
+              />
+              <DistinationDateContainer>
+                <DestinationDateCheckbox onClick={handleDropoffCheckbox}>
+                  {showArrivalDate ? (
+                    <CheckboxSelected />
+                  ) : (
+                    <CheckboxUnselected />
+                  )}
+                  <DestinationDateText>
+                    Different Arrival Date?
+                  </DestinationDateText>
+                </DestinationDateCheckbox>
+                {showArrivalDate && (
+                  <InputDate
+                    control={control}
+                    error={errors.arrivalDate}
+                    label={"Arrival Date"}
+                    name={"arrivalDate"}
+                  />
+                )}
+              </DistinationDateContainer>
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        {(!!showAddNotes ||
+          (!!showAddNotes && !!existingDrivingRoute?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />

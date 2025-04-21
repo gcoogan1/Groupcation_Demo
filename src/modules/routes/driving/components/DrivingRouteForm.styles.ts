@@ -73,6 +73,13 @@ export const SectionInputs = styled.div`
   gap: 16px;
 `;
 
+export const InputDatesRow = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
 export const AddDetailsButtonContainer = styled.div`
   width: 100%;
   display: flex;
@@ -94,3 +101,28 @@ export const AddMoreGraphicsLine = styled.div`
   width: 2px;
   background: ${theme.line};
 `;
+
+export const DistinationDateContainer = styled.div`
+  width: 100%;
+  display: flex;
+  border: 1px solid ${theme.line};
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 8px;
+  padding: 16px;
+`
+
+export const DestinationDateCheckbox = styled.div`
+  width: 100%;
+  display: flex;
+  background-color: ${theme.surface};
+  gap: 4px;
+  border-radius: 4px;
+  padding: 16px;
+`
+
+export const DestinationDateText = styled.p`
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+`

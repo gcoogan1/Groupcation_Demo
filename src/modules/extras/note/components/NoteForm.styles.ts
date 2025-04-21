@@ -72,3 +72,10 @@ export const SectionInputs = styled.div`
   flex-direction: column;
   gap: 16px;
 `;
+
+export const InputDatesRow = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;

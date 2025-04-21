@@ -15,6 +15,7 @@ import {
   ContentTitleContainer,
   FormContainer,
   FormSections,
+  InputDatesRow,
   Section,
   SectionContents,
   SectionGraphics,
@@ -24,14 +25,16 @@ import {
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import Button from "../../../../components/Button/Button";
+import DurationIcon from "../../../../assets/Duration.svg?react";
 import WalkingIcon from "../../../../assets/Walking.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
 import ChevRight from "../../../../assets/Chevron_Right.svg?react";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
+import InputDate from "../../../../components/Inputs/InputDate/InputDate";
+import InputTime from "../../../../components/Inputs/InputTime/InputTime";
 
 // NOTE: ALL WALKING DATA (see WalkingRouteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-
 
 type WalkingRouteFormData = z.infer<typeof WalkingRouteSchema>;
 
@@ -42,13 +45,17 @@ interface WalkingRouteFormProps {
 const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
   const dispatch = useDispatch();
   const existingWalkingRoute = useSelector((state: RootState) =>
-    state.walkingRoute.walkingRoutes.find((walkingRoute) => walkingRoute.id === walkingId)
+    state.walkingRoute.walkingRoutes.find(
+      (walkingRoute) => walkingRoute.id === walkingId
+    )
   );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingWalkingRoute?.notes);
-
+  const [showAddNotes, setShowAddNotes] = useState(
+    !!existingWalkingRoute?.notes
+  );
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -67,7 +74,11 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
 
   const onSubmit = (data: WalkingRouteFormData) => {
     if (walkingId) {
-      const updatedWalkingRoute = { ...existingWalkingRoute, ...data, id: walkingId };
+      const updatedWalkingRoute = {
+        ...existingWalkingRoute,
+        ...data,
+        id: walkingId,
+      };
       console.log("Updated WalkingRoute:", updatedWalkingRoute);
       dispatch(updateWalking(updatedWalkingRoute));
     } else {
@@ -91,6 +102,40 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
+              <ContentTitle>Departure</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputText
+                error={errors.departureLocation}
+                register={register}
+                label={"Departure Location"}
+                name={"departureLocation"}
+                placeholder="Enter the departure location of the walk"
+              />
+              <InputDatesRow>
+                <InputDate
+                  control={control}
+                  error={errors.departureDate}
+                  label={"Departure Date"}
+                  name={"departureDate"}
+                />
+                <InputTime
+                  control={control}
+                  error={errors.departureTime}
+                  label={"Departure Time"}
+                  name={"departureTime"}
+                />
+              </InputDatesRow>
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        <Section>
+          <SectionGraphics>
+            <DurationIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
               <ContentTitle>Duration</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
@@ -104,7 +149,28 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showAddNotes || (!!showAddNotes && !!existingWalkingRoute?.notes)) && (
+        <Section>
+          <SectionGraphics>
+            <WalkingIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Arrival</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputText
+                error={errors.arrivalLocation}
+                register={register}
+                label={"Arrival Location"}
+                name={"arrivalLocation"}
+                placeholder="Enter the arrival location of the walk"
+              />
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        {(!!showAddNotes ||
+          (!!showAddNotes && !!existingWalkingRoute?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />

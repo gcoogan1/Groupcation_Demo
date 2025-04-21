@@ -73,6 +73,13 @@ export const SectionInputs = styled.div`
   gap: 16px;
 `;
 
+export const InputDatesRow = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
 export const AddDetailsButtonContainer = styled.div`
   width: 100%;
   display: flex;
