@@ -11,6 +11,7 @@ import {
 import { FlightUITable } from "../../types/flightTable.types";
 import { GroupcationTable } from "../../types/groupcationTable";
 import { RentalUITable } from "../../types/rentalTable.types";
+import { RestaurantUITable } from "../../types/restaurantTable.types";
 import { StayUITable } from "../../types/stayTable.types";
 import { TrainUITable } from "../../types/trainTable.types";
 import { UserTable } from "../../types/userTable";
@@ -124,6 +125,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  restaurants: RestaurantUITable[],
   events: EventUITable[],
   rentals: RentalUITable[],
   boats: BoatUITable[],
@@ -158,8 +160,22 @@ export const groupTravelItemsByDate = (
     grouped[dateKey].push(item);
   };
 
+  // CHECK RESTAURANTS TO ADD ENTRY
+  // Loop through all restaurants and add each with a reservationDate to the grouped list
+  restaurants.forEach((restaurant) => {
+    if (restaurant.reservationDate) {
+      const date = new Date(restaurant.reservationDate);
+      pushItem({
+        ...restaurant,
+        type: "restaurant",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
+
   // CHECK EVENTS TO ADD ENTRY
-  // Loop through all buses and add each with a departureDate to the grouped list
+  // Loop through all events and add each with a departureDate to the grouped list
   events.forEach((event) => {
     if (event.startDate) {
       const date = new Date(event.startDate);
@@ -173,7 +189,7 @@ export const groupTravelItemsByDate = (
   });
 
   // CHECK RENTALS TO ADD ENTRY
-  // Loop through all buses and add each with a departureDate to the grouped list
+  // Loop through all rentals and add each with a departureDate to the grouped list
   rentals.forEach((rental) => {
     if (rental.pickUpDate) {
       const date = new Date(rental.pickUpDate);
@@ -187,7 +203,7 @@ export const groupTravelItemsByDate = (
   });
 
   // CHECK BOATS TO ADD ENTRY
-  // Loop through all buses and add each with a departureDate to the grouped list
+  // Loop through all boats and add each with a departureDate to the grouped list
   boats.forEach((boat) => {
     if (boat.departureDate) {
       const date = new Date(boat.departureDate);

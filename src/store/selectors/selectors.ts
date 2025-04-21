@@ -110,3 +110,15 @@ export const selectEventById = createSelector(
   [(state: RootState) => state.event.events, (_, eventId?: string) => eventId],
   (events, eventId) => (eventId ? events.find((event) => event.id === eventId) : undefined)
 );
+
+// Memoized selector for restaurants
+export const selectRestaurants = createSelector(
+  [(state: RootState) => state.restaurant.restaurants],
+  (restaurants) => [...restaurants]
+);
+
+// Memoized selector for restaurant (found by restaurant id)
+export const selectRestaurantById = createSelector(
+  [(state: RootState) => state.restaurant.restaurants, (_, restaurantId?: string) => restaurantId],
+  (restaurants, restaurantId) => (restaurantId ? restaurants.find((restaurant) => restaurant.id === restaurantId) : undefined)
+);

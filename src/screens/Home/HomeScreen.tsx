@@ -70,6 +70,7 @@ import {
   selectFlights,
   selectGroupcationById,
   selectRentals,
+  selectRestaurants,
   selectStays,
   selectTableUsers,
   selectTrains,
@@ -242,12 +243,13 @@ const HomeScreen = () => {
   const boats = useSelector(selectBoats);
   const rentals = useSelector(selectRentals);
   const events = useSelector(selectEvents);
+  const restaurants = useSelector(selectRestaurants)
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
-    () => groupTravelItemsByDate(events, rentals, boats, buses, stays, flights, trains, groupcation),
-    [events, rentals, boats, buses, stays, flights, trains, groupcation]
+    () => groupTravelItemsByDate(restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation),
+    [restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation]
   );
 
   const filteredGrouped = useMemo(

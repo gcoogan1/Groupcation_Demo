@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
-import { addRestaurant, updateRestaurant } from "../slice/restaurantSlice";
+import { AppDispatch, RootState } from "../../../../store";
 import { restaurantSchema } from "../schema/restaurantSchema";
 import { z } from "zod";
 import {
@@ -39,11 +37,9 @@ import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
 import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-
-// NOTE: ALL TRAIN DATA (see restaurantSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachments upload to store as string[] in state slice instead of File[]
+import { useNavigate } from "react-router-dom";
+import { selectConvertedUsers } from "../../../../store/selectors/selectors";
+import { addRestaurantTable, fetchRestaurantTable, updateRestaurantTable } from "../thunk/restaurantThunks";
 
 type RestaurantFormData = z.infer<typeof restaurantSchema>;
 
@@ -52,19 +48,41 @@ interface RestaurantFormProps {
 }
 
 const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
-  const dispatch = useDispatch();
-  const existingRestaurant = useSelector((state: RootState) =>
-    state.restaurant.restaurants.find((restaurant) => restaurant.id === restaurantId)
-  );
-  const [showCost, setShowCost] = useState(!!existingRestaurant?.cost);
-  const [showAttachments, setShowAttachments] = useState(
-    !!existingRestaurant?.attachments
-  );
-  const [showAddNotes, setShowAddNotes] = useState(!!existingRestaurant?.notes);
-  const [amount, setAmount] = useState(0);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
+  // FETCH EXISTING RESTAURANT DATA FROM STATE IF ID PASSED
+  const existingRestaurant = useSelector((state: RootState) =>
+    state.restaurant.restaurants.find(
+      (restaurant) => restaurant.id === restaurantId
+    )
+  );
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingRestaurant?.attachments &&
+    existingRestaurant.attachments.length > 0;
+
+  // FORM STATE
+  const [showCost, setShowCost] = useState(!!existingRestaurant?.cost);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingRestaurant?.notes);
+  const [amount, setAmount] = useState(() => {
+    const costString = existingRestaurant?.cost;
+    if (costString) {
+      const num = Math.round(parseFloat(costString) * 100);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  });
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
+
+    // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
+   // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -76,6 +94,17 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
     resolver: zodResolver(restaurantSchema),
   });
 
+  // FETCH TRAIN DATA FROM API
+    useEffect(() => {
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+  
+      if (restaurantId) {
+        dispatch(fetchRestaurantTable(restaurantId));
+      }
+    }, [dispatch, restaurantId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingRestaurant) {
       // Reset to todays date/time if remaining restaurant date/time is not present
@@ -86,43 +115,65 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
           : new Date(),
         reservationTime: existingRestaurant.reservationTime
           ? new Date(existingRestaurant.reservationTime)
-          : new Date()
+          : new Date(),
       };
 
       reset(convertedRestaurant);
+
+      if (existingAttachments) {
+        setShowAttachments(true);
+      }
+      if (existingRestaurant.notes) {
+        setShowAddNotes(true)
+      }
+
     } else {
       reset();
     }
-  }, [existingRestaurant, reset]);
-  const onSubmit = (data: RestaurantFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
+  }, [existingRestaurant, existingAttachments, reset]);
 
-    if (restaurantId) {
-      const updatedRestaurant = { ...existingRestaurant, ...convertedData, id: restaurantId };
-      console.log("Updated restaurant:", updatedRestaurant);
-      dispatch(updateRestaurant(updatedRestaurant));
-    } else {
-      const newRestaurant = { id: uuidv4(), ...convertedData };
-      console.log("New restaurant:", newRestaurant);
-      dispatch(addRestaurant(newRestaurant));
-    }
-  };
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+    // SUBMIT RESTAURANT FORM DATA
+    const onSubmit = async (data: RestaurantFormData) => {
+      const { attachments, travelers, ...rest } = data;
+      setIsLoading(true);
+    
+      try {
+        // UPDATE RESTAURANT
+        if (restaurantId) {
+          const updatedRestaurant = {
+            ...existingRestaurant,
+            ...rest,
+            id: Number(existingRestaurant?.id),
+          };
+    
+          await dispatch(
+            updateRestaurantTable({ restaurant: updatedRestaurant, files: attachments, selectedTravelers: travelers })
+          ).unwrap();
+        } else {
+          // ADD RESTAURANT
+          const newData = {
+            groupcationId: 333,
+            createdBy: 3,
+            ...rest,
+          };
+    
+          await dispatch(
+            addRestaurantTable({ restaurant: newData, files: attachments, travelers })
+          ).unwrap();
+        }
+    
+        // Only navigate after the async thunk is fully completed
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to save train:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    if (restaurantId && !existingRestaurant) return <div>Loading...</div>
+
 
   return (
     <FormContainer
@@ -205,7 +256,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -224,7 +275,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowCost(false);
-                    setValue("cost", undefined);
+                    setValue("cost", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -241,7 +292,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
           </Section>
         )}
         {(!!showAttachments ||
-          (!!showAttachments && !!existingRestaurant?.attachments)) && (
+          (!!showAttachments && !!existingAttachments)) && (
           <Section>
             <SectionGraphics>
               <AttachmentsIcon color={theme.iconText} />
@@ -253,12 +304,13 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAttachments(false);
-                    setValue("attachments", undefined);
+                    setValue("attachments", []);
                   }}
                 />
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
+                  key={existingRestaurant?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -268,7 +320,8 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingRestaurant?.notes)) && (
+        {(!!showAddNotes ||
+          (!!showAddNotes && !!existingRestaurant?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />
@@ -280,7 +333,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -350,6 +403,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!restaurantId ? "Add Restaurant" : "Update Restaurant"}
       </Button>

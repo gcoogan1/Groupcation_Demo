@@ -5,6 +5,7 @@ import {
   EventItem,
   FlightItem,
   RentalItem,
+  RestaurantItem,
   StayItem,
   TrainItem,
   TravelItem,
@@ -27,6 +28,7 @@ import BusActivity from "../../../components/Activites/BusActivity/BusActivity";
 import BoatActivity from "../../../components/Activites/BoatActivity/BoatActivity";
 import RentalActivity from "../../../components/Activites/RentalActivity/RentalActivity";
 import EventActivity from "../../../components/Activites/EventActivity/EventActivity";
+import RestaurantActivity from "../../../components/Activites/RestaurantActivity/RestaurantActivity";
 
 export const activityRenderMap = {
   train: (
@@ -455,6 +457,56 @@ export const activityRenderMap = {
           durationTime: duration,
           arrivalTime: cardArrivalDateTime,
           arrivalLocation: '',
+          travelers: travelers,
+        }}
+      />
+    );
+  },
+
+  restaurant: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "restaurant") return null;
+
+    const restaurant = item as RestaurantItem;
+
+    const travelers = restaurant.travelers
+      ? convertTableTraveler(restaurant.travelers, users)
+      : [];
+
+    const createdBy = createdByUserInfo(restaurant.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(restaurant.createdAt);
+    const departureTime = convertTimeToString(restaurant.reservationTime);
+    const cardDepartureDateTime = formatDateTimeForCard(
+      restaurant.reservationTime,
+      restaurant.reservationTime
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <RestaurantActivity
+        onEditClick={() => handleEditClick("restaurant", restaurant.id)}
+        cost={restaurant?.cost}
+        attachments={restaurant.attachments}
+        noteText={restaurant.notes}
+        onCostClick={() => handleOpenModal("cost", restaurant)}
+        onAttachmentClick={() => handleOpenModal("attachments", restaurant)}
+        onAddNotesClick={() => handleOpenModal("notes", restaurant)}
+        hightlightedActivityAction=""
+        activityText={`${restaurant.restaurantName}`}
+        reservationTime={`Reservation for ${departureTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: restaurant.restaurantName,
+          activitySubTitle: `${restaurant.tableType}`,
+          reservationTime: cardDepartureDateTime,
+          restaurantLocation: restaurant.restaurantAddress,
           travelers: travelers,
         }}
       />
