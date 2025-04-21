@@ -20,19 +20,19 @@ import {
   SecondaryLink,
   LinkTextContainer,
   CollapseButtonContainer,
-} from "./RestaurantActivity.styles";
+} from "./CelebrationActivity.styles";
 import { avatarTheme, theme } from "../../../styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
 import Edit from "../../../assets/Edit.svg?react";
-import RestaurantIcon from "../../../assets/Restaurant.svg?react";
+import CelebrationIcon from "../../../assets/Celebration.svg?react";
 import Cost from "../../../assets/Cost.svg?react";
 import ChevRight from "../../../assets/Chevron_Right.svg?react";
 import Attachments from "../../../assets/Attachments.svg?react";
 import Notes from "../../../assets/AdditionalNotes.svg?react";
-import RestaurantCard from "./RestaurantCard/RestaurantCard";
+import CelebrationCard from "./CelebrationCard/CelebrationCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { RestaurantAttachments } from "../../../types/restaurantTable.types";
+import { CelebrationAttachments } from "../../../types/celebrationTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -41,15 +41,17 @@ type Traveler = {
   color: AvatarThemeKeys;
 };
 
-export type RestaurantActivityCardDetails = {
+export type CelebrationActivityCardDetails = {
   activityTitle: string;
   activitySubTitle?: string;
-  reservationTime: string;
-  restaurantLocation: string;
+  startCardTime: string;
+  celebrationLocation: string;
+  durationTime: string;
+  endCardTime: string;
   travelers: Traveler[];
 };
 
-interface RestaurantActivitysProps {
+interface CelebrationActivitysProps {
   onEditClick: () => void;
   cost?: string;
   onCostClick: () => void;
@@ -58,13 +60,13 @@ interface RestaurantActivitysProps {
   noteText?: string;
   hightlightedActivityAction: string;
   activityText: string;
-  reservationTime: string;
-  attachments?: RestaurantAttachments[];
+  startTime: string;
+  attachments?: CelebrationAttachments[];
   footerText: string;
-  activityCardDetails: RestaurantActivityCardDetails;
+  activityCardDetails: CelebrationActivityCardDetails;
 }
 
-const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
+const CelebrationActivity: React.FC<CelebrationActivitysProps> = ({
   onEditClick,
   cost,
   onCostClick,
@@ -74,7 +76,7 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
   noteText,
   hightlightedActivityAction,
   activityText,
-  reservationTime,
+  startTime,
   footerText,
   activityCardDetails,
 }) => {
@@ -84,7 +86,10 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
   const {
     activityTitle,
     activitySubTitle,
-    restaurantLocation,
+    startCardTime,
+    celebrationLocation,
+    durationTime,
+    endCardTime,
     travelers,
   } = activityCardDetails;
 
@@ -117,8 +122,8 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
     >
       <ActivityItem isExpanded={expanded}>
         <ActivityItemContent>
-          <Pictogram type={"restaurant"}>
-            <RestaurantIcon color={theme.base} />
+          <Pictogram type={"celebration"}>
+            <CelebrationIcon color={theme.base} />
           </Pictogram>
           <div>
             <ActivityText>
@@ -127,7 +132,7 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
               </ActivityHighlightText>
               {activityText}
             </ActivityText>
-            <DepartureText>{reservationTime}</DepartureText>
+            <DepartureText>{startTime}</DepartureText>
           </div>
         </ActivityItemContent>
         <CollapseButtonContainer>
@@ -148,12 +153,14 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
         style={{ maxHeight: expanded ? contentRef.current?.scrollHeight : 0 }}
       >
         <ContentContainer>
-          <RestaurantCard
+          <CelebrationCard
             activityTitle={activityTitle}
             activitySubTitle={activitySubTitle}
-            reservationTime={activityCardDetails.reservationTime}
-            restaurantLocation={restaurantLocation}
-            travelers={travelers}
+            travelers={travelers} 
+            startCardTime={startCardTime} 
+            celebrationLocation={celebrationLocation} 
+            durationTime={durationTime} 
+            endCardTime={endCardTime}          
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>
@@ -221,4 +228,4 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
   );
 };
 
-export default RestaurantActivity;
+export default CelebrationActivity;

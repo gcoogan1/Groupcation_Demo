@@ -9,6 +9,7 @@ import boatReducer from "../modules/activities/boat/slice/boatSlice";
 import rentalReducer from "../modules/activities/rental/slice/rentalSlice";
 import restaurantReducer from "../modules/activities/restaurant/slice/restaurantSlice";
 import eventReducer from "../modules/activities/event/slice/eventSlice";
+import celebrationReducer from "../modules/activities/celebration/slice/celebrationSlice";
 import walkingRouteReducer from "../modules/routes/walking/slice/walkingRouteSlice";
 import drivingRouteReducer from "../modules/routes/driving/slice/drivingRouteSlice";
 import noteReducer from "../modules/extras/note/slice/noteSlice";
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   rental: rentalReducer,
   restaurant: restaurantReducer,
   event: eventReducer,
+  celebration: celebrationReducer,
   walkingRoute: walkingRouteReducer,
   drivingRoute: drivingRouteReducer,
   note: noteReducer,

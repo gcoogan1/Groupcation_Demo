@@ -1,5 +1,6 @@
 import BoatScreen from "../screens/Boat/BoatScreen";
 import BusScreen from "../screens/Bus/BusScreen";
+import CelebrationScreen from "../screens/Celebration/CelebrationScreen";
 import DrivingScreen from "../screens/Driving/DrivingScreen";
 import EventScreen from "../screens/Event/EventScreen";
 import FlightScreen from "../screens/Flight/FlightScreen";
@@ -85,6 +86,14 @@ export const ROUTES: Route[] = [
   {
     path: '/event-form/:eventId',
     element: <EventScreen /> 
+  },
+  {
+    path: '/celebration-form',
+    element: <CelebrationScreen /> 
+  },
+  {
+    path: '/celebration-form/:celebrationId',
+    element: <CelebrationScreen /> 
   },
   {
     path: '/walking-form',

@@ -65,6 +65,7 @@ import { theme } from "../../styles/theme";
 import {
   selectBoats,
   selectBuses,
+  selectCelebrations,
   selectConvertedUsersForFilters,
   selectEvents,
   selectFlights,
@@ -243,13 +244,14 @@ const HomeScreen = () => {
   const boats = useSelector(selectBoats);
   const rentals = useSelector(selectRentals);
   const events = useSelector(selectEvents);
-  const restaurants = useSelector(selectRestaurants)
+  const restaurants = useSelector(selectRestaurants);
+  const celebrations = useSelector(selectCelebrations);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
-    () => groupTravelItemsByDate(restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation),
-    [restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation]
+    () => groupTravelItemsByDate(celebrations, restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation),
+    [celebrations, restaurants, events, rentals, boats, buses, stays, flights, trains, groupcation]
   );
 
   const filteredGrouped = useMemo(

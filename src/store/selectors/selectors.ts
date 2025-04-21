@@ -122,3 +122,15 @@ export const selectRestaurantById = createSelector(
   [(state: RootState) => state.restaurant.restaurants, (_, restaurantId?: string) => restaurantId],
   (restaurants, restaurantId) => (restaurantId ? restaurants.find((restaurant) => restaurant.id === restaurantId) : undefined)
 );
+
+// Memoized selector for celebrations
+export const selectCelebrations = createSelector(
+  [(state: RootState) => state.celebration.celebrations],
+  (celebrations) => [...celebrations]
+);
+
+// Memoized selector for celebration (found by celebration id)
+export const selectCelebrationById = createSelector(
+  [(state: RootState) => state.celebration.celebrations, (_, celebrationId?: string) => celebrationId],
+  (celebrations, celebrationId) => (celebrationId ? celebrations.find((celebration) => celebration.id === celebrationId) : undefined)
+);

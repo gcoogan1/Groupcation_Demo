@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
-import { eventSchema } from "../schema/eventSchema";
+import { celebrationSchema } from "../schema/celebrationSchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -19,7 +19,7 @@ import {
   SectionGraphics,
   SectionGraphicsLine,
   SectionInputs,
-} from "./EventForm.styles";
+} from "./CelebrationForm.styles";
 import { theme } from "../../../../styles/theme";
 import InputText from "../../../../components/Inputs/InputText/InputText";
 import InputDate from "../../../../components/Inputs/InputDate/InputDate";
@@ -28,7 +28,7 @@ import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/Input
 import Button from "../../../../components/Button/Button";
 import StartIcon from "../../../../assets/Start.svg?react";
 import EndIcon from "../../../../assets/End.svg?react";
-import EventIcon from "../../../../assets/Event.svg?react";
+import CelebrationIcon from "../../../../assets/Celebration.svg?react";
 import UsersIcon from "../../../../assets/Users.svg?react";
 import CostIcon from "../../../../assets/Cost.svg?react";
 import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
@@ -40,34 +40,34 @@ import InputAttachment from "../../../../components/Inputs/InputAttachment/Input
 import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
 import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "../../../../store/selectors/selectors";
-import { addEventTable, fetchEventTable, updateEventTable } from "../thunk/eventThunk";
+import { addCelebrationTable, fetchCelebrationTable, updateCelebrationTable } from "../thunk/celebrationThunk";
 
-type EventFormData = z.infer<typeof eventSchema>;
+type CelebrationFormData = z.infer<typeof celebrationSchema>;
 
-interface EventFormProps {
-  eventId?: string;
+interface CelebrationFormProps {
+  celebrationId?: string;
 }
 
-const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
+const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  // FETCH EXISTING EVENT DATA FROM STATE IF ID PASSED
-  const existingEvent = useSelector((state: RootState) =>
-    state.event.events.find((event) => event.id === eventId)
+  // FETCH EXISTING CELEBRATION DATA FROM STATE IF ID PASSED
+  const existingCelebration = useSelector((state: RootState) =>
+    state.celebration.celebrations.find((celebration) => celebration.id === celebrationId)
   );
   // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
   const users = useSelector(selectConvertedUsers);
   // FETCH ANY EXISTING ATTACHMENTS
   const existingAttachments =
-    !!existingEvent?.attachments && existingEvent.attachments.length > 0;
+    !!existingCelebration?.attachments && existingCelebration.attachments.length > 0;
 
   // FORM STATE
-  const [showCost, setShowCost] = useState(!!existingEvent?.cost);
+  const [showCost, setShowCost] = useState(!!existingCelebration?.cost);
   const [showAttachments, setShowAttachments] = useState(false);
-  const [showAddNotes, setShowAddNotes] = useState(!!existingEvent?.notes);
+  const [showAddNotes, setShowAddNotes] = useState(!!existingCelebration?.notes);
   const [amount, setAmount] = useState(() => {
-    const costString = existingEvent?.cost;
+    const costString = existingCelebration?.cost;
     if (costString) {
       const num = Math.round(parseFloat(costString) * 100);
       return isNaN(num) ? 0 : num;
@@ -88,76 +88,76 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<EventFormData>({
-    resolver: zodResolver(eventSchema),
+  } = useForm<CelebrationFormData>({
+    resolver: zodResolver(celebrationSchema),
   });
 
-  // FETCH EVENT DATA FROM API
+  // FETCH CELEBRATION DATA FROM API
   useEffect(() => {
     // Scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    if (eventId) {
-      dispatch(fetchEventTable(eventId));
+    if (celebrationId) {
+      dispatch(fetchCelebrationTable(celebrationId));
     }
-  }, [dispatch, eventId]);
+  }, [dispatch, celebrationId]);
 
   // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
-    if (existingEvent) {
-      // Reset to todays date/time if remaining event date/time is not present
-      const convertedEvent = {
-        ...existingEvent,
-        startDate: existingEvent.startDate
-          ? new Date(existingEvent.startDate)
+    if (existingCelebration) {
+      // Reset to todays date/time if remaining celebration date/time is not present
+      const convertedCelebration = {
+        ...existingCelebration,
+        startDate: existingCelebration.startDate
+          ? new Date(existingCelebration.startDate)
           : new Date(),
-        endDate: existingEvent.endDate
-          ? new Date(existingEvent.endDate)
+        endDate: existingCelebration.endDate
+          ? new Date(existingCelebration.endDate)
           : new Date(),
-        startTime: existingEvent.startTime
-          ? new Date(existingEvent.startTime)
+        startTime: existingCelebration.startTime
+          ? new Date(existingCelebration.startTime)
           : new Date(),
-        endTime: existingEvent.endTime
-          ? new Date(existingEvent.endTime)
+        endTime: existingCelebration.endTime
+          ? new Date(existingCelebration.endTime)
           : new Date(),
       };
 
-      reset(convertedEvent);
+      reset(convertedCelebration);
 
       if (existingAttachments) {
         setShowAttachments(true);
       }
-      if (existingEvent.notes) {
+      if (existingCelebration.notes) {
         setShowAddNotes(true);
       }
     } else {
       reset();
     }
-  }, [existingEvent, existingAttachments, reset]);
+  }, [existingCelebration, existingAttachments, reset]);
 
-  // SUBMIT EVENT FORM DATA
-  const onSubmit = async (data: EventFormData) => {
+  // SUBMIT CELEBRATION FORM DATA
+  const onSubmit = async (data: CelebrationFormData) => {
     const { attachments, travelers, ...rest } = data;
     setIsLoading(true);
 
     try {
-      // UPDATE EVENT
-      if (eventId) {
-        const updatedEvent = {
-          ...existingEvent,
+      // UPDATE CELEBRATION
+      if (celebrationId) {
+        const updatedCelebration = {
+          ...existingCelebration,
           ...rest,
-          id: Number(existingEvent?.id),
+          id: Number(existingCelebration?.id),
         };
 
         await dispatch(
-          updateEventTable({
-            event: updatedEvent,
+          updateCelebrationTable({
+            celebration: updatedCelebration,
             files: attachments,
             selectedTravelers: travelers,
           })
         ).unwrap();
       } else {
-        // ADD EVENT
+        // ADD CELEBRATION
         const newData = {
           groupcationId: 333,
           createdBy: 3,
@@ -165,19 +165,19 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
         };
 
         await dispatch(
-          addEventTable({ event: newData, files: attachments, travelers })
+          addCelebrationTable({ celebration: newData, files: attachments, travelers })
         ).unwrap();
       }
 
       navigate("/");
     } catch (error) {
-      console.error("Failed to save event:", error);
+      console.error("Failed to save celebration:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (eventId && !existingEvent) return <div>Loading...</div>;
+  if (celebrationId && !existingCelebration) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -197,18 +197,18 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.eventName}
+                error={errors.celebrationName}
                 register={register}
-                label={"Name of Event"}
-                name={"eventName"}
-                placeholder="Enter name of the event"
+                label={"Name of Celebration"}
+                name={"celebrationName"}
+                placeholder="Enter name of the celebration"
               />
               <InputText
-                error={errors.eventLocation}
+                error={errors.celebrationLocation}
                 register={register}
                 label={"Location"}
-                name={"eventLocation"}
-                placeholder="Enter address for the event"
+                name={"celebrationLocation"}
+                placeholder="Enter address for the celebration"
               />
             </SectionInputs>
           </SectionContents>
@@ -256,27 +256,20 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
         </Section>
         <Section>
           <SectionGraphics>
-            <EventIcon color={theme.iconText} />
+            <CelebrationIcon color={theme.iconText} />
             <SectionGraphicsLine />
           </SectionGraphics>
           <SectionContents>
             <ContentTitleContainer>
-              <ContentTitle>Event</ContentTitle>
+              <ContentTitle>Celebration</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
               <InputText
-                error={errors.eventOrganizer}
+                error={errors.celebrationType}
                 register={register}
-                label={"Name of Organizer"}
-                name={"eventOrganizer"}
-                placeholder="Enter name of the organizer"
-              />
-              <InputText
-                error={errors.ticketType}
-                register={register}
-                label={"Ticket Type"}
-                name={"ticketType"}
-                placeholder="Enter type of ticket / seat you have"
+                label={"Celebration Type"}
+                name={"celebrationType"}
+                placeholder="Enter type of celebration"
               />
             </SectionInputs>
           </SectionContents>
@@ -301,7 +294,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
             </SectionInputs>
           </SectionContents>
         </Section>
-        {(!!showCost || (!!showCost && !!existingEvent?.cost)) && (
+        {(!!showCost || (!!showCost && !!existingCelebration?.cost)) && (
           <Section>
             <SectionGraphics>
               <CostIcon color={theme.iconText} />
@@ -348,17 +341,17 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
-                  key={existingEvent?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={existingCelebration?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
-                  defaultFiles={existingEvent?.attachments || []}
+                  defaultFiles={existingCelebration?.attachments || []}
                 />
               </SectionInputs>
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingEvent?.notes)) && (
+        {(!!showAddNotes || (!!showAddNotes && !!existingCelebration?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />
@@ -442,10 +435,10 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
         type="submit"
         isLoading={isLoading}
       >
-        {!eventId ? "Add Event" : "Update Event"}
+        {!celebrationId ? "Add Celebration" : "Update Celebration"}
       </Button>
     </FormContainer>
   );
 };
 
-export default EventForm;
+export default CelebrationForm;

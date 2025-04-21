@@ -2,6 +2,7 @@ import TrainActivity from "../../../components/Activites/TrainActivity/TrainActi
 import {
   BoatItem,
   BusItem,
+  CelebrationItem,
   EventItem,
   FlightItem,
   RentalItem,
@@ -29,6 +30,7 @@ import BoatActivity from "../../../components/Activites/BoatActivity/BoatActivit
 import RentalActivity from "../../../components/Activites/RentalActivity/RentalActivity";
 import EventActivity from "../../../components/Activites/EventActivity/EventActivity";
 import RestaurantActivity from "../../../components/Activites/RestaurantActivity/RestaurantActivity";
+import CelebrationActivity from "../../../components/Activites/CelebrationActivity/CelebrationActivity";
 
 export const activityRenderMap = {
   train: (
@@ -272,6 +274,7 @@ export const activityRenderMap = {
       />
     );
   },
+
   boat: (
     item: TravelItem,
     users: UserTable[],
@@ -507,6 +510,69 @@ export const activityRenderMap = {
           activitySubTitle: `${restaurant.tableType}`,
           reservationTime: cardDepartureDateTime,
           restaurantLocation: restaurant.restaurantAddress,
+          travelers: travelers,
+        }}
+      />
+    );
+  },
+
+  celebration: (
+    item: TravelItem,
+    users: UserTable[],
+    handleOpenModal: (
+      type: "cost" | "attachments" | "notes",
+      item: TravelItem
+    ) => void,
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "celebration") return null;
+
+    const celebration = item as CelebrationItem;
+
+    const travelers = celebration.travelers
+      ? convertTableTraveler(celebration.travelers, users)
+      : [];
+
+    const duration = getDurationInDaysHoursAndMinutes(
+      celebration.startDate.toLocaleString(),
+      celebration.startTime,
+      celebration.endDate,
+      celebration.endTime
+    );
+
+    const createdBy = createdByUserInfo(celebration.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(celebration.createdAt);
+    const startTime = convertTimeToString(celebration.startTime);
+    const cardStartDateTime = formatDateTimeForCard(
+      celebration.startTime,
+      celebration.startDate
+    );
+    const cardEndDateTime = formatDateTimeForCard(
+      celebration.endTime,
+      celebration.endDate
+    );
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <CelebrationActivity
+        onEditClick={() => handleEditClick("celebration", celebration.id)}
+        cost={celebration?.cost}
+        attachments={celebration.attachments}
+        noteText={celebration.notes}
+        onCostClick={() => handleOpenModal("cost", celebration)}
+        onAttachmentClick={() => handleOpenModal("attachments", celebration)}
+        onAddNotesClick={() => handleOpenModal("notes", celebration)}
+        hightlightedActivityAction="Celebration"
+        activityText={`${celebration.celebrationName}`}
+        startTime={`Starts at ${startTime}`}
+        footerText={footer}
+        activityCardDetails={{
+          activityTitle: celebration.celebrationName,
+          activitySubTitle: `${celebration.celebrationType}`,
+          startCardTime: cardStartDateTime,
+          celebrationLocation: celebration.celebrationLocation,
+          durationTime: duration,
+          endCardTime: cardEndDateTime,
           travelers: travelers,
         }}
       />

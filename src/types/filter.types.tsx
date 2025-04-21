@@ -17,6 +17,7 @@ import { BoatUITable } from "./boatTable.types";
 import { RentalUITable } from "./rentalTable.types";
 import { EventUITable } from "./eventTable.types";
 import { RestaurantUITable } from "./restaurantTable.types";
+import { CelebrationUITable } from "./celebrationTable.types";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
@@ -50,6 +51,7 @@ export type BoatItem = BoatUITable & BaseTravelItem & { type: "boat" };
 export type RentalItem = RentalUITable & BaseTravelItem & { type: "rental" };
 export type EventItem = EventUITable & BaseTravelItem & { type: "event" };
 export type RestaurantItem = RestaurantUITable & BaseTravelItem & { type: "restaurant" };
+export type CelebrationItem = CelebrationUITable & BaseTravelItem & { type: "celebration" };
 
 export type TravelItem =
   | TrainItem
@@ -59,7 +61,8 @@ export type TravelItem =
   | BoatItem
   | RentalItem
   | EventItem
-  | RestaurantItem;
+  | RestaurantItem
+  | CelebrationItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 

@@ -1,0 +1,35 @@
+import { z } from "zod";
+
+export const celebrationSchema = z.object({
+  celebrationName: z.string().min(3, "Name of celebration is required."),
+  celebrationLocation: z.string().min(1, "Celebration address is required."),
+  startDate: z.date({ required_error: "Start date is required." }),
+  startTime: z.date({ required_error: "Start time is required." }),
+  endDate: z.date({ required_error: "End date is required." }),
+  endTime: z.date({ required_error: "End time is required." }),
+  celebrationType: z.string().min(3, "Celebration type is required."),
+  travelers: z
+    .array(
+      z.object({
+        value: z.number(),
+        label: z.string(),
+      })
+    )
+    .optional(),
+  cost: z.string().nullable().optional(),
+  attachments: z
+    .array(
+      z.object({
+        id: z.union([z.string(), z.number()]).optional(),
+        createdAt: z.string().optional(),
+        fileName: z.string(),
+        trainId: z.number().optional(),
+        addedBy: z.number().optional(),
+        file: z.instanceof(File).optional(),
+        fileUrl: z.string().url("File URL is invalid"), // URL for preview
+        fileType: z.string(), // file MIME type
+        fileSize: z.number().min(0, "File size cannot be negative"), // in bytes
+      })
+    ).optional(),
+  notes: z.string().min(10, "Must have at least 10 characters.").nullable().optional()
+});
