@@ -1,6 +1,7 @@
 import MenuItem from "../MenuItem/MenuItem";
 import Pictogram from "../Pictogram/Pictogram";
 import {
+  Header,
   PanelContainer,
   PanelSection,
   SectionHeader,
@@ -15,6 +16,10 @@ import RentalIcon from "../../assets/Rental.svg?react";
 import ResturantIcon from "../../assets/Restaurant.svg?react";
 import EventIcon from "../../assets/Event.svg?react";
 import CelebrationIcon from "../../assets/Celebration.svg?react";
+import WalkingIcon from "../../assets/Walking.svg?react";
+import DrivingIcon from "../../assets/Driving.svg?react";
+import NoteIcon from "../../assets/Note.svg?react";
+import GroupcationIcon from "../../assets/Groupcation_icon.svg?react";
 import { theme } from "../../styles/theme";
 import { useNavigate } from "react-router-dom";
 
@@ -87,12 +92,88 @@ const Panel = () => {
     },
   ];
 
+  const panelRouteRoutes: PanelRoute[] = [
+    {
+      icon: <WalkingIcon color={theme.walking} />,
+      type: "walking",
+      text: "Walking",
+      onClick: () => navigate("/walking-form"),
+    },
+    {
+      icon: <DrivingIcon color={theme.driving} />,
+      type: "driving",
+      text: "Driving",
+      onClick: () => navigate("/driving-form"),
+    },
+  ];
+
+  const panelExtraRoutes: PanelRoute[] = [
+    {
+      icon: <NoteIcon color={theme.note} />,
+      type: "noteOpacity",
+      text: "Note",
+      onClick: () => navigate("/note-form"),
+    },
+    {
+      icon: <GroupcationIcon color={theme.groupcation} />,
+      type: "groupcationOpacity",
+      text: "Linked Trip",
+      onClick: () => navigate("/linked-trip-form"),
+    },
+  ];
+
   return (
     <PanelContainer>
       <PanelSection>
-        <SectionHeader>Activites</SectionHeader>
+        <SectionHeader>
+          <Header>Activites</Header>
+        </SectionHeader>
         <SectionList>
           {panelActiviyRoutes.map((route) => {
+            return (
+              <MenuItem
+                pictogram={
+                  <Pictogram size="medium" type={route.type}>
+                    {route.icon}
+                  </Pictogram>
+                }
+                onClick={route.onClick}
+                text={route.text}
+              />
+            );
+          })}
+        </SectionList>
+      </PanelSection>
+      <PanelSection>
+        <SectionHeader>
+          <Header>Routes</Header>
+        </SectionHeader>
+        <SectionList>
+          {panelRouteRoutes.map((route) => {
+            return (
+              <MenuItem
+                pictogram={
+                  <Pictogram
+                    size="medium"
+                    type={route.type}
+                    innerBorderColor={route.type}
+                  >
+                    {route.icon}
+                  </Pictogram>
+                }
+                onClick={route.onClick}
+                text={route.text}
+              />
+            );
+          })}
+        </SectionList>
+      </PanelSection>
+      <PanelSection>
+        <SectionHeader>
+          <Header>Extras</Header>
+        </SectionHeader>
+        <SectionList>
+          {panelExtraRoutes.map((route) => {
             return (
               <MenuItem
                 pictogram={

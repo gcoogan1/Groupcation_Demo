@@ -22,12 +22,22 @@ export const PanelSection = styled.div`
 
 export const SectionHeader = styled.div`
   display: flex;
-  border-radius: 16px;
   padding: 16px 16px 8px 16px;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   align-self: stretch;
   background: linear-gradient(0deg, rgba(244, 244, 244, 0.00) 0%, #F4F4F4 100%);
+
+  &:first-of-type {
+    border-radius: 16px;
+  }
+`
+
+export const Header = styled.p`
+  color: ${theme.iconText};
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px
 `
 
 export const SectionList = styled.div`
@@ -35,7 +45,7 @@ export const SectionList = styled.div`
   /* padding: 0px 8px; */
   align-items: center;
   align-content: center;
-  justify-content: center;
+  justify-content: baseline;
   align-self: stretch;
   flex-wrap: wrap;
 `
