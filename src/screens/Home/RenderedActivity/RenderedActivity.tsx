@@ -1,4 +1,4 @@
-import TrainActivity from "@components/Activites/TrainActivity/TrainActivity";
+import TrainActivity from "@components/Filters/Activites/TrainActivity/TrainActivity";
 import {
   BoatItem,
   BusItem,
@@ -23,14 +23,14 @@ import {
   getNumberOfNights,
 } from "@utils/dateFunctions/dateFunctions";
 import { UserTable } from "@tableTypes/userTable";
-import FlightActivity from "@components/Activites/FlightActivity/FlightActivity";
-import StayActivity from "@components/Activites/StayActivity/StayActivity";
-import BusActivity from "@components/Activites/BusActivity/BusActivity";
-import BoatActivity from "@components/Activites/BoatActivity/BoatActivity";
-import RentalActivity from "@components/Activites/RentalActivity/RentalActivity";
-import EventActivity from "@components/Activites/EventActivity/EventActivity";
-import RestaurantActivity from "@components/Activites/RestaurantActivity/RestaurantActivity";
-import CelebrationActivity from "@components/Activites/CelebrationActivity/CelebrationActivity";
+import FlightActivity from "@components/Filters/Activites/FlightActivity/FlightActivity";
+import StayActivity from "@components/Filters/Activites/StayActivity/StayActivity";
+import BusActivity from "@components/Filters/Activites/BusActivity/BusActivity";
+import BoatActivity from "@components/Filters/Activites/BoatActivity/BoatActivity";
+import RentalActivity from "@components/Filters/Activites/RentalActivity/RentalActivity";
+import EventActivity from "@components/Filters/Activites/EventActivity/EventActivity";
+import RestaurantActivity from "@components/Filters/Activites/RestaurantActivity/RestaurantActivity";
+import CelebrationActivity from "@components/Filters/Activites/CelebrationActivity/CelebrationActivity";
 
 export const activityRenderMap = {
   train: (
