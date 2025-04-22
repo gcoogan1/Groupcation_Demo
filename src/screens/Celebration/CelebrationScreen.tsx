@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import CelebrationForm from "../../modules/activities/celebration/components/CelebrationForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import CelebrationForm from "@modules/activities/celebration/components/CelebrationForm";
 
 const CelebrationScreen = () => {
 	const { celebrationId } = useParams();

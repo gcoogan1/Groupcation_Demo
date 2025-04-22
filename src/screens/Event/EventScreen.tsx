@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import EventForm from "../../modules/activities/event/components/EventForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import EventForm from "@modules/activities/event/components/EventForm";
 
 const EventScreen = () => {
 	const { eventId } = useParams();

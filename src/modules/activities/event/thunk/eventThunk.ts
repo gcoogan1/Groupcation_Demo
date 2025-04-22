@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   EventTable,
   EventAttachments,
-} from "../../../../types/eventTable.types";
+} from "@tableTypes/eventTable.types";
 
 // ----> NOTES <---- //
 // EVENT STATE: camalCASE
@@ -22,14 +22,14 @@ type Traveler = {
 
 interface Event {
   id: string;
-	groupcationId?: number;
+  groupcationId?: number;
   createdBy?: number;
-	eventName: string;
-	eventLocation: string;
-	startDate: string;
-	startTime: string;
-	endDate: string;
-	endTime: string;
+  eventName: string;
+  eventLocation: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
   ticketType: string;
   travelers?: Traveler[];
   cost?: string;
@@ -302,7 +302,9 @@ export const updateEventTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteEventAttachment({ attachmentId, eventId: id })).unwrap();
+          await dispatch(
+            deleteEventAttachment({ attachmentId, eventId: id })
+          ).unwrap();
         })
       );
     }
@@ -335,7 +337,9 @@ export const updateEventTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteEventTraveler({ travelerId, eventId: id })).unwrap();
+          await dispatch(
+            deleteEventTraveler({ travelerId, eventId: id })
+          ).unwrap();
         })
       );
     }

@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   RentalTable,
   RentalAttachments,
-} from "../../../../types/rentalTable.types";
+} from "@tableTypes/rentalTable.types";
 
 // ----> NOTES <---- //
 // RENTAL STATE: camalCASE
@@ -303,7 +303,9 @@ export const updateRentalTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteRentalAttachment({ attachmentId, rentalId: id })).unwrap();
+          await dispatch(
+            deleteRentalAttachment({ attachmentId, rentalId: id })
+          ).unwrap();
         })
       );
     }
@@ -336,7 +338,9 @@ export const updateRentalTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteRentalTraveler({ travelerId, rentalId: id })).unwrap();
+          await dispatch(
+            deleteRentalTraveler({ travelerId, rentalId: id })
+          ).unwrap();
         })
       );
     }
@@ -370,7 +374,10 @@ export const deleteRentalTable = createAsyncThunk(
   "rental/deleteRental",
   async (rentalId: string) => {
     // --- STEP 1: DETELE RENTAL TABLE BASED ON RENTAL ID --- //
-    const { error } = await supabase.from("rentals").delete().eq("id", rentalId);
+    const { error } = await supabase
+      .from("rentals")
+      .delete()
+      .eq("id", rentalId);
     if (error) {
       throw new Error(error.message);
     }

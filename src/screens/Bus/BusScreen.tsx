@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import BusForm from "../../modules/activities/bus/components/BusForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import BusForm from "@modules/activities/bus/components/BusForm";
 
 const BusScreen = () => {
 	const { busId } = useParams();

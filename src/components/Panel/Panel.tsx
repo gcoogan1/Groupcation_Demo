@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import MenuItem from "../MenuItem/MenuItem";
 import Pictogram from "../Pictogram/Pictogram";
 import {
@@ -7,21 +8,20 @@ import {
   SectionHeader,
   SectionList,
 } from "./Panel.styles";
-import StayIcon from "../../assets/Stay.svg?react";
-import FlightIcon from "../../assets/Flight.svg?react";
-import TrainIcon from "../../assets/Bus.svg?react";
-import BusIcon from "../../assets/Bus.svg?react";
-import BoatIcon from "../../assets/Boat.svg?react";
-import RentalIcon from "../../assets/Rental.svg?react";
-import ResturantIcon from "../../assets/Restaurant.svg?react";
-import EventIcon from "../../assets/Event.svg?react";
-import CelebrationIcon from "../../assets/Celebration.svg?react";
-import WalkingIcon from "../../assets/Walking.svg?react";
-import DrivingIcon from "../../assets/Driving.svg?react";
-import NoteIcon from "../../assets/Note.svg?react";
-import GroupcationIcon from "../../assets/Groupcation_icon.svg?react";
-import { theme } from "../../styles/theme";
-import { useNavigate } from "react-router-dom";
+import StayIcon from "@assets/Stay.svg?react";
+import FlightIcon from "@assets/Flight.svg?react";
+import TrainIcon from "@assets/Bus.svg?react";
+import BusIcon from "@assets/Bus.svg?react";
+import BoatIcon from "@assets/Boat.svg?react";
+import RentalIcon from "@assets/Rental.svg?react";
+import ResturantIcon from "@assets/Restaurant.svg?react";
+import EventIcon from "@assets/Event.svg?react";
+import CelebrationIcon from "@assets/Celebration.svg?react";
+import WalkingIcon from "@assets/Walking.svg?react";
+import DrivingIcon from "@assets/Driving.svg?react";
+import NoteIcon from "@assets/Note.svg?react";
+import GroupcationIcon from "@assets/Groupcation_icon.svg?react";
+import { theme } from "@styles/theme";
 
 type ThemeKeys = keyof typeof theme;
 

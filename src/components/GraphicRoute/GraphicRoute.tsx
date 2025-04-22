@@ -1,4 +1,4 @@
-import { theme } from "../../styles/theme";
+import { theme } from "@styles/theme";
 import { BottomLine, GRouteContainer, TopLine } from "./GraphicRoute.styles";
 
 type ThemeKeys = keyof typeof theme;

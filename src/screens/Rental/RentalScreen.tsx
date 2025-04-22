@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import RentalForm from "../../modules/activities/rental/components/RentalForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import RentalForm from "@modules/activities/rental/components/RentalForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const RentalScreen = () => {

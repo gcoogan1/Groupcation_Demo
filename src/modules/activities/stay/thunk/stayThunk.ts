@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   StayTable,
   StayAttachments,
-} from "../../../../types/stayTable.types";
+} from "@tableTypes/stayTable.types";
 
 // ----> NOTES <---- //
 // STAY STATE: camalCASE
@@ -74,33 +74,33 @@ export const fetchStayByGroupcationId = createAsyncThunk(
 
     if (attachmentError) throw new Error(attachmentError.message);
 
-      // --- STEP 4: COMBINE DATA: STAY + TRAVELERS + ATTACHMENTS --- //
-      const result = stays.map((stay) => {
-        // Get travelers for the current stay
-        const stayTravelers = travelers.filter(
-          (traveler) => traveler.stay_id === stay.id
-        );
-  
-        // Get attachments for the current stay
-        const stayAttachments = attachments.filter(
-          (attachment) => attachment.stay_id === stay.id
-        );
-  
-        // Combine the stay data with its associated travelers and attachments
-        const sanitizedStay = replaceNullWithUndefined(stay);
-        const convertedDataDates = convertFormDatesToString(sanitizedStay);
-        const combinedStayData = transformToCamelCase({
-          ...convertedDataDates,
-          id: stay.id.toString(),
-          travelers: stayTravelers,
-          attachments: stayAttachments,
-        });
-  
-        return combinedStayData;
+    // --- STEP 4: COMBINE DATA: STAY + TRAVELERS + ATTACHMENTS --- //
+    const result = stays.map((stay) => {
+      // Get travelers for the current stay
+      const stayTravelers = travelers.filter(
+        (traveler) => traveler.stay_id === stay.id
+      );
+
+      // Get attachments for the current stay
+      const stayAttachments = attachments.filter(
+        (attachment) => attachment.stay_id === stay.id
+      );
+
+      // Combine the stay data with its associated travelers and attachments
+      const sanitizedStay = replaceNullWithUndefined(stay);
+      const convertedDataDates = convertFormDatesToString(sanitizedStay);
+      const combinedStayData = transformToCamelCase({
+        ...convertedDataDates,
+        id: stay.id.toString(),
+        travelers: stayTravelers,
+        attachments: stayAttachments,
       });
-  
-      // --- STEP 5: RETURN COMBINED DATA TO STATE --- //
-      return result;
+
+      return combinedStayData;
+    });
+
+    // --- STEP 5: RETURN COMBINED DATA TO STATE --- //
+    return result;
   }
 );
 
@@ -277,10 +277,11 @@ export const updateStayTable = createAsyncThunk(
 
     // --- STEP 3: FETCH EXISTING ATTACHMENTS ---
     // Find existing attachments table (if any)
-    const { data: existingAttachments, error: fetchAttachmentError } = await supabase
-      .from("stay_attachments")
-      .select("id, file_name")
-      .eq("stay_id", id);
+    const { data: existingAttachments, error: fetchAttachmentError } =
+      await supabase
+        .from("stay_attachments")
+        .select("id, file_name")
+        .eq("stay_id", id);
 
     // IF ERROR
     if (fetchAttachmentError)
@@ -301,16 +302,19 @@ export const updateStayTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteStayAttachment({ attachmentId, stayId: id })).unwrap();
+          await dispatch(
+            deleteStayAttachment({ attachmentId, stayId: id })
+          ).unwrap();
         })
       );
     }
 
     // --- STEP 6: FETCH EXISTING TRAVELERS --- //
-    const { data: existingTravelers, error: fetchTravelerError } = await supabase
-      .from("stay_travelers")
-      .select("traveler_id")
-      .eq("stay_id", id);
+    const { data: existingTravelers, error: fetchTravelerError } =
+      await supabase
+        .from("stay_travelers")
+        .select("traveler_id")
+        .eq("stay_id", id);
 
     // IF ERROR
     if (fetchTravelerError)
@@ -329,13 +333,15 @@ export const updateStayTable = createAsyncThunk(
       (travelerId) => !selectedTravelerIds.has(travelerId)
     );
 
-    console.log("DELETE TRAVELERS:" ,travelersToDelete)
+    console.log("DELETE TRAVELERS:", travelersToDelete);
 
     // --- STEP 8: DELETE TRAVELERS --- //
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteStayTraveler({ travelerId, stayId: id })).unwrap();
+          await dispatch(
+            deleteStayTraveler({ travelerId, stayId: id })
+          ).unwrap();
         })
       );
     }
@@ -556,13 +562,7 @@ export const deleteStayAttachment = createAsyncThunk(
 // --- STAY TRAVELERS --- //
 export const addStayTravelersTable = createAsyncThunk(
   "stay/addStayTravelers",
-  async ({
-    travelers,
-    stayId,
-  }: {
-    travelers: Traveler[];
-    stayId: string;
-  }) => {
+  async ({ travelers, stayId }: { travelers: Traveler[]; stayId: string }) => {
     try {
       // --- STEP 1: FETCH TRAVELERS BY STAY ID --- //
       const { data: existingTravelers, error: fetchError } = await supabase

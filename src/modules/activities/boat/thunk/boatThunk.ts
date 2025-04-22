@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   BoatTable,
   BoatAttachments,
-} from "../../../../types/boatTable.types";
+} from "@tableTypes/boatTable.types";
 
 // ----> NOTES <---- //
 // BOAT STATE: camalCASE
@@ -25,7 +25,7 @@ interface Boat {
   groupcationId?: number;
   createdBy?: number;
   boatCruiseLine: string;
-	boatCruiseClass: string;
+  boatCruiseClass: string;
   departureDock: string;
   departureDate: string;
   departureTime: string;
@@ -303,7 +303,9 @@ export const updateBoatTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteBoatAttachment({ attachmentId, boatId: id })).unwrap();
+          await dispatch(
+            deleteBoatAttachment({ attachmentId, boatId: id })
+          ).unwrap();
         })
       );
     }
@@ -336,7 +338,9 @@ export const updateBoatTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteBoatTraveler({ travelerId, boatId: id })).unwrap();
+          await dispatch(
+            deleteBoatTraveler({ travelerId, boatId: id })
+          ).unwrap();
         })
       );
     }
@@ -556,13 +560,7 @@ export const deleteBoatAttachment = createAsyncThunk(
 // --- BOAT TRAVELERS --- //
 export const addBoatTravelersTable = createAsyncThunk(
   "boat/addBoatTravelers",
-  async ({
-    travelers,
-    boatId,
-  }: {
-    travelers: Traveler[];
-    boatId: string;
-  }) => {
+  async ({ travelers, boatId }: { travelers: Traveler[]; boatId: string }) => {
     try {
       // --- STEP 1: FETCH TRAVELERS BY BOAT ID --- //
       const { data: existingTravelers, error: fetchError } = await supabase

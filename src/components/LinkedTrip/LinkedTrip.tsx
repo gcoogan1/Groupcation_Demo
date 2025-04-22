@@ -1,4 +1,4 @@
-import { avatarTheme } from "../../styles/theme";
+import { avatarTheme } from "@styles/theme";
 import AvatarStack from "../AvatarStack/AvatarStack";
 import {
 	AvatarStackWrapper,

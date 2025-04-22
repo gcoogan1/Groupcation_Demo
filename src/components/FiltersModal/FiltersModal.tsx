@@ -1,5 +1,5 @@
 import React from "react";
-import FilterIcon from "../../assets/Filter.svg?react";
+import FilterIcon from "@assets/Filter.svg?react";
 import {
   HeaderText,
   ModalBody,
@@ -8,7 +8,7 @@ import {
   ModalSubmitContainer,
   ModalWrapper,
 } from "./FiltersModal.styles";
-import { theme } from "../../styles/theme";
+import { theme } from "@styles/theme";
 import CloseButton from "../CloseButton/CloseButton";
 import Button from "../Button/Button";
 

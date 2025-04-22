@@ -21,18 +21,18 @@ import {
   LinkTextContainer,
   CollapseButtonContainer,
 } from "./BoatActivity.styles";
-import { avatarTheme, theme } from "../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
-import Edit from "../../../assets/Edit.svg?react";
-import BoatIcon from "../../../assets/Boat.svg?react";
-import Cost from "../../../assets/Cost.svg?react";
-import ChevRight from "../../../assets/Chevron_Right.svg?react";
-import Attachments from "../../../assets/Attachments.svg?react";
-import Notes from "../../../assets/AdditionalNotes.svg?react";
+import Edit from "@assets/Edit.svg?react";
+import BoatIcon from "@assets/Boat.svg?react";
+import Cost from "@assets/Cost.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import Attachments from "@assets/Attachments.svg?react";
+import Notes from "@assets/AdditionalNotes.svg?react";
 import BoatCard from "./BoatCard/BoatCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { BoatAttachments } from "../../../types/boatTable.types";
+import { BoatAttachments } from "@tableTypes/boatTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 

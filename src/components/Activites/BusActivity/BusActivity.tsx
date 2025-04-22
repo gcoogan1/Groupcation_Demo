@@ -21,18 +21,18 @@ import {
   LinkTextContainer,
   CollapseButtonContainer,
 } from "./BusActivity.styles";
-import { avatarTheme, theme } from "../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
-import Edit from "../../../assets/Edit.svg?react";
-import BusIcon from "../../../assets/Bus.svg?react";
-import Cost from "../../../assets/Cost.svg?react";
-import ChevRight from "../../../assets/Chevron_Right.svg?react";
-import Attachments from "../../../assets/Attachments.svg?react";
-import Notes from "../../../assets/AdditionalNotes.svg?react";
+import Edit from "@assets/Edit.svg?react";
+import BusIcon from "@assets/Bus.svg?react";
+import Cost from "@assets/Cost.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import Attachments from "@assets/Attachments.svg?react";
+import Notes from "@assets/AdditionalNotes.svg?react";
 import BusCard from "./BusCard/BusCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { BusAttachments } from "../../../types/busTable.types";
+import { BusAttachments } from "@tableTypes/busTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 

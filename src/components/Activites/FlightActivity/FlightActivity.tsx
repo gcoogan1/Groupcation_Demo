@@ -21,18 +21,18 @@ import {
   LinkTextContainer,
   CollapseButtonContainer,
 } from "./FlightActivity.styles";
-import { avatarTheme, theme } from "../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
-import Edit from "../../../assets/Edit.svg?react";
-import FlightIcon from "../../../assets/Flight.svg?react";
-import Cost from "../../../assets/Cost.svg?react";
-import ChevRight from "../../../assets/Chevron_Right.svg?react";
-import Attachments from "../../../assets/Attachments.svg?react";
-import Notes from "../../../assets/AdditionalNotes.svg?react";
+import Edit from "@assets/Edit.svg?react";
+import FlightIcon from "@assets/Flight.svg?react";
+import Cost from "@assets/Cost.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import Attachments from "@assets/Attachments.svg?react";
+import Notes from "@assets/AdditionalNotes.svg?react";
 
 import Pictogram from "../../Pictogram/Pictogram";
-import { FlightAttachments } from "../../../types/flightTable.types";
+import { FlightAttachments } from "@tableTypes/flightTable.types";
 import FlightCard from "./FlightCard/FlightCard";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
@@ -95,7 +95,6 @@ const FlightActivity: React.FC<FlightActivitysProps> = ({
     arrivalAirport,
     travelers,
   } = activityCardDetails;
-
 
   useEffect(() => {
     if (!expanded) return;

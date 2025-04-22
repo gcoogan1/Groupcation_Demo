@@ -32,7 +32,7 @@ import Attachments from "../../../assets/Attachments.svg?react";
 import Notes from "../../../assets/AdditionalNotes.svg?react";
 import RestaurantCard from "./RestaurantCard/RestaurantCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { RestaurantAttachments } from "../../../types/restaurantTable.types";
+import { RestaurantAttachments } from "../../../tableTypes/restaurantTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -81,12 +81,8 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const {
-    activityTitle,
-    activitySubTitle,
-    restaurantLocation,
-    travelers,
-  } = activityCardDetails;
+  const { activityTitle, activitySubTitle, restaurantLocation, travelers } =
+    activityCardDetails;
 
   useEffect(() => {
     if (!expanded) return;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BusAttachments } from "../../../../types/busTable.types";
+import { BusAttachments } from "@tableTypes/busTable.types";
 import {
   addBusAttachmentsTable,
   addBusTable,

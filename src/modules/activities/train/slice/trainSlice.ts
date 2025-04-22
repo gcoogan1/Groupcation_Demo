@@ -10,7 +10,7 @@ import {
   fetchTrainTable,
   updateTrainTable,
 } from "../thunk/trainThunk";
-import { TrainAttachments } from "../../../../types/trainTable.types";
+import { TrainAttachments } from "@tableTypes/trainTable.types";
 
 type Traveler = {
   value: number;
@@ -59,7 +59,7 @@ const trainSlice = createSlice({
               (train) => train.id === newTrain.id
             );
             // Update existing train data
-            // findIndex() (used above) returns -1 if no match is found. 
+            // findIndex() (used above) returns -1 if no match is found.
             // If the flight exists in the array, index will be 0 or greater.
             if (index !== -1) {
               state.trains[index] = newTrain;
@@ -196,7 +196,7 @@ const trainSlice = createSlice({
           }
         }
       );
-  }
+  },
 });
 
 export default trainSlice.reducer;

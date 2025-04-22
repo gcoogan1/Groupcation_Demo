@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
+import { RootState } from "@/store";
 import { addNote, updateNote } from "../slice/noteSlice";
 import { NoteSchema } from "../schema/noteSchema";
 import { z } from "zod";
@@ -19,15 +19,15 @@ import {
   SectionGraphicsLine,
   SectionInputs,
 } from "./NoteForm.styles";
-import { theme } from "../../../../styles/theme";
-import InputText from "../../../../components/Inputs/InputText/InputText";
-import Button from "../../../../components/Button/Button";
-import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
-import DateIcon from "../../../../assets/Date.svg?react";
-import ChevRight from "../../../../assets/Chevron_Right.svg?react";
-import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import InputDate from "../../../../components/Inputs/InputDate/InputDate";
-import InputTime from "../../../../components/Inputs/InputTime/InputTime";
+import { theme } from "@styles/theme";
+import InputText from "@components/Inputs/InputText/InputText";
+import Button from "@components/Button/Button";
+import AddNotesIcon from "@assets/AdditionalNotes.svg?react";
+import DateIcon from "@assets/Date.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
+import InputDate from "@components/Inputs/InputDate/InputDate";
+import InputTime from "@components/Inputs/InputTime/InputTime";
 
 // NOTE: ALL WALKING DATA (see NoteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 

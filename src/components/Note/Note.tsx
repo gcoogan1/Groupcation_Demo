@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import NoteIcon from "../../assets/Note.svg?react";
+import NoteIcon from "@assets/Note.svg?react";
 import {
 	AddNotesContainer,
 	AddNotesContent,
@@ -16,10 +16,10 @@ import {
 	NoteText,
 	NoteItemContent,
 } from "./Note.styles";
-import { theme } from "../../styles/theme";
+import { theme } from "@styles/theme";
 import CollapaseButton from "../CollapaseButton/CollapaseButton";
 import Button from "../Button/Button";
-import Edit from "../../assets/Edit.svg?react";
+import Edit from "@assets/Edit.svg?react";
 
 interface NotesProps {
 	onEditClick: () => void;

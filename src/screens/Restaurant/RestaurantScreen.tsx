@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import RestaurantForm from "../../modules/activities/restaurant/components/RestaurantForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import RestaurantForm from "@modules/activities/restaurant/components/RestaurantForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantScreen = () => {

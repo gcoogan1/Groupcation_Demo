@@ -9,7 +9,7 @@ import {
 	InputWrapper,
 	IconWrapper,
 } from "./InputDate.styles";
-import Date from "../../../assets/Date.svg?react";
+import Date from "@assets/Date.svg?react";
 
 interface InputDateProps {
 	label: string;

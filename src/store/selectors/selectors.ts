@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "..";
-import { convertUsersToTravelers, convertUsersToTravelersFilter } from "../../utils/conversionFunctions/conversionFunctions";
+import { convertUsersToTravelers, convertUsersToTravelersFilter } from "@utils/conversionFunctions/conversionFunctions";
 
 // MEMORIZED SELECTOR FUNCTIONS TO PREVENT RE-RENDERS WHEN FETCHING STATE
 

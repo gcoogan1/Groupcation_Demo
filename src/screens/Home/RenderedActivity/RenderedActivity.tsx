@@ -1,4 +1,4 @@
-import TrainActivity from "../../../components/Activites/TrainActivity/TrainActivity";
+import TrainActivity from "@components/Activites/TrainActivity/TrainActivity";
 import {
   BoatItem,
   BusItem,
@@ -10,27 +10,27 @@ import {
   StayItem,
   TrainItem,
   TravelItem,
-} from "../../../types/filter.types";
+} from "@tableTypes/filter.types";
 import {
   convertTableTraveler,
   createdByUserInfo,
   formatDateTimeForCard,
-} from "../../../utils/conversionFunctions/conversionFunctions";
+} from "@utils/conversionFunctions/conversionFunctions";
 import {
   convertTimeToString,
   formatDateToDayMonthYear,
   getDurationInDaysHoursAndMinutes,
   getNumberOfNights,
-} from "../../../utils/dateFunctions/dateFunctions";
-import { UserTable } from "../../../types/userTable";
-import FlightActivity from "../../../components/Activites/FlightActivity/FlightActivity";
-import StayActivity from "../../../components/Activites/StayActivity/StayActivity";
-import BusActivity from "../../../components/Activites/BusActivity/BusActivity";
-import BoatActivity from "../../../components/Activites/BoatActivity/BoatActivity";
-import RentalActivity from "../../../components/Activites/RentalActivity/RentalActivity";
-import EventActivity from "../../../components/Activites/EventActivity/EventActivity";
-import RestaurantActivity from "../../../components/Activites/RestaurantActivity/RestaurantActivity";
-import CelebrationActivity from "../../../components/Activites/CelebrationActivity/CelebrationActivity";
+} from "@utils/dateFunctions/dateFunctions";
+import { UserTable } from "@tableTypes/userTable";
+import FlightActivity from "@components/Activites/FlightActivity/FlightActivity";
+import StayActivity from "@components/Activites/StayActivity/StayActivity";
+import BusActivity from "@components/Activites/BusActivity/BusActivity";
+import BoatActivity from "@components/Activites/BoatActivity/BoatActivity";
+import RentalActivity from "@components/Activites/RentalActivity/RentalActivity";
+import EventActivity from "@components/Activites/EventActivity/EventActivity";
+import RestaurantActivity from "@components/Activites/RestaurantActivity/RestaurantActivity";
+import CelebrationActivity from "@components/Activites/CelebrationActivity/CelebrationActivity";
 
 export const activityRenderMap = {
   train: (
@@ -395,7 +395,9 @@ export const activityRenderMap = {
           departureLocation: rental.pickUpLocation,
           durationTime: duration,
           arrivalTime: cardArrivalDateTime,
-          arrivalLocation: rental.dropOffLocation ? rental.dropOffLocation : 'Same as pick-up',
+          arrivalLocation: rental.dropOffLocation
+            ? rental.dropOffLocation
+            : "Same as pick-up",
           travelers: travelers,
         }}
       />
@@ -459,7 +461,7 @@ export const activityRenderMap = {
           departureLocation: event.eventLocation,
           durationTime: duration,
           arrivalTime: cardArrivalDateTime,
-          arrivalLocation: '',
+          arrivalLocation: "",
           travelers: travelers,
         }}
       />

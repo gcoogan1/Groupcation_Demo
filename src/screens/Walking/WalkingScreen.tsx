@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import WalkingRouteForm from "../../modules/routes/walking/components/WalkingRouteForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import WalkingRouteForm from "@modules/routes/walking/components/WalkingRouteForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const WalkingScreen = () => {

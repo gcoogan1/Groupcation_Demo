@@ -21,18 +21,18 @@ import {
   LinkTextContainer,
   CollapseButtonContainer,
 } from "./CelebrationActivity.styles";
-import { avatarTheme, theme } from "../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
-import Edit from "../../../assets/Edit.svg?react";
-import CelebrationIcon from "../../../assets/Celebration.svg?react";
-import Cost from "../../../assets/Cost.svg?react";
-import ChevRight from "../../../assets/Chevron_Right.svg?react";
-import Attachments from "../../../assets/Attachments.svg?react";
-import Notes from "../../../assets/AdditionalNotes.svg?react";
+import Edit from "@assets/Edit.svg?react";
+import CelebrationIcon from "@assets/Celebration.svg?react";
+import Cost from "@assets/Cost.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import Attachments from "@assets/Attachments.svg?react";
+import Notes from "@assets/AdditionalNotes.svg?react";
 import CelebrationCard from "./CelebrationCard/CelebrationCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { CelebrationAttachments } from "../../../types/celebrationTable.types";
+import { CelebrationAttachments } from "@tableTypes/celebrationTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -156,11 +156,11 @@ const CelebrationActivity: React.FC<CelebrationActivitysProps> = ({
           <CelebrationCard
             activityTitle={activityTitle}
             activitySubTitle={activitySubTitle}
-            travelers={travelers} 
-            startCardTime={startCardTime} 
-            celebrationLocation={celebrationLocation} 
-            durationTime={durationTime} 
-            endCardTime={endCardTime}          
+            travelers={travelers}
+            startCardTime={startCardTime}
+            celebrationLocation={celebrationLocation}
+            durationTime={durationTime}
+            endCardTime={endCardTime}
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

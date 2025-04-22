@@ -21,18 +21,18 @@ import {
   LinkTextContainer,
   CollapseButtonContainer,
 } from "./EventActivity.styles";
-import { avatarTheme, theme } from "../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import CollapaseButton from "../../CollapaseButton/CollapaseButton";
 import Button from "../../Button/Button";
-import Edit from "../../../assets/Edit.svg?react";
-import EventIcon from "../../../assets/Event.svg?react";
-import Cost from "../../../assets/Cost.svg?react";
-import ChevRight from "../../../assets/Chevron_Right.svg?react";
-import Attachments from "../../../assets/Attachments.svg?react";
-import Notes from "../../../assets/AdditionalNotes.svg?react";
+import Edit from "@assets/Edit.svg?react";
+import EventIcon from "@assets/Event.svg?react";
+import Cost from "@assets/Cost.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import Attachments from "@assets/Attachments.svg?react";
+import Notes from "@assets/AdditionalNotes.svg?react";
 import EventCard from "./EventCard/EventCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { EventAttachments } from "../../../types/eventTable.types";
+import { EventAttachments } from "@tableTypes/eventTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 

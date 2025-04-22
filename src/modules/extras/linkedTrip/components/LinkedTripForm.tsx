@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
+import { RootState } from "@/store";
 import { addLinkedTrip, updateLinkedTrip } from "../slice/linkedTripSlice";
 import { linkedTripSchema } from "../schema/linkedTripSchema";
 import { z } from "zod";
@@ -19,19 +19,18 @@ import {
   SectionGraphicsLine,
   SectionInputs,
 } from "./LinkedTripForm.styles";
-import { theme } from "../../../../styles/theme";
-import InputText from "../../../../components/Inputs/InputText/InputText";
-import InputDate from "../../../../components/Inputs/InputDate/InputDate";
-import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
-import Button from "../../../../components/Button/Button";
-import StartIcon from "../../../../assets/Start.svg?react";
-import EndIcon from "../../../../assets/End.svg?react";
-import UsersIcon from "../../../../assets/Users.svg?react";
-import AttachmentsIcon from "../../../../assets/Attachments.svg?react";
-import ChevRight from "../../../../assets/Chevron_Right.svg?react";
-import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+import { theme } from "@styles/theme";
+import InputText from "@components/Inputs/InputText/InputText";
+import InputDate from "@components/Inputs/InputDate/InputDate";
+import InputSelect from "@components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import Button from "@components/Button/Button";
+import StartIcon from "@assets/Start.svg?react";
+import EndIcon from "@assets/End.svg?react";
+import UsersIcon from "@assets/Users.svg?react";
+import AttachmentsIcon from "@assets/Attachments.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
 
 // NOTE: ALL TRAIN DATA (see linkedTripSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 //TODO: grab friends from database for this groupcation (options)

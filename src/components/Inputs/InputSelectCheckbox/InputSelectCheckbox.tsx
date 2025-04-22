@@ -2,10 +2,10 @@ import { Controller } from "react-hook-form";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { theme } from "../../../styles/theme";
+import { theme } from "@styles/theme";
 import { InputContainer, StyledLabel } from "./InputSelectCheckbox.styles";
-import CheckboxSelected from "../../../assets/Checkbox_Selected.svg?react";
-import CheckboxUnselected from "../../../assets/Checkbox_Unselected.svg?react";
+import CheckboxSelected from "@assets/Checkbox_Selected.svg?react";
+import CheckboxUnselected from "@assets/Checkbox_Unselected.svg?react";
 
 interface Option {
 	value: string | number;

@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import FlightForm from "../../modules/activities/flights/components/FlightForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import FlightForm from "@modules/activities/flights/components/FlightForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const FlightScreen = () => {

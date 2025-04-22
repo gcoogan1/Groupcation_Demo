@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import DrivingRouteForm from "../../modules/routes/driving/components/DrivingRouteForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import DrivingRouteForm from "@modules/routes/driving/components/DrivingRouteForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DrivingScreen = () => {

@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   RestaurantTable,
   RestaurantAttachments,
-} from "../../../../types/restaurantTable.types";
+} from "@tableTypes/restaurantTable.types";
 
 // ----> NOTES <---- //
 // RESTAURANT STATE: camalCASE
@@ -228,7 +228,10 @@ export const addRestaurantTable = createAsyncThunk(
 
     if (travelers && travelers.length > 0) {
       await dispatch(
-        addRestaurantTravelersTable({ travelers, restaurantId: convertedData.id })
+        addRestaurantTravelersTable({
+          travelers,
+          restaurantId: convertedData.id,
+        })
       ).unwrap();
     }
 
@@ -303,7 +306,9 @@ export const updateRestaurantTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteRestaurantAttachment({ attachmentId, restaurantId: id })).unwrap();
+          await dispatch(
+            deleteRestaurantAttachment({ attachmentId, restaurantId: id })
+          ).unwrap();
         })
       );
     }
@@ -336,7 +341,9 @@ export const updateRestaurantTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteRestaurantTraveler({ travelerId, restaurantId: id })).unwrap();
+          await dispatch(
+            deleteRestaurantTraveler({ travelerId, restaurantId: id })
+          ).unwrap();
         })
       );
     }
@@ -370,7 +377,10 @@ export const deleteRestaurantTable = createAsyncThunk(
   "restaurant/deleteRestaurant",
   async (restaurantId: string) => {
     // --- STEP 1: DETELE RESTAURANT TABLE BASED ON RESTAURANT ID --- //
-    const { error } = await supabase.from("restaurants").delete().eq("id", restaurantId);
+    const { error } = await supabase
+      .from("restaurants")
+      .delete()
+      .eq("id", restaurantId);
     if (error) {
       throw new Error(error.message);
     }

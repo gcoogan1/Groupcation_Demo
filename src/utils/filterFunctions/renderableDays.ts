@@ -3,7 +3,7 @@ import {
   GroupedTravelItems,
   RenderableDay,
   TravelItem,
-} from "../../types/filter.types";
+} from "@tableTypes/filter.types";
 
 /**
  * Returns renderable days with all groupcation "during" dates,

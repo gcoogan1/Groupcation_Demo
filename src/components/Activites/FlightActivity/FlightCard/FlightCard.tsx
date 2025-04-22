@@ -1,7 +1,7 @@
-import { avatarTheme, theme } from "../../../../styles/theme";
+import { avatarTheme, theme } from "@styles/theme";
 import AvatarStack from "../../../AvatarStack/AvatarStack";
-import Users from "../../../../assets/Users.svg?react";
-import Duration from "../../../../assets/Duration.svg?react"
+import Users from "@assets/Users.svg?react";
+import Duration from "@assets/Duration.svg?react"
 import { CardContainer, CardTitle, CardSubTitle, CardContents, ContentDetails, StartEndDetails, DetailsContainer, DetailsTitle, DetailsText, TimeText, LocationText, DurationDetails, Graphics, GraphicsLine, DurationText, ContentFooter, FooterTextContainer, FooterTitle, FooterText, CardHeader } from "./FlightCard.styles";
 
 

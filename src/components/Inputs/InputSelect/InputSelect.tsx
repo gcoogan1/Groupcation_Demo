@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import { InputContainer, StyledSelect, StyledLabel, IconWrapper } from "./InputSelect.styles";
-import ChevDown from "../../../assets/Chevron_Down.svg?react";
 import { UseFormRegister } from "react-hook-form";
+import { InputContainer, StyledSelect, StyledLabel, IconWrapper } from "./InputSelect.styles";
+import ChevDown from "@assets/Chevron_Down.svg?react";
 
 interface Option {
   value: string;

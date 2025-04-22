@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   FlightTable,
   FlightAttachments,
-} from "../../../../types/flightTable.types";
+} from "@tableTypes/flightTable.types";
 
 // ----> NOTES <---- //
 // FLIGHT STATE: camalCASE
@@ -277,10 +277,11 @@ export const updateFlightTable = createAsyncThunk(
 
     // --- STEP 3: FETCH EXISTING ATTACHMENTS ---
     // Find existing attachments table (if any)
-    const { data: existingAttachments, error: fetchAttachmentError } = await supabase
-      .from("flight_attachments")
-      .select("id, file_name")
-      .eq("flight_id", id);
+    const { data: existingAttachments, error: fetchAttachmentError } =
+      await supabase
+        .from("flight_attachments")
+        .select("id, file_name")
+        .eq("flight_id", id);
 
     // IF ERROR
     if (fetchAttachmentError)
@@ -301,16 +302,19 @@ export const updateFlightTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteFlightAttachment({ attachmentId, flightId: id })).unwrap();
+          await dispatch(
+            deleteFlightAttachment({ attachmentId, flightId: id })
+          ).unwrap();
         })
       );
     }
 
     // --- STEP 6: FETCH EXISTING TRAVELERS --- //
-    const { data: existingTravelers, error: fetchTravelerError } = await supabase
-      .from("flight_travelers")
-      .select("traveler_id")
-      .eq("flight_id", id);
+    const { data: existingTravelers, error: fetchTravelerError } =
+      await supabase
+        .from("flight_travelers")
+        .select("traveler_id")
+        .eq("flight_id", id);
 
     // IF ERROR
     if (fetchTravelerError)
@@ -333,7 +337,9 @@ export const updateFlightTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteFlightTraveler({ travelerId, flightId: id })).unwrap();
+          await dispatch(
+            deleteFlightTraveler({ travelerId, flightId: id })
+          ).unwrap();
         })
       );
     }
@@ -367,7 +373,10 @@ export const deleteFlightTable = createAsyncThunk(
   "flight/deleteFlight",
   async (flightId: string) => {
     // --- STEP 1: DETELE FLIGHT TABLE BASED ON FLIGHT ID --- //
-    const { error } = await supabase.from("flights").delete().eq("id", flightId);
+    const { error } = await supabase
+      .from("flights")
+      .delete()
+      .eq("id", flightId);
     if (error) {
       throw new Error(error.message);
     }

@@ -1,12 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { BusAttachments, BusTable } from "../../../../types/busTable.types";
-import { supabase } from "../../../../lib/supabase";
+import {
+  BusAttachments,
+  BusTable,
+} from "@tableTypes/busTable.types";
+import { supabase } from "@lib/supabase";
 import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
 
 type Traveler = {
   value: number;

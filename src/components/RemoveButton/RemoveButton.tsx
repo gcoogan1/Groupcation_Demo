@@ -1,6 +1,6 @@
 import { RemoveButtonContainer, RemoveButtonText } from "./RemoveButton.styles";
-import Remove from "../../assets/Remove.svg?react";
-import { theme } from "../../styles/theme";
+import Remove from "@assets/Remove.svg?react";
+import { theme } from "@styles/theme";
 
 interface RemoveButtonProps {
   onRemove: () => void;

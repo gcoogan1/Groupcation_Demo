@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { BoatUITable } from "../../types/boatTable.types";
-import { BusUITable } from "../../types/busTable.types";
-import { CelebrationUITable } from "../../types/celebrationTable.types";
-import { EventUITable } from "../../types/eventTable.types";
+import { BoatUITable } from "@tableTypes/boatTable.types";
+import { BusUITable } from "@tableTypes/busTable.types";
+import { CelebrationUITable } from "@tableTypes/celebrationTable.types";
+import { EventUITable } from "@tableTypes/eventTable.types";
 import {
   GroupedTravelItems,
   TravelItem,
   TravelPeriod,
-} from "../../types/filter.types";
-import { FlightUITable } from "../../types/flightTable.types";
-import { GroupcationTable } from "../../types/groupcationTable";
-import { RentalUITable } from "../../types/rentalTable.types";
-import { RestaurantUITable } from "../../types/restaurantTable.types";
-import { StayUITable } from "../../types/stayTable.types";
-import { TrainUITable } from "../../types/trainTable.types";
-import { UserTable } from "../../types/userTable";
+} from "@tableTypes/filter.types";
+import { FlightUITable } from "@tableTypes/flightTable.types";
+import { GroupcationTable } from "@tableTypes/groupcationTable";
+import { RentalUITable } from "@tableTypes/rentalTable.types";
+import { RestaurantUITable } from "@tableTypes/restaurantTable.types";
+import { StayUITable } from "@tableTypes/stayTable.types";
+import { TrainUITable } from "@tableTypes/trainTable.types";
+import { UserTable } from "@tableTypes/userTable";
 import {
   convertTimeToString,
   formatDateToDayMonthYear,

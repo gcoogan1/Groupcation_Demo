@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import NoteForm from "../../modules/extras/note/components/NoteForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import NoteForm from "@modules/extras/note/components/NoteForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const NoteScreen = () => {

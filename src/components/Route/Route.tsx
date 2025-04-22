@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import Walking from "../../assets/Walking.svg?react";
-import AddNotes from "../../assets/AdditionalNotes.svg?react";
+import Walking from "@assets/Walking.svg?react";
+import AddNotes from "@assets/AdditionalNotes.svg?react";
 import {
 	AddNotesContainer,
 	AddNotesContent,
@@ -16,10 +16,10 @@ import {
 	RouteText,
 } from "./Route.styles";
 import GraphicRoute from "../GraphicRoute/GraphicRoute";
-import { theme } from "../../styles/theme";
+import { theme } from "@styles/theme";
 import CollapaseButton from "../CollapaseButton/CollapaseButton";
 import Button from "../Button/Button";
-import Edit from "../../assets/Edit.svg?react";
+import Edit from "@assets/Edit.svg?react";
 
 interface ActivityRouteProps {
 	onEditClick: () => void;

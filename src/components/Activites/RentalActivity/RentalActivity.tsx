@@ -32,7 +32,7 @@ import Attachments from "../../../assets/Attachments.svg?react";
 import Notes from "../../../assets/AdditionalNotes.svg?react";
 import RentalCard from "./RentalCard/RentalCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { RentalAttachments } from "../../../types/rentalTable.types";
+import { RentalAttachments } from "../../../tableTypes/rentalTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 

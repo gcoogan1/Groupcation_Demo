@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../store";
-import { staySchema } from "../schema/staySchema";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { AppDispatch, RootState } from "@/store";
+import { staySchema } from "../schema/staySchema";
 import {
   AddDetailsButtonContainer,
   AddMoreGraphicsLine,
@@ -20,34 +21,33 @@ import {
   SectionGraphicsLine,
   SectionInputs,
 } from "./StayForm.styles";
-import { theme } from "../../../../styles/theme";
-import InputText from "../../../../components/Inputs/InputText/InputText";
-import InputDate from "../../../../components/Inputs/InputDate/InputDate";
-import InputTime from "../../../../components/Inputs/InputTime/InputTime";
-import InputSelect from "../../../../components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
-import Button from "../../../../components/Button/Button";
-import StartIcon from "../../../../assets/Start.svg?react";
-import EndIcon from "../../../../assets/End.svg?react";
-import PlaceIcon from "../../../../assets/Stay.svg?react";
-import UsersIcon from "../../../../assets/Users.svg?react";
-import CostIcon from "../../../../assets/Cost.svg?react";
-import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
-import AttachmentsIcon from "../../../../assets/Attachments.svg?react";
-import ChevRight from "../../../../assets/Chevron_Right.svg?react";
-import InputNumber from "../../../../components/Inputs/InputNumber/InputNumber";
-import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
-import InputAttachment from "../../../../components/Inputs/InputAttachment/InputAttachment";
-import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
+import { theme } from "@styles/theme";
+import InputText from "@components/Inputs/InputText/InputText";
+import InputDate from "@components/Inputs/InputDate/InputDate";
+import InputTime from "@components/Inputs/InputTime/InputTime";
+import InputSelect from "@components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import Button from "@components/Button/Button";
+import StartIcon from "@assets/Start.svg?react";
+import EndIcon from "@assets/End.svg?react";
+import PlaceIcon from "@assets/Stay.svg?react";
+import UsersIcon from "@assets/Users.svg?react";
+import CostIcon from "@assets/Cost.svg?react";
+import AddNotesIcon from "@assets/AdditionalNotes.svg?react";
+import AttachmentsIcon from "@assets/Attachments.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import InputNumber from "@components/Inputs/InputNumber/InputNumber";
+import RemoveButton from "@components/RemoveButton/RemoveButton";
+import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment";
+import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import {
   selectConvertedUsers,
   selectStayById,
-} from "../../../../store/selectors/selectors";
+} from "@store/selectors/selectors";
 import {
   addStayTable,
   fetchStayTable,
   updateStayTable,
 } from "../thunk/stayThunk";
-import { useNavigate } from "react-router-dom";
 
 // NOTE: ALL STAY DATA (see staySchema) MUST BE PRESENT FOR SUBMIT TO WORK
 

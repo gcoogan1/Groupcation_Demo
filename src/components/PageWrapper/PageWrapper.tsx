@@ -3,7 +3,6 @@ import {
 	BodyContainer,
 	Footer,
 	FooterText,
-	FormContainer,
 	Header,
 	PageContainer,
 	PageNavbar,
@@ -14,7 +13,7 @@ import {
 	TitleAction,
 	TitleContainer,
 } from "./PageWrapper.styles";
-import Close from "../../assets/Close.svg?react";
+import Close from "@assets/Close.svg?react";
 
 interface PageWrapperProps {
 	onClose: () => void;

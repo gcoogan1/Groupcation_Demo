@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import BoatForm from "../../modules/activities/boat/components/BoatForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import BoatForm from "@modules/activities/boat/components/BoatForm";
 
 const BoatScreen = () => {
 	const { boatId } = useParams();

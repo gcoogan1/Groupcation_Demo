@@ -32,7 +32,7 @@ import Attachments from "../../../assets/Attachments.svg?react";
 import Notes from "../../../assets/AdditionalNotes.svg?react";
 import TrainCard from "./TrainCard/TrainCard";
 import Pictogram from "../../Pictogram/Pictogram";
-import { TrainAttachments } from "../../../types/trainTable.types";
+import { TrainAttachments } from "../../../tableTypes/trainTable.types";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 

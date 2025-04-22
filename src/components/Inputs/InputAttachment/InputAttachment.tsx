@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useState } from "react";
+import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
   AttachmentContainer,
   AttachmentItem,
@@ -11,13 +12,12 @@ import {
   FileName,
   FileSize,
 } from "./InputAttachment.styles";
-import { theme } from "../../../styles/theme";
+import { theme } from "@styles/theme";
 import Button from "../../Button/Button";
-import UploadIcon from "../../../assets/UploadFile.svg?react";
-import DeleteIcon from "../../../assets/Delete.svg?react";
-import FileIcon from "../../../assets/File.svg?react";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { TrainAttachments } from "../../../types/trainTable.types";
+import UploadIcon from "@assets/UploadFile.svg?react";
+import DeleteIcon from "@assets/Delete.svg?react";
+import FileIcon from "@assets/File.svg?react";
+import { TrainAttachments } from "@tableTypes/trainTable.types";
 
 interface InputAttachmentProps {
   register: UseFormRegister<any>;

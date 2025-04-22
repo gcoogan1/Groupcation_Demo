@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import StayForm from "../../modules/activities/stay/components/StayForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import StayForm from "@modules/activities/stay/components/StayForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const StayScreen = () => {

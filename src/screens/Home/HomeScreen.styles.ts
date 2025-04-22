@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { theme } from "../../styles/theme";
-import switzerlandBackground from "../../assets/switzerland.jpeg";
+import { theme } from "@styles/theme";
+import switzerlandBackground from "@assets/switzerland.jpeg";
 
 interface NumberIconProps {
   period: string;

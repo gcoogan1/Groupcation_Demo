@@ -1,3 +1,4 @@
+import { UseFormRegister } from "react-hook-form";
 import { useState } from "react";
 import {
 	ErrorText,
@@ -6,7 +7,6 @@ import {
 	StyledInput,
 	StyledLabel,
 } from "./InputNumber.styles";
-import { UseFormRegister } from "react-hook-form";
 
 interface InputNumberProps {
 	label: string;

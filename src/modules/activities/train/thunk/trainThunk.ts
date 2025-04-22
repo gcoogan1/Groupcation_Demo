@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   TrainTable,
   TrainAttachments,
-} from "../../../../types/trainTable.types";
+} from "@tableTypes/trainTable.types";
 
 // ----> NOTES <---- //
 // TRAIN STATE: camalCASE
@@ -303,7 +303,9 @@ export const updateTrainTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteTrainAttachment({ attachmentId, trainId: id })).unwrap();
+          await dispatch(
+            deleteTrainAttachment({ attachmentId, trainId: id })
+          ).unwrap();
         })
       );
     }
@@ -336,7 +338,9 @@ export const updateTrainTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteTrainTraveler({ travelerId, trainId: id })).unwrap();
+          await dispatch(
+            deleteTrainTraveler({ travelerId, trainId: id })
+          ).unwrap();
         })
       );
     }

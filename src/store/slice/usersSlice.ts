@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { avatarTheme } from "../../styles/theme";
+import { avatarTheme } from "@styles/theme";
 import { fetchUsersTable, fetchUserTable } from "../thunk/usersThunk";
 
 

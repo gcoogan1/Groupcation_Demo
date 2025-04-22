@@ -1,7 +1,7 @@
 // IMPORTANT IMPORT ADD-ON FOR SVGS -> .svg?react
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/index";
+import { AppDispatch, RootState } from "@store/index";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActionButtonsContainer,
@@ -53,15 +53,15 @@ import {
   Title,
   TopContainer,
 } from "./HomeScreen.styles";
-import SwissFlag from "../../assets/Switzerland.svg?react";
+import SwissFlag from "@assets/Switzerland.svg?react";
 import {
   formatDateToDayMonthYear,
   getDaysRemaining,
   getInBetweenDates,
-} from "../../utils/dateFunctions/dateFunctions";
-import ChevronDown from "../../assets/Chevron_Down.svg?react";
-import ChevronUp from "../../assets/Chevron_Up.svg?react";
-import { theme } from "../../styles/theme";
+} from "@utils/dateFunctions/dateFunctions";
+import ChevronDown from "@assets/Chevron_Down.svg?react";
+import ChevronUp from "@assets/Chevron_Up.svg?react";
+import { theme } from "@styles/theme";
 import {
   selectBoats,
   selectBuses,
@@ -75,33 +75,33 @@ import {
   selectStays,
   selectTableUsers,
   selectTrains,
-} from "../../store/selectors/selectors";
+} from "@store/selectors/selectors";
 import {
   ACTIVITY_OPTIONS,
   EXTRAS_OPTIONS,
   GroupcationDate,
   ROUTES_OPTIONS,
   TravelItem,
-} from "../../types/filter.types";
-import Button from "../../components/Button/Button";
-import FilterItem from "../../components/FilterItem/FilterItem";
-import Pictogram from "../../components/Pictogram/Pictogram";
-import Avatar from "../../components/Avatar/Avatar";
-import Add from "../../assets/Add.svg?react";
-import DateBefore from "../../assets/Date_Before.svg?react";
-import DateAfter from "../../assets/Date_After.svg?react";
-import { groupTravelItemsByDate } from "../../utils/conversionFunctions/conversionFunctions";
-import { filterGroups } from "../../utils/filterFunctions/filterFunctions";
-import { getRenderableDays } from "../../utils/filterFunctions/renderableDays";
+} from "@tableTypes/filter.types";
+import Button from "@components/Button/Button";
+import FilterItem from "@components/FilterItem/FilterItem";
+import Pictogram from "@components/Pictogram/Pictogram";
+import Avatar from "@components/Avatar/Avatar";
+import Add from "@assets/Add.svg?react";
+import DateBefore from "@assets/Date_Before.svg?react";
+import DateAfter from "@assets/Date_After.svg?react";
+import { groupTravelItemsByDate } from "@utils/conversionFunctions/conversionFunctions";
+import { filterGroups } from "@utils/filterFunctions/filterFunctions";
+import { getRenderableDays } from "@utils/filterFunctions/renderableDays";
 import { activityRenderMap } from "./RenderedActivity/RenderedActivity";
 import { useNavigate } from "react-router-dom";
-import Panel from "../../components/Panel/Panel";
-import CloseButton from "../../components/CloseButton/CloseButton";
-import FilterChip from "../../components/FilterChip/FilterChip";
-import FilterIcon from "../../assets/Filter.svg?react";
-import FilterModal from "../../components/FiltersModal/FiltersModal";
-import { fetchAllGroupcationData } from "../../store/thunk/fetchAllThunk";
-import Modal from "../../components/Modal/Modal";
+import Panel from "@components/Panel/Panel";
+import CloseButton from "@components/CloseButton/CloseButton";
+import FilterChip from "@components/FilterChip/FilterChip";
+import FilterIcon from "@assets/Filter.svg?react";
+import FilterModal from "@components/FiltersModal/FiltersModal";
+import { fetchAllGroupcationData } from "@store/thunk/fetchAllThunk";
+import Modal from "@components/Modal/Modal";
 
 //TODO: NEED TO GRAB ALL FORMS TO UPDATE STATE CORRECTLY
 //TODO: ADD TRAVELERS/ATTACHMENTS TO EACH GET TABLE BY ID

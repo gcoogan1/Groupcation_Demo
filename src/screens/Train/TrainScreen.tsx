@@ -1,5 +1,5 @@
-import PageWrapper from "../../components/PageWrapper/PageWrapper";
-import TrainForm from "../../modules/activities/train/components/TrainForm";
+import PageWrapper from "@components/PageWrapper/PageWrapper";
+import TrainForm from "@modules/activities/train/components/TrainForm";
 import { useNavigate, useParams } from "react-router-dom";
 
 const TrainScreen = () => {

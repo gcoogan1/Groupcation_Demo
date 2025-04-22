@@ -1,3 +1,6 @@
+import DatePicker from "react-datepicker";
+import { FieldError, Controller } from "react-hook-form";
+import "react-datepicker/dist/react-datepicker.css";
 import {
 	ErrorText,
 	InputContainer,
@@ -6,10 +9,7 @@ import {
 	InputWrapper,
 	IconWrapper,
 } from "./InputTime.styles";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import Time from "../../../assets/Time.svg?react";
-import { FieldError, Controller } from "react-hook-form";
+import Time from "@assets/Time.svg?react";
 
 interface InputTimeProps {
 	label: string;

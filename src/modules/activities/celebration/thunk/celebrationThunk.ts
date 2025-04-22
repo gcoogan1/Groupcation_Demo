@@ -3,13 +3,13 @@ import {
   replaceNullWithUndefined,
   transformToCamelCase,
   transformToSnakeCase,
-} from "../../../../utils/conversionFunctions/conversionFunctions";
-import { convertFormDatesToString } from "../../../../utils/dateFunctions/dateFunctions";
-import { supabase } from "../../../../lib/supabase";
+} from "@utils/conversionFunctions/conversionFunctions";
+import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { supabase } from "@lib/supabase";
 import {
   CelebrationTable,
   CelebrationAttachments,
-} from "../../../../types/celebrationTable.types";
+} from "@tableTypes/celebrationTable.types";
 
 // ----> NOTES <---- //
 // CELEBRATION STATE: camalCASE
@@ -22,14 +22,14 @@ type Traveler = {
 
 interface Celebration {
   id: string;
-	groupcationId?: number;
+  groupcationId?: number;
   createdBy?: number;
-	celebrationName: string;
-	celebrationLocation: string;
-	startDate: string;
-	startTime: string;
-	endDate: string;
-	endTime: string;
+  celebrationName: string;
+  celebrationLocation: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
   ticketType: string;
   travelers?: Traveler[];
   cost?: string;
@@ -227,7 +227,10 @@ export const addCelebrationTable = createAsyncThunk(
 
     if (travelers && travelers.length > 0) {
       await dispatch(
-        addCelebrationTravelersTable({ travelers, celebrationId: convertedData.id })
+        addCelebrationTravelersTable({
+          travelers,
+          celebrationId: convertedData.id,
+        })
       ).unwrap();
     }
 
@@ -302,7 +305,9 @@ export const updateCelebrationTable = createAsyncThunk(
     if (attachmentsToDelete.length > 0) {
       await Promise.all(
         attachmentsToDelete.map(async (attachmentId: string | number) => {
-          await dispatch(deleteCelebrationAttachment({ attachmentId, celebrationId: id })).unwrap();
+          await dispatch(
+            deleteCelebrationAttachment({ attachmentId, celebrationId: id })
+          ).unwrap();
         })
       );
     }
@@ -335,7 +340,9 @@ export const updateCelebrationTable = createAsyncThunk(
     if (travelersToDelete.length > 0) {
       await Promise.all(
         travelersToDelete.map(async (travelerId) => {
-          await dispatch(deleteCelebrationTraveler({ travelerId, celebrationId: id })).unwrap();
+          await dispatch(
+            deleteCelebrationTraveler({ travelerId, celebrationId: id })
+          ).unwrap();
         })
       );
     }
@@ -369,7 +376,10 @@ export const deleteCelebrationTable = createAsyncThunk(
   "celebration/deleteCelebration",
   async (celebrationId: string) => {
     // --- STEP 1: DETELE CELEBRATION TABLE BASED ON CELEBRATION ID --- //
-    const { error } = await supabase.from("celebrations").delete().eq("id", celebrationId);
+    const { error } = await supabase
+      .from("celebrations")
+      .delete()
+      .eq("id", celebrationId);
     if (error) {
       throw new Error(error.message);
     }

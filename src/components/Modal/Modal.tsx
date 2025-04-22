@@ -1,6 +1,6 @@
 import React from "react";
-import CostIcon from "../../assets/Cost.svg?react";
-import FileIcon from "../../assets/File.svg?react";
+import CostIcon from "@assets/Cost.svg?react";
+import FileIcon from "@assets/File.svg?react";
 import {
   FileContainer,
   FileIconWrapper,
@@ -17,9 +17,9 @@ import {
   ModalOverlay,
   ModalWrapper,
 } from "./Modal.styles";
-import { theme } from "../../styles/theme";
+import { theme } from "@styles/theme";
 import CloseButton from "../CloseButton/CloseButton";
-import { transformToCamelCase } from "../../utils/conversionFunctions/conversionFunctions";
+import { transformToCamelCase } from "@utils/conversionFunctions/conversionFunctions";
 
 interface ModalProps {
   openModal: { open: boolean; type: string | null };

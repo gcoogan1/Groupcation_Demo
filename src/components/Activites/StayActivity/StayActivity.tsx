@@ -31,7 +31,7 @@ import ChevRight from "../../../assets/Chevron_Right.svg?react";
 import Attachments from "../../../assets/Attachments.svg?react";
 import Notes from "../../../assets/AdditionalNotes.svg?react";
 import Pictogram from "../../Pictogram/Pictogram";
-import { StayAttachments } from "../../../types/stayTable.types";
+import { StayAttachments } from "../../../tableTypes/stayTable.types";
 import StayCard from "./StayCard/StayCard";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;

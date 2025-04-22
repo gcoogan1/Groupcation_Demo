@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "../../../../store";
+import { RootState } from "@/store";
 import { addWalking, updateWalking } from "../slice/walkingRouteSlice";
 import { WalkingRouteSchema } from "../schema/walkingRouteSchema";
 import { z } from "zod";
@@ -22,17 +22,17 @@ import {
   SectionGraphicsLine,
   SectionInputs,
 } from "./WalkingRouteForm.styles";
-import { theme } from "../../../../styles/theme";
-import InputText from "../../../../components/Inputs/InputText/InputText";
-import Button from "../../../../components/Button/Button";
-import DurationIcon from "../../../../assets/Duration.svg?react";
-import WalkingIcon from "../../../../assets/Walking.svg?react";
-import AddNotesIcon from "../../../../assets/AdditionalNotes.svg?react";
-import ChevRight from "../../../../assets/Chevron_Right.svg?react";
-import RemoveButton from "../../../../components/RemoveButton/RemoveButton";
-import InputTextArea from "../../../../components/Inputs/InputTextArea/InputTextArea";
-import InputDate from "../../../../components/Inputs/InputDate/InputDate";
-import InputTime from "../../../../components/Inputs/InputTime/InputTime";
+import { theme } from "@styles/theme";
+import InputText from "@components/Inputs/InputText/InputText";
+import Button from "@components/Button/Button";
+import DurationIcon from "@assets/Duration.svg?react";
+import WalkingIcon from "@assets/Walking.svg?react";
+import AddNotesIcon from "@assets/AdditionalNotes.svg?react";
+import ChevRight from "@assets/Chevron_Right.svg?react";
+import RemoveButton from "@components/RemoveButton/RemoveButton";
+import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
+import InputDate from "@components/Inputs/InputDate/InputDate";
+import InputTime from "@components/Inputs/InputTime/InputTime";
 
 // NOTE: ALL WALKING DATA (see WalkingRouteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
