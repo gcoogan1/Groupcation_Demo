@@ -3,6 +3,7 @@ import {
   BoatItem,
   BusItem,
   CelebrationItem,
+  DrivingRouteItem,
   EventItem,
   FlightItem,
   RentalItem,
@@ -31,16 +32,17 @@ import RentalActivity from "@components/Filters/Activites/RentalActivity/RentalA
 import EventActivity from "@components/Filters/Activites/EventActivity/EventActivity";
 import RestaurantActivity from "@components/Filters/Activites/RestaurantActivity/RestaurantActivity";
 import CelebrationActivity from "@components/Filters/Activites/CelebrationActivity/CelebrationActivity";
+import ActivityRoute from "@/components/Route/Route";
 
 export const activityRenderMap = {
   train: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "train") return null;
 
@@ -98,11 +100,11 @@ export const activityRenderMap = {
   flight: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "flight") return null;
 
@@ -160,11 +162,11 @@ export const activityRenderMap = {
   stay: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "stay") return null;
     const stay = item as StayItem;
@@ -215,11 +217,11 @@ export const activityRenderMap = {
   bus: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "bus") return null;
 
@@ -278,11 +280,11 @@ export const activityRenderMap = {
   boat: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "boat") return null;
 
@@ -341,11 +343,11 @@ export const activityRenderMap = {
   rental: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "rental") return null;
 
@@ -407,11 +409,11 @@ export const activityRenderMap = {
   event: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "event") return null;
 
@@ -471,11 +473,11 @@ export const activityRenderMap = {
   restaurant: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "restaurant") return null;
 
@@ -521,11 +523,11 @@ export const activityRenderMap = {
   celebration: (
     item: TravelItem,
     users: UserTable[],
+    handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void,
-    handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "celebration") return null;
 
@@ -578,6 +580,31 @@ export const activityRenderMap = {
           travelers: travelers,
         }}
       />
+    );
+  },
+
+  drivingRoute: (
+    item: TravelItem,
+    users: UserTable[],
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "drivingRoute") return null;
+    const drivingRoute = item as DrivingRouteItem;
+    const duration = `${drivingRoute.driveDuration} to ${drivingRoute.arrivalLocation}`
+    const createdBy = createdByUserInfo(drivingRoute.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(drivingRoute.createdAt);
+
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <ActivityRoute 
+        onEditClick={() => handleEditClick("driving", drivingRoute.id)} 
+        hightlightedRouteAction={"Driving"} 
+        routeText={duration} 
+        notesText={drivingRoute?.notes} 
+        footerText={footer} 
+        type="drivingRoute"
+        />
     );
   },
 };

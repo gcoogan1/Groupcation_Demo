@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Walking from "@assets/Walking.svg?react";
+import Driving from "@assets/Driving.svg?react";
 import AddNotes from "@assets/AdditionalNotes.svg?react";
 import {
 	AddNotesContainer,
@@ -25,8 +26,9 @@ interface ActivityRouteProps {
 	onEditClick: () => void;
 	hightlightedRouteAction: string;
 	routeText: string;
-	notesText: string;
+	notesText?: string;
 	footerText: string;
+	type: "walkingRoute" | "drivingRoute"
 }
 
 const ActivityRoute: React.FC<ActivityRouteProps> = ({
@@ -35,6 +37,7 @@ const ActivityRoute: React.FC<ActivityRouteProps> = ({
 	routeText,
 	notesText,
 	footerText,
+	type
 }) => {
 	const [expanded, setExpanded] = useState(false);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -55,8 +58,8 @@ const ActivityRoute: React.FC<ActivityRouteProps> = ({
 			style={{ flexDirection: "column" }}
 		>
 			<RouteItem isExpanded={expanded}>
-				<GraphicRoute type={"walking"}>
-					<Walking color={theme.walking} />
+				<GraphicRoute type={type}>
+					{(type === "drivingRoute") ? <Driving color={theme[type]} /> : <Walking color={theme[type]} />}
 				</GraphicRoute>
 				<RouteText>
 					<RouteHighlightText>{hightlightedRouteAction} </RouteHighlightText>

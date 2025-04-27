@@ -21,6 +21,7 @@ import {
   formatDateToDayMonthYear,
   formatDayOfWeek,
 } from "../dateFunctions/dateFunctions";
+import { DrivingRouteUITable } from "@/tableTypes/drivingRouteTable";
 
 // --- Helper Functions --- //
 // convert snake_case to camelCase
@@ -126,6 +127,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  drivingRoutes: DrivingRouteUITable[],
   celebrations: CelebrationUITable[],
   restaurants: RestaurantUITable[],
   events: EventUITable[],
@@ -161,6 +163,20 @@ export const groupTravelItemsByDate = (
     // Add the item to the array for that date
     grouped[dateKey].push(item);
   };
+
+  // CHECK DRIVING ROUTES TO ADD ENTRY
+  // Loop through all driving routes and add each with a startDate to the grouped list
+  drivingRoutes.forEach((drivingRoute) => {
+    if (drivingRoute.departureDate) {
+      const date = new Date(drivingRoute.departureDate);
+      pushItem({
+        ...drivingRoute,
+        type: "drivingRoute",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
 
   // CHECK CELEBRATIONS TO ADD ENTRY
   // Loop through all celebrations and add each with a startDate to the grouped list

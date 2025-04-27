@@ -22,6 +22,7 @@ import { RentalUITable } from "./rentalTable.types";
 import { EventUITable } from "./eventTable.types";
 import { RestaurantUITable } from "./restaurantTable.types";
 import { CelebrationUITable } from "./celebrationTable.types";
+import { DrivingRouteUITable } from "./drivingRouteTable";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
@@ -58,6 +59,7 @@ export type RestaurantItem = RestaurantUITable &
   BaseTravelItem & { type: "restaurant" };
 export type CelebrationItem = CelebrationUITable &
   BaseTravelItem & { type: "celebration" };
+export type DrivingRouteItem = DrivingRouteUITable & BaseTravelItem & { type: "drivingRoute" }
 
 export type TravelItem =
   | TrainItem
@@ -68,7 +70,8 @@ export type TravelItem =
   | RentalItem
   | EventItem
   | RestaurantItem
-  | CelebrationItem;
+  | CelebrationItem
+  | DrivingRouteItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 
@@ -146,15 +149,15 @@ export const ACTIVITY_OPTIONS: FilterItems[] = [
 export const ROUTES_OPTIONS: FilterItems[] = [
   {
     action: "checkbox",
-    icon: <Walking color={theme.walking} />,
+    icon: <Walking color={theme.walkingRoute} />,
     label: "Walking",
-    value: "walking",
+    value: "walkingRoute",
   },
   {
     action: "checkbox",
-    icon: <Driving color={theme.driving} />,
+    icon: <Driving color={theme.drivingRoute} />,
     label: "Driving",
-    value: "driving",
+    value: "drivingRoute",
   },
 ];
 

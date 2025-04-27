@@ -9,8 +9,7 @@ export const RouteContainer = styled.div<RouteContainerProps>`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	max-width: 400px;
-	min-height: 70px;
+	width: 100%;
 	border-radius: 8px;
 	cursor: ${({ isExpanded }) => isExpanded ? 'auto' : 'pointer'};
 	border: ${({ isExpanded }) =>
@@ -23,13 +22,14 @@ export const RouteContainer = styled.div<RouteContainerProps>`
 
 export const RouteItem = styled.div<RouteContainerProps>`
 	display: flex;
+	gap: 8px;
 	align-items: center;
 	width: 100%;
   padding: 8px 24px;
 `;
 
 export const RouteHighlightText = styled.span`
-	color: ${theme.walking};
+	color: ${theme.walkingRoute};
 `;
 
 export const RouteText = styled.p`
@@ -42,6 +42,7 @@ export const RouteText = styled.p`
 
 export const ExpandableContent = styled.div<RouteContainerProps>`
 	overflow: hidden;
+	width: 100%;
 	background-color: ${theme.base};
 	border-top: ${({ isExpanded }) =>
 		isExpanded ? `2px solid ${theme.line}` : "none"};
@@ -49,15 +50,15 @@ export const ExpandableContent = styled.div<RouteContainerProps>`
 
 export const ContentContainer = styled.div`
   padding: 24px;
-  display: flex:
+  display: flex;
   justify-content: center;
-  align-items: content;
   gap: 16px;
 `;
 
 export const AddNotesContainer = styled.div`
 	display: flex;
 	gap: 8px;
+	width: 100%;
 `;
 
 export const AddNotesTitle = styled.div`

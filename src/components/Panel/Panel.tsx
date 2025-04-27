@@ -94,14 +94,14 @@ const Panel = () => {
 
   const panelRouteRoutes: PanelRoute[] = [
     {
-      icon: <WalkingIcon color={theme.walking} />,
-      type: "walking",
+      icon: <WalkingIcon color={theme.walkingRoute} />,
+      type: "walkingRoute",
       text: "Walking",
       onClick: () => navigate("/walking-form"),
     },
     {
-      icon: <DrivingIcon color={theme.driving} />,
-      type: "driving",
+      icon: <DrivingIcon color={theme.drivingRoute} />,
+      type: "drivingRoute",
       text: "Driving",
       onClick: () => navigate("/driving-form"),
     },

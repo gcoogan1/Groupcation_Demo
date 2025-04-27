@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/store";
-import { addDriving, updateDriving } from "../slice/drivingRouteSlice";
-import { DrivingRouteSchema } from "../schema/drivingRouteSchema";
+import { AppDispatch, RootState } from "@/store";
+import { drivingRouteSchema } from "../schema/drivingRouteSchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -38,29 +36,40 @@ import RemoveButton from "@components/RemoveButton/RemoveButton";
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import InputDate from "@components/Inputs/InputDate/InputDate";
 import InputTime from "@components/Inputs/InputTime/InputTime";
+import { useNavigate } from "react-router-dom";
+import { selectDrivingRouteById } from "@/store/selectors/selectors";
+import {
+  addDrivingTable,
+  fetchDrivingRouteTable,
+  updateDrivingTable,
+} from "../thunk/drivingThunk";
 
 // NOTE: ALL WALKING DATA (see DrivingRouteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
-type DrivingRouteFormData = z.infer<typeof DrivingRouteSchema>;
+type DrivingRouteFormData = z.infer<typeof drivingRouteSchema>;
 
 interface DrivingRouteFormProps {
   drivingId?: string;
 }
 
 const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING DRIVING ROUTE DATA FROM STATE IF ID PASSED
   const existingDrivingRoute = useSelector((state: RootState) =>
-    state.drivingRoute.drivingRoutes.find(
-      (drivingRoute) => drivingRoute.id === drivingId
-    )
+    selectDrivingRouteById(state, drivingId)
   );
+
   const [showArrivalDate, setShowArrivalDate] = useState(
     !!existingDrivingRoute?.arrivalDate
   );
   const [showAddNotes, setShowAddNotes] = useState(
     !!existingDrivingRoute?.notes
   );
+  const [isLoading, setIsLoading] = useState(false);
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     control,
@@ -69,38 +78,96 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     setValue,
     formState: { errors },
   } = useForm<DrivingRouteFormData>({
-    resolver: zodResolver(DrivingRouteSchema),
+    resolver: zodResolver(drivingRouteSchema),
   });
 
+  // FETCH DRIVING DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (drivingId) {
+      dispatch(fetchDrivingRouteTable(drivingId));
+    }
+  }, [dispatch, drivingId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingDrivingRoute) {
-      reset(existingDrivingRoute);
+      // Reset to todays date/time if remaining train date/time is not present
+      const convertedTrain = {
+        ...existingDrivingRoute,
+        departureDate: existingDrivingRoute.departureDate
+          ? new Date(existingDrivingRoute.departureDate)
+          : new Date(),
+        arrivalDate: existingDrivingRoute.arrivalDate
+          ? new Date(existingDrivingRoute.arrivalDate)
+          : new Date(),
+        departureTime: existingDrivingRoute.departureTime
+          ? new Date(existingDrivingRoute.departureTime)
+          : new Date(),
+      };
+      reset(convertedTrain);
+
+      if (existingDrivingRoute.notes) {
+        setShowAddNotes(true);
+      }
+
+      if (existingDrivingRoute.arrivalDate) {
+        setShowArrivalDate(true)
+      }
+
     } else {
       reset();
     }
   }, [existingDrivingRoute, reset]);
 
-    // HELPER FUNCTION
-    const handleDropoffCheckbox = () => {
-      if (showArrivalDate) {
-        setValue("arrivalDate", undefined);
-      }
-      setShowArrivalDate((prev) => !prev);
-    };
+  // HELPER FUNCTION
+  const handleDropoffCheckbox = () => {
+    if (showArrivalDate) {
+      setValue("arrivalDate", null);
+    }
+    setShowArrivalDate((prev) => !prev);
+  };
 
-  const onSubmit = (data: DrivingRouteFormData) => {
-    if (drivingId) {
-      const updatedDrivingRoute = {
-        ...existingDrivingRoute,
-        ...data,
-        id: drivingId,
-      };
-      dispatch(updateDriving(updatedDrivingRoute));
-    } else {
-      const newDrivingRoute = { id: uuidv4(), ...data };
-      dispatch(addDriving(newDrivingRoute));
+  // SUBMIT DRIVING FORM DATA
+  const onSubmit = async (data: DrivingRouteFormData) => {
+    const { ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE DRIVING
+      if (drivingId) {
+        const updatedDrivingRoute = {
+          ...existingDrivingRoute,
+          ...rest,
+          id: Number(existingDrivingRoute?.id),
+        };
+
+        await dispatch(
+          updateDrivingTable({ driving: updatedDrivingRoute })
+        ).unwrap();
+      } else {
+        // ADD DRIVING
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(addDrivingTable({ driving: newData })).unwrap();
+      }
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save driving route:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (drivingId && !existingDrivingRoute) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -158,7 +225,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
                 register={register}
                 label={"Drive Duration"}
                 name={"driveDuration"}
-                placeholder="e.g. 15 min drive to train station"
+                placeholder="e.g. 15 min"
               />
             </SectionInputs>
           </SectionContents>
@@ -216,7 +283,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -264,6 +331,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!drivingId ? "Add Driving Route" : "Update Driving Route"}
       </Button>

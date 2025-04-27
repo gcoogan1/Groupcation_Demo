@@ -11,6 +11,7 @@ import { fetchRentalByGroupcationId } from "@modules/activities/rental/thunk/ren
 import { fetchEventByGroupcationId } from "@modules/activities/event/thunk/eventThunk";
 import { fetchRestaurantByGroupcationId } from "@modules/activities/restaurant/thunk/restaurantThunks";
 import { fetchCelebrationByGroupcationId } from "@modules/activities/celebration/thunk/celebrationThunk";
+import { fetchDrivingRouteByGroupcationId } from "@/modules/routes/driving/thunk/drivingThunk";
 
 
 export const fetchAllGroupcationData = createAsyncThunk<
@@ -29,6 +30,7 @@ export const fetchAllGroupcationData = createAsyncThunk<
     dispatch(fetchEventByGroupcationId(groupcationId)),
     dispatch(fetchRestaurantByGroupcationId(groupcationId)),
     dispatch(fetchCelebrationByGroupcationId(groupcationId)),
+    dispatch(fetchDrivingRouteByGroupcationId(groupcationId)),
     dispatch(fetchUsersTable()),
   ]);
 });

@@ -67,6 +67,7 @@ import {
   selectBuses,
   selectCelebrations,
   selectConvertedUsersForFilters,
+  selectDrvingRoutes,
   selectEvents,
   selectFlights,
   selectGroupcationById,
@@ -292,12 +293,14 @@ const HomeScreen = () => {
   const events = useSelector(selectEvents);
   const restaurants = useSelector(selectRestaurants);
   const celebrations = useSelector(selectCelebrations);
+  const drivingRoutes = useSelector(selectDrvingRoutes);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
     () =>
       groupTravelItemsByDate(
+        drivingRoutes,
         celebrations,
         restaurants,
         events,
@@ -310,6 +313,7 @@ const HomeScreen = () => {
         groupcation
       ),
     [
+      drivingRoutes,
       celebrations,
       restaurants,
       events,
@@ -626,8 +630,8 @@ const HomeScreen = () => {
                               {activityRenderMap[item.type]?.(
                                 item,
                                 users,
-                                handleOpenModal,
-                                handleEditCardClick
+                                handleEditCardClick,
+                                handleOpenModal
                               )}
                             </>
                           );

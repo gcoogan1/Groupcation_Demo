@@ -1,11 +1,22 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  addDrivingTable,
+  deleteDrivingTable,
+  fetchDrivingRouteByGroupcationId,
+  fetchDrivingRouteTable,
+  updateDrivingTable,
+} from "../thunk/drivingThunk";
 
 interface DrivingRoute {
   id: string;
-  // groupcationId: string;
-  // createdBy: string;
+  groupcationId?: number;
+  createdBy?: number;
   driveDuration: string;
+  departureLocation: string;
+  departureDate: string;
+  departureTime: string;
+  arrivalLocation: string;
+  arrivalDate?: string;
   notes?: string;
 }
 
@@ -18,28 +29,52 @@ const initialState: DrivingRouteState = {
 };
 
 const drivingRouteSlice = createSlice({
-  name: "driving",
+  name: "drivingRoute",
   initialState,
-  reducers: {
-    addDriving: (state, action: PayloadAction<DrivingRoute>) => {
-      state.drivingRoutes.push(action.payload);
-    },
-    updateDriving: (state, action: PayloadAction<DrivingRoute>) => {
-      const index = state.drivingRoutes.findIndex(
-        (driving) => driving.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.drivingRoutes[index] = action.payload;
-      }
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      // Fetch all by groupcationId
+      .addCase(fetchDrivingRouteByGroupcationId.fulfilled, (state, action) => {
+        state.drivingRoutes = action.payload;
+      })
 
-    deleteDriving: (state, action: PayloadAction<string>) => {
-      state.drivingRoutes = state.drivingRoutes.filter(
-        (driving) => driving.id !== action.payload
-      );
-    },
+      // Fetch single by ID
+      .addCase(fetchDrivingRouteTable.fulfilled, (state, action) => {
+        const newDriving = action.payload[0];
+        const existingIndex = state.drivingRoutes.findIndex(
+          (d) => d.id === newDriving.id
+        );
+
+        if (existingIndex !== -1) {
+          state.drivingRoutes[existingIndex] = newDriving;
+        } else {
+          state.drivingRoutes.push(newDriving);
+        }
+      })
+
+      // Add
+      .addCase(addDrivingTable.fulfilled, (state, action) => {
+        state.drivingRoutes.push(action.payload);
+      })
+
+      // Update
+      .addCase(updateDrivingTable.fulfilled, (state, action) => {
+        const index = state.drivingRoutes.findIndex(
+          (driving) => driving.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.drivingRoutes[index] = action.payload;
+        }
+      })
+
+      // Delete
+      .addCase(deleteDrivingTable.fulfilled, (state, action) => {
+        state.drivingRoutes = state.drivingRoutes.filter(
+          (driving) => driving.id !== action.payload
+        );
+      });
   },
 });
 
-export const { addDriving, updateDriving, deleteDriving } = drivingRouteSlice.actions;
 export default drivingRouteSlice.reducer;
