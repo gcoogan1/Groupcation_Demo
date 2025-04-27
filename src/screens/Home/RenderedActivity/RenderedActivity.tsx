@@ -11,6 +11,7 @@ import {
   StayItem,
   TrainItem,
   TravelItem,
+  WalkingRouteItem,
 } from "@tableTypes/filter.types";
 import {
   convertTableTraveler,
@@ -589,6 +590,7 @@ export const activityRenderMap = {
     handleEditClick: (type: string, id: string) => void
   ) => {
     if (item.type !== "drivingRoute") return null;
+
     const drivingRoute = item as DrivingRouteItem;
     const duration = `${drivingRoute.driveDuration} to ${drivingRoute.arrivalLocation}`
     const createdBy = createdByUserInfo(drivingRoute.createdBy, users);
@@ -604,6 +606,32 @@ export const activityRenderMap = {
         notesText={drivingRoute?.notes} 
         footerText={footer} 
         type="drivingRoute"
+        />
+    );
+  },
+
+  walkingRoute: (
+    item: TravelItem,
+    users: UserTable[],
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "walkingRoute") return null;
+
+    const walkingRoute = item as WalkingRouteItem;
+    const duration = `${walkingRoute.walkDuration} to ${walkingRoute.arrivalLocation}`
+    const createdBy = createdByUserInfo(walkingRoute.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(walkingRoute.createdAt);
+
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <ActivityRoute 
+        onEditClick={() => handleEditClick("walking", walkingRoute.id)} 
+        hightlightedRouteAction={"Walking"} 
+        routeText={duration} 
+        notesText={walkingRoute?.notes} 
+        footerText={footer} 
+        type="walkingRoute"
         />
     );
   },

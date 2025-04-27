@@ -23,6 +23,7 @@ import { EventUITable } from "./eventTable.types";
 import { RestaurantUITable } from "./restaurantTable.types";
 import { CelebrationUITable } from "./celebrationTable.types";
 import { DrivingRouteUITable } from "./drivingRouteTable";
+import { WalkingRouteUITable } from "./walkingRouteTable";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
@@ -60,6 +61,7 @@ export type RestaurantItem = RestaurantUITable &
 export type CelebrationItem = CelebrationUITable &
   BaseTravelItem & { type: "celebration" };
 export type DrivingRouteItem = DrivingRouteUITable & BaseTravelItem & { type: "drivingRoute" }
+export type WalkingRouteItem = WalkingRouteUITable & BaseTravelItem & { type: "walkingRoute" }
 
 export type TravelItem =
   | TrainItem
@@ -71,7 +73,8 @@ export type TravelItem =
   | EventItem
   | RestaurantItem
   | CelebrationItem
-  | DrivingRouteItem;
+  | DrivingRouteItem
+  | WalkingRouteItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 

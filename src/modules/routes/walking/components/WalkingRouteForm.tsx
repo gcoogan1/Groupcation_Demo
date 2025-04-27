@@ -3,9 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/store";
-import { addWalking, updateWalking } from "../slice/walkingRouteSlice";
-import { WalkingRouteSchema } from "../schema/walkingRouteSchema";
+import { AppDispatch, RootState } from "@/store";
+import { walkingRouteSchema } from "../schema/walkingRouteSchema";
 import { z } from "zod";
 import {
   AddDetailsButtonContainer,
@@ -33,26 +32,38 @@ import RemoveButton from "@components/RemoveButton/RemoveButton";
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import InputDate from "@components/Inputs/InputDate/InputDate";
 import InputTime from "@components/Inputs/InputTime/InputTime";
+import { useNavigate } from "react-router-dom";
+import {
+  addWalkingTable,
+  fetchWalkingRouteTable,
+  updateWalkingTable,
+} from "../thunk/walkingThunk";
 
 // NOTE: ALL WALKING DATA (see WalkingRouteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
-type WalkingRouteFormData = z.infer<typeof WalkingRouteSchema>;
+type WalkingRouteFormData = z.infer<typeof walkingRouteSchema>;
 
 interface WalkingRouteFormProps {
   walkingId?: string;
 }
 
 const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING WALKING ROUTE DATA FROM STATE IF ID PASSED
   const existingWalkingRoute = useSelector((state: RootState) =>
     state.walkingRoute.walkingRoutes.find(
       (walkingRoute) => walkingRoute.id === walkingId
     )
   );
+
   const [showAddNotes, setShowAddNotes] = useState(
     !!existingWalkingRoute?.notes
   );
+  const [isLoading, setIsLoading] = useState(false);
 
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     control,
@@ -61,32 +72,80 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
     setValue,
     formState: { errors },
   } = useForm<WalkingRouteFormData>({
-    resolver: zodResolver(WalkingRouteSchema),
+    resolver: zodResolver(walkingRouteSchema),
   });
 
+  // FETCH DRIVING DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (walkingId) {
+      dispatch(fetchWalkingRouteTable(walkingId));
+    }
+  }, [dispatch, walkingId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingWalkingRoute) {
-      reset(existingWalkingRoute);
+      // Reset to todays date/time if remaining train date/time is not present
+      const convertedTrain = {
+        ...existingWalkingRoute,
+        departureDate: existingWalkingRoute.departureDate
+          ? new Date(existingWalkingRoute.departureDate)
+          : new Date(),
+        departureTime: existingWalkingRoute.departureTime
+          ? new Date(existingWalkingRoute.departureTime)
+          : new Date(),
+      };
+      reset(convertedTrain);
+
+      if (existingWalkingRoute.notes) {
+        setShowAddNotes(true);
+      }
     } else {
       reset();
     }
   }, [existingWalkingRoute, reset]);
 
-  const onSubmit = (data: WalkingRouteFormData) => {
-    if (walkingId) {
-      const updatedWalkingRoute = {
-        ...existingWalkingRoute,
-        ...data,
-        id: walkingId,
-      };
-      console.log("Updated WalkingRoute:", updatedWalkingRoute);
-      dispatch(updateWalking(updatedWalkingRoute));
-    } else {
-      const newWalkingRoute = { id: uuidv4(), ...data };
-      console.log("New WalkingRoute:", newWalkingRoute);
-      dispatch(addWalking(newWalkingRoute));
+  // SUBMIT WALKING FORM DATA
+  const onSubmit = async (data: WalkingRouteFormData) => {
+    const { ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE WALKING
+      if (walkingId) {
+        const updatedWalkingRoute = {
+          ...existingWalkingRoute,
+          ...rest,
+          id: Number(existingWalkingRoute?.id),
+        };
+
+        await dispatch(
+          updateWalkingTable({ walking: updatedWalkingRoute })
+        ).unwrap();
+      } else {
+        // ADD WALKING
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(addWalkingTable({ walking: newData })).unwrap();
+      }
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save driving route:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (walkingId && !existingWalkingRoute) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -144,7 +203,7 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
                 register={register}
                 label={"Walking Duration"}
                 name={"walkDuration"}
-                placeholder="e.g. 5 min to train station"
+                placeholder="e.g. 5 min"
               />
             </SectionInputs>
           </SectionContents>
@@ -182,7 +241,7 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
                 <RemoveButton
                   onRemove={() => {
                     setShowAddNotes(false);
-                    setValue("notes", undefined);
+                    setValue("notes", null);
                   }}
                 />
               </ContentTitleContainer>
@@ -230,6 +289,7 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!walkingId ? "Add Walking Route" : "Update Walking Route"}
       </Button>

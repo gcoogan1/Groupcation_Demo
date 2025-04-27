@@ -67,7 +67,7 @@ import {
   selectBuses,
   selectCelebrations,
   selectConvertedUsersForFilters,
-  selectDrvingRoutes,
+  selectDrivingRoutes,
   selectEvents,
   selectFlights,
   selectGroupcationById,
@@ -76,6 +76,7 @@ import {
   selectStays,
   selectTableUsers,
   selectTrains,
+  selecWalkingRoutes,
 } from "@store/selectors/selectors";
 import {
   ACTIVITY_OPTIONS,
@@ -293,13 +294,15 @@ const HomeScreen = () => {
   const events = useSelector(selectEvents);
   const restaurants = useSelector(selectRestaurants);
   const celebrations = useSelector(selectCelebrations);
-  const drivingRoutes = useSelector(selectDrvingRoutes);
+  const drivingRoutes = useSelector(selectDrivingRoutes);
+  const walkingRoutes = useSelector(selecWalkingRoutes);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
     () =>
       groupTravelItemsByDate(
+        walkingRoutes,
         drivingRoutes,
         celebrations,
         restaurants,
@@ -313,6 +316,7 @@ const HomeScreen = () => {
         groupcation
       ),
     [
+      walkingRoutes,
       drivingRoutes,
       celebrations,
       restaurants,

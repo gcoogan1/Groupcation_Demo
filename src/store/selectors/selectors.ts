@@ -136,7 +136,7 @@ export const selectCelebrationById = createSelector(
 );
 
 // Memoized selector for driving routes
-export const selectDrvingRoutes = createSelector(
+export const selectDrivingRoutes = createSelector(
   [(state: RootState) => state.drivingRoute.drivingRoutes],
   (drivingRoutes) => [...drivingRoutes]
 );
@@ -145,4 +145,16 @@ export const selectDrvingRoutes = createSelector(
 export const selectDrivingRouteById = createSelector(
   [(state: RootState) => state.drivingRoute.drivingRoutes, (_, drivingId?: string) => drivingId],
   (drivingRoutes, drivingId) => (drivingId ? drivingRoutes.find((drivingRoute) => drivingRoute.id === drivingId) : undefined)
+);
+
+// Memoized selector for walking routes
+export const selecWalkingRoutes = createSelector(
+  [(state: RootState) => state.walkingRoute.walkingRoutes],
+  (walkingRoutes) => [...walkingRoutes]
+);
+
+// Memoized selector for walking route (found by walking id)
+export const selectWalkingRouteById = createSelector(
+  [(state: RootState) => state.walkingRoute.walkingRoutes, (_, walkingId?: string) => walkingId],
+  (walkingRoutes, walkingId) => (walkingId ? walkingRoutes.find((walkingRoute) => walkingRoute.id === walkingId) : undefined)
 );
