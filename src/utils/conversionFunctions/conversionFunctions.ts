@@ -23,6 +23,7 @@ import {
 } from "../dateFunctions/dateFunctions";
 import { DrivingRouteUITable } from "@/tableTypes/drivingRouteTable";
 import { WalkingRouteUITable } from "@/tableTypes/walkingRouteTable";
+import { NoteUITable } from "@/tableTypes/noteTable.types";
 
 // --- Helper Functions --- //
 // convert snake_case to camelCase
@@ -128,6 +129,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  notes: NoteUITable[],
   walkingRoutes: WalkingRouteUITable[],
   drivingRoutes: DrivingRouteUITable[],
   celebrations: CelebrationUITable[],
@@ -165,6 +167,20 @@ export const groupTravelItemsByDate = (
     // Add the item to the array for that date
     grouped[dateKey].push(item);
   };
+
+    // CHECK NOTES TO ADD ENTRY
+  // Loop through all notes and add each with a startDate to the grouped list
+  notes.forEach((note) => {
+    if (note.startDate) {
+      const date = new Date(note.startDate);
+      pushItem({
+        ...note,
+        type: "note",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
 
   // CHECK WALKING ROUTES TO ADD ENTRY
   // Loop through all walking routes and add each with a departureDate to the grouped list

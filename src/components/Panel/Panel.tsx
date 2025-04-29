@@ -110,7 +110,7 @@ const Panel = () => {
   const panelExtraRoutes: PanelRoute[] = [
     {
       icon: <NoteIcon color={theme.note} />,
-      type: "noteOpacity",
+      type: "note",
       text: "Note",
       onClick: () => navigate("/note-form"),
     },

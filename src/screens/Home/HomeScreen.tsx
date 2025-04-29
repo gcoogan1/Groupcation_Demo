@@ -71,6 +71,7 @@ import {
   selectEvents,
   selectFlights,
   selectGroupcationById,
+  selectNotes,
   selectRentals,
   selectRestaurants,
   selectStays,
@@ -296,12 +297,14 @@ const HomeScreen = () => {
   const celebrations = useSelector(selectCelebrations);
   const drivingRoutes = useSelector(selectDrivingRoutes);
   const walkingRoutes = useSelector(selecWalkingRoutes);
+  const notes = useSelector(selectNotes);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
     () =>
       groupTravelItemsByDate(
+        notes,
         walkingRoutes,
         drivingRoutes,
         celebrations,
@@ -316,6 +319,7 @@ const HomeScreen = () => {
         groupcation
       ),
     [
+      notes,
       walkingRoutes,
       drivingRoutes,
       celebrations,
@@ -491,19 +495,25 @@ const HomeScreen = () => {
                 ref={extraContentRef}
                 style={{ display: extrasExpanded ? "flex" : "none" }}
               >
-                {EXTRAS_OPTIONS.map((extra) => (
-                  <FilterItem
-                    key={extra.value}
-                    action={extra.action}
-                    icon={
-                      <Pictogram type={extra.value}>{extra.icon}</Pictogram>
-                    }
-                    label={extra.label}
-                    value={extra.value}
-                    selected={selectedExtras.includes(extra.value)}
-                    onToggle={handleExtraToggle}
-                  />
-                ))}
+                {EXTRAS_OPTIONS.map((extra) => {
+                  const pictogramType =
+                    extra.value === "note"
+                      ? "noteOpacity"
+                      : "groupcationOpacity";
+                  return (
+                    <FilterItem
+                      key={extra.value}
+                      action={extra.action}
+                      icon={
+                        <Pictogram type={pictogramType}>{extra.icon}</Pictogram>
+                      }
+                      label={extra.label}
+                      value={extra.value}
+                      selected={selectedExtras.includes(extra.value)}
+                      onToggle={handleExtraToggle}
+                    />
+                  );
+                })}
               </FilterBody>
             </Filter>
             <Filter>

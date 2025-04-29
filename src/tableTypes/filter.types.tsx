@@ -24,6 +24,7 @@ import { RestaurantUITable } from "./restaurantTable.types";
 import { CelebrationUITable } from "./celebrationTable.types";
 import { DrivingRouteUITable } from "./drivingRouteTable";
 import { WalkingRouteUITable } from "./walkingRouteTable";
+import { NoteUITable } from "./noteTable.types";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
@@ -60,8 +61,11 @@ export type RestaurantItem = RestaurantUITable &
   BaseTravelItem & { type: "restaurant" };
 export type CelebrationItem = CelebrationUITable &
   BaseTravelItem & { type: "celebration" };
-export type DrivingRouteItem = DrivingRouteUITable & BaseTravelItem & { type: "drivingRoute" }
-export type WalkingRouteItem = WalkingRouteUITable & BaseTravelItem & { type: "walkingRoute" }
+export type DrivingRouteItem = DrivingRouteUITable &
+  BaseTravelItem & { type: "drivingRoute" };
+export type WalkingRouteItem = WalkingRouteUITable &
+  BaseTravelItem & { type: "walkingRoute" };
+export type NoteItem = NoteUITable & BaseTravelItem & { type: "note" };
 
 export type TravelItem =
   | TrainItem
@@ -74,7 +78,8 @@ export type TravelItem =
   | RestaurantItem
   | CelebrationItem
   | DrivingRouteItem
-  | WalkingRouteItem;
+  | WalkingRouteItem
+  | NoteItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 
@@ -169,7 +174,7 @@ export const EXTRAS_OPTIONS: FilterItems[] = [
     action: "checkbox",
     icon: <Note color={theme.note} />,
     label: "Notes",
-    value: "noteOpacity",
+    value: "note",
   },
   {
     action: "checkbox",
@@ -177,4 +182,4 @@ export const EXTRAS_OPTIONS: FilterItems[] = [
     label: "Linked Trip",
     value: "groupcationOpacity",
   },
-]
+];

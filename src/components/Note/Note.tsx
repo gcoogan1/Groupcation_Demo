@@ -60,10 +60,12 @@ const Note: React.FC<NotesProps> = ({
 				<NoteItem isExpanded={expanded}>
 					<NoteItemContent>
 						<NoteIcon color={theme.note} />
+						<div>
 						<NoteText>
 							<NoteHighlightText>{hightlightedNoteAction} </NoteHighlightText>
 							{extendedNoteText}
 						</NoteText>
+						</div>
 					</NoteItemContent>
 					{expanded && (
 						<CollapaseButton

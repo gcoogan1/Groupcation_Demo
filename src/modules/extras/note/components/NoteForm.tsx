@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/store";
-import { addNote, updateNote } from "../slice/noteSlice";
+import { AppDispatch, RootState } from "@/store";
 import { NoteSchema } from "../schema/noteSchema";
 import { z } from "zod";
 import {
@@ -28,6 +26,8 @@ import ChevRight from "@assets/Chevron_Right.svg?react";
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import InputDate from "@components/Inputs/InputDate/InputDate";
 import InputTime from "@components/Inputs/InputTime/InputTime";
+import { useNavigate } from "react-router-dom";
+import { addNoteTable, fetchNoteTable, updateNoteTable } from "../thunk/noteThunk";
 
 // NOTE: ALL WALKING DATA (see NoteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -38,11 +38,17 @@ interface NoteFormProps {
 }
 
 const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  // FETCH EXISTING NOTE DATA FROM STATE IF ID PASSED
   const existingNote = useSelector((state: RootState) =>
     state.note.notes.find((note) => note.id === noteId)
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     control,
@@ -53,25 +59,73 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
     resolver: zodResolver(NoteSchema),
   });
 
+  // FETCH NOTE DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (noteId) {
+      dispatch(fetchNoteTable(noteId));
+    }
+  }, [dispatch, noteId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
     if (existingNote) {
-      reset(existingNote);
+      // Reset to todays date/time if remaining train date/time is not present
+      const convertedTrain = {
+        ...existingNote,
+        startDate: existingNote.startDate
+          ? new Date(existingNote.startDate)
+          : new Date(),
+        startTime: existingNote.startTime
+          ? new Date(existingNote.startTime)
+          : new Date(),
+      };
+      reset(convertedTrain);
     } else {
       reset();
     }
   }, [existingNote, reset]);
 
-  const onSubmit = (data: NoteFormData) => {
-    if (noteId) {
-      const updatedNote = { ...existingNote, ...data, id: noteId };
-      console.log("Updated Note:", updatedNote);
-      dispatch(updateNote(updatedNote));
-    } else {
-      const newNote = { id: uuidv4(), ...data };
-      console.log("New Note:", newNote);
-      dispatch(addNote(newNote));
+  // SUBMIT NOTE FORM DATA
+  const onSubmit = async (data: NoteFormData) => {
+    const { ...rest } = data;
+    setIsLoading(true);
+
+    try {
+      // UPDATE NOTE
+      if (noteId) {
+        const updatedNote = {
+          ...existingNote,
+          ...rest,
+          id: Number(existingNote?.id),
+        };
+
+        await dispatch(
+          updateNoteTable({ note: updatedNote })
+        ).unwrap();
+      } else {
+        // ADD NOTE
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(addNoteTable({ note: newData })).unwrap();
+      }
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save note:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (noteId && !existingNote) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -139,6 +193,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!noteId ? "Add Note" : "Update Note"}
       </Button>

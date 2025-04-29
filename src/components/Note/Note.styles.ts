@@ -9,7 +9,7 @@ export const NoteContainer = styled.div<NoteContainerProps>`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	max-width: 400px;
+	width: 100%;
 	border-radius: 8px;
 	min-height: 70px;
 	cursor: ${({ isExpanded }) => (isExpanded ? "auto" : "pointer")};
@@ -45,15 +45,21 @@ export const CollapseButtonContainer = styled.div`
 `;
 
 export const NoteItemContent = styled.div`
-	overflow: hidden;
+	/* overflow: hidden;
+	flex: 1;
 	display: flex;
 	align-items: center;
 	text-overflow: ellipsis;
-	white-space: nowrap;
+	white-space: nowrap; */
+	display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    /* padding: 8px 24px; */
 `;
 
 export const NoteHighlightText = styled.span`
-	color: ${theme.walking};
+	color: ${theme.note};
 `;
 
 export const NoteText = styled.p`
@@ -62,23 +68,27 @@ export const NoteText = styled.p`
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	flex: 1;
+	max-width: 300px;
 	line-height: 20px;
 	color: ${theme.iconText};
+
+	@media (max-width: 512px) {
+		max-width: 200px;
+	}
 `;
 
 export const ExpandableContent = styled.div<NoteContainerProps>`
 	overflow: hidden;
 	background-color: ${theme.base};
+	width: 100%;
 	border-top: ${({ isExpanded }) =>
 		isExpanded ? `2px solid ${theme.line}` : "none"};
 `;
 
 export const ContentContainer = styled.div`
   padding: 24px;
-  display: flex:
+  display: flex;
   justify-content: center;
-  align-items: content;
   gap: 16px;
 `;
 
@@ -86,6 +96,7 @@ export const AddNotesContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	width: 100%;
 `;
 
 export const AddNotesTitle = styled.div`

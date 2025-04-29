@@ -6,6 +6,7 @@ import {
   DrivingRouteItem,
   EventItem,
   FlightItem,
+  NoteItem,
   RentalItem,
   RestaurantItem,
   StayItem,
@@ -34,6 +35,7 @@ import EventActivity from "@components/Filters/Activites/EventActivity/EventActi
 import RestaurantActivity from "@components/Filters/Activites/RestaurantActivity/RestaurantActivity";
 import CelebrationActivity from "@components/Filters/Activites/CelebrationActivity/CelebrationActivity";
 import ActivityRoute from "@/components/Route/Route";
+import Note from "@/components/Note/Note";
 
 export const activityRenderMap = {
   train: (
@@ -43,7 +45,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "train") return null;
 
@@ -105,7 +107,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "flight") return null;
 
@@ -167,7 +169,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "stay") return null;
     const stay = item as StayItem;
@@ -222,7 +224,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "bus") return null;
 
@@ -285,7 +287,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "boat") return null;
 
@@ -348,7 +350,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "rental") return null;
 
@@ -414,7 +416,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "event") return null;
 
@@ -478,7 +480,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "restaurant") return null;
 
@@ -528,7 +530,7 @@ export const activityRenderMap = {
     handleOpenModal: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "celebration") return null;
 
@@ -592,21 +594,21 @@ export const activityRenderMap = {
     if (item.type !== "drivingRoute") return null;
 
     const drivingRoute = item as DrivingRouteItem;
-    const duration = `${drivingRoute.driveDuration} to ${drivingRoute.arrivalLocation}`
+    const duration = `${drivingRoute.driveDuration} to ${drivingRoute.arrivalLocation}`;
     const createdBy = createdByUserInfo(drivingRoute.createdBy, users);
     const createdAt = formatDateToDayMonthYear(drivingRoute.createdAt);
 
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
-      <ActivityRoute 
-        onEditClick={() => handleEditClick("driving", drivingRoute.id)} 
-        hightlightedRouteAction={"Driving"} 
-        routeText={duration} 
-        notesText={drivingRoute?.notes} 
-        footerText={footer} 
+      <ActivityRoute
+        onEditClick={() => handleEditClick("driving", drivingRoute.id)}
+        hightlightedRouteAction={"Driving"}
+        routeText={duration}
+        notesText={drivingRoute?.notes}
+        footerText={footer}
         type="drivingRoute"
-        />
+      />
     );
   },
 
@@ -618,21 +620,46 @@ export const activityRenderMap = {
     if (item.type !== "walkingRoute") return null;
 
     const walkingRoute = item as WalkingRouteItem;
-    const duration = `${walkingRoute.walkDuration} to ${walkingRoute.arrivalLocation}`
+    const duration = `${walkingRoute.walkDuration} to ${walkingRoute.arrivalLocation}`;
     const createdBy = createdByUserInfo(walkingRoute.createdBy, users);
     const createdAt = formatDateToDayMonthYear(walkingRoute.createdAt);
 
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
-      <ActivityRoute 
-        onEditClick={() => handleEditClick("walking", walkingRoute.id)} 
-        hightlightedRouteAction={"Walking"} 
-        routeText={duration} 
-        notesText={walkingRoute?.notes} 
-        footerText={footer} 
+      <ActivityRoute
+        onEditClick={() => handleEditClick("walking", walkingRoute.id)}
+        hightlightedRouteAction={"Walking"}
+        routeText={duration}
+        notesText={walkingRoute?.notes}
+        footerText={footer}
         type="walkingRoute"
-        />
+      />
+    );
+  },
+
+  note: (
+    item: TravelItem,
+    users: UserTable[],
+    handleEditClick: (type: string, id: string) => void
+  ) => {
+    if (item.type !== "note") return null;
+
+    const note = item as NoteItem;
+    const createdBy = createdByUserInfo(note.createdBy, users);
+    const createdAt = formatDateToDayMonthYear(note.createdAt);
+
+    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+
+    return (
+      <Note
+        onEditClick={() => handleEditClick("note", note.id)}
+        hightlightedNoteAction={"Note"}
+        noteText={note.noteTitle}
+        extendedNotesTitle={note.noteTitle}
+        extendedNoteText={note.noteContent}
+        footerText={footer}
+      />
     );
   },
 };
