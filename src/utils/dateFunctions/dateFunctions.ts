@@ -97,7 +97,7 @@ export const convertFormDatesToString = (data: any) => {
   return convertedData;
 };
 
-export const formatDateToDayMonthYear = (dateString?: string): string => {
+export const formatDateToDayMonthYear = (dateString?: string | Date): string => {
   if (!dateString) return "";
   return format(new Date(dateString), "dd MMMM yyyy");
 };

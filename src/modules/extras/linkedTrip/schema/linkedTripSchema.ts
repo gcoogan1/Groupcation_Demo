@@ -5,16 +5,25 @@ export const linkedTripSchema = z.object({
   startDate: z.date({ required_error: "Start date is required." }),
   endDate: z.date({ required_error: "End date is required." }),
   travelers: z
-    .array(
-      z.object({
-        value: z.string(),
-        label: z.string(),
-      })
-    )
-    .optional(),
-  cost: z.string().optional(),
+  .array(
+    z.object({
+      value: z.number(),
+      label: z.string(),
+    })
+  )
+  .optional(),
   attachments: z
-    .array(z.instanceof(File))
-    .max(1, "You can only upload one background picture.")
-    .optional(),
+  .array(
+    z.object({
+      id: z.union([z.string(), z.number()]).optional(),
+      createdAt: z.string().optional(),
+      fileName: z.string(),
+      trainId: z.number().optional(),
+      addedBy: z.number().optional(),
+      file: z.instanceof(File).optional(),
+      fileUrl: z.string().url("File URL is invalid"), // URL for preview
+      fileType: z.string(), // file MIME type
+      fileSize: z.number().min(0, "File size cannot be negative"), // in bytes
+    })
+  ).optional(),
 });

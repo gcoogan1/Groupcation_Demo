@@ -57,7 +57,7 @@ export const filterGroups = (
         const matchesTraveler =
           selectedTravelerIds.length > 0
             ? item.travelers?.some((traveler) =>
-                selectedTravelerIds.includes(traveler.traveler_id)
+                selectedTravelerIds.includes(traveler.travelerId)
               )
             : true; // No traveler filter = include all
 

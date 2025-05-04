@@ -24,6 +24,7 @@ import {
 import { DrivingRouteUITable } from "@/tableTypes/drivingRouteTable";
 import { WalkingRouteUITable } from "@/tableTypes/walkingRouteTable";
 import { NoteUITable } from "@/tableTypes/noteTable.types";
+import { LinkedTripUITable } from "@/tableTypes/linkedTripsTable.types";
 
 // --- Helper Functions --- //
 // convert snake_case to camelCase
@@ -46,14 +47,25 @@ const transformKeys = (
     ); // Handle array of objects
   }
 
+  if (data instanceof Date) {
+    return data; // Preserve Date objects
+  }
+
   if (data && typeof data === "object") {
     return Object.fromEntries(
       Object.entries(data).map(([key, value]) => {
         // Transform key only if it's in the keysToTransform array or transform all keys by default
-        if (!keysToTransform || keysToTransform.includes(key)) {
-          return [transformFn(key), value];
-        }
-        return [key, value];
+        const newKey =
+          !keysToTransform || keysToTransform.includes(key)
+            ? transformFn(key)
+            : key;
+
+        const newValue =
+          typeof value === "object" && value !== null
+            ? transformKeys(value, transformFn, keysToTransform)
+            : value;
+
+        return [newKey, newValue];
       })
     );
   }
@@ -98,8 +110,8 @@ export const createdByUserInfo = (
 };
 
 type TravelerTable = {
-  traveler_id: number;
-  traveler_full_name: string;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export const convertTableTraveler = (
@@ -107,7 +119,7 @@ export const convertTableTraveler = (
   users: UserTable[]
 ) => {
   return travelerArray.map((traveler) => {
-    const matchedUser = users.find((user) => user.id === traveler.traveler_id);
+    const matchedUser = users.find((user) => user.id === traveler.travelerId);
 
     return {
       initials: matchedUser
@@ -129,6 +141,7 @@ export const convertUsersToTravelersFilter = (userArray: UserTable[]) => {
 };
 
 export const groupTravelItemsByDate = (
+  linkedTrips: LinkedTripUITable[],
   notes: NoteUITable[],
   walkingRoutes: WalkingRouteUITable[],
   drivingRoutes: DrivingRouteUITable[],
@@ -168,7 +181,21 @@ export const groupTravelItemsByDate = (
     grouped[dateKey].push(item);
   };
 
-    // CHECK NOTES TO ADD ENTRY
+  // CHECK LINKED TRIP TO ADD ENTRY
+  // Loop through all linkedTrips and add each with a startDate to the grouped list
+  linkedTrips.forEach((linkedTrip) => {
+    if (linkedTrip.startDate) {
+      const date = new Date(linkedTrip.startDate);
+      pushItem({
+        ...linkedTrip,
+        type: "linkedTrip",
+        date,
+        period: getPeriod(date),
+      });
+    }
+  });
+
+  // CHECK NOTES TO ADD ENTRY
   // Loop through all notes and add each with a startDate to the grouped list
   notes.forEach((note) => {
     if (note.startDate) {

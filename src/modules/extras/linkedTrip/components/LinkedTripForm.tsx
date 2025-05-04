@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/store";
-import { addLinkedTrip, updateLinkedTrip } from "../slice/linkedTripSlice";
+import { AppDispatch, RootState } from "@/store";
 import { linkedTripSchema } from "../schema/linkedTripSchema";
 import { z } from "zod";
 import {
@@ -30,11 +28,11 @@ import UsersIcon from "@assets/Users.svg?react";
 import AttachmentsIcon from "@assets/Attachments.svg?react";
 import ChevRight from "@assets/Chevron_Right.svg?react";
 import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment";
-import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
+import { useNavigate } from "react-router-dom";
+import { selectConvertedUsers } from "@/store/selectors/selectors";
+import { addLinkedTripTable, fetchLinkedTripTable, updateLinkedTripTable } from "../thunk/linkedTripThunk";
 
-// NOTE: ALL TRAIN DATA (see linkedTripSchema) MUST BE PRESENT FOR SUBMIT TO WORK
-//TODO: grab friends from database for this groupcation (options)
-//TODO: get URL from attachment upload to store as string[] in state slice instead of File[]
+// NOTE: ALL LINKED TRIP DATA (see linkedTripSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
 //TODO: FIX --> selected traveler label (z-index) overlapping start date calander
 
@@ -45,11 +43,23 @@ interface LinkedTripFormProps {
 }
 
 const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+
+  // FETCH EXISTING LINKED TRIP DATA FROM STATE IF ID PASSED
   const existingLinkedTrip = useSelector((state: RootState) =>
     state.linkedTrip.linkedTrips.find((linkedTrip) => linkedTrip.id === linkedTripId)
   );
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);  
+  // FETCH ANY EXISTING ATTACHMENTS 
+  const existingAttachments = !!existingLinkedTrip?.attachments && existingLinkedTrip.attachments.length > 0
 
+  // FORM STATE
+  const [travelers, setTravelers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -61,53 +71,78 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
     resolver: zodResolver(linkedTripSchema),
   });
 
-  useEffect(() => {
-    if (existingLinkedTrip) {
-      // Reset to todays date/time if remaining linkedTrip date/time is not present
-      const convertedLinkedTrip = {
-        ...existingLinkedTrip,
-        startDate: existingLinkedTrip.startDate
-          ? new Date(existingLinkedTrip.startDate)
-          : new Date(),
-        endDate: existingLinkedTrip.endDate
-          ? new Date(existingLinkedTrip.endDate)
-          : new Date()
-      };
+   // FETCH LINKED TRIP DATA FROM API
+    useEffect(() => {
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+  
+      if (linkedTripId) {
+        dispatch(fetchLinkedTripTable(linkedTripId));
+      }
+    }, [dispatch, linkedTripId]);
 
-      reset(convertedLinkedTrip);
-    } else {
-      reset();
-    }
-  }, [existingLinkedTrip, reset]);
-  const onSubmit = (data: LinkedTripFormData) => {
-    // Convert the dates in the form data to ISO strings
-    const convertedData = convertFormDatesToString(data);
 
-    if (linkedTripId) {
-      const updatedLinkedTrip = { ...existingLinkedTrip, ...convertedData, id: linkedTripId };
-      console.log("Updated linkedTrip:", updatedLinkedTrip);
-      dispatch(updateLinkedTrip(updatedLinkedTrip));
-    } else {
-      const newLinkedTrip = { id: uuidv4(), ...convertedData };
-      console.log("New linkedTrip:", newLinkedTrip);
-      dispatch(addLinkedTrip(newLinkedTrip));
-    }
-  };
+    // SET/CONVERT FORM IF EXISTING DATA
+    useEffect(() => {
+      if (existingLinkedTrip) {
+        // Reset to todays date/time if remaining train date/time is not present
+        const convertedLinkedTrip = {
+          ...existingLinkedTrip,
+          startDate: existingLinkedTrip.startDate
+            ? new Date(existingLinkedTrip.startDate)
+            : new Date(),
+          endDate: existingLinkedTrip.endDate
+            ? new Date(existingLinkedTrip.endDate)
+            : new Date(),
+        };
+        reset(convertedLinkedTrip);
 
-  const options = [
-    {
-      value: "friendId1",
-      label: "Hiren Bahri",
-    },
-    {
-      value: "friendId2",
-      label: "Ezra Watkins",
-    },
-    {
-      value: "friendId3",
-      label: "Lis Mcneal",
-    },
-  ];
+      } else {
+        reset();
+      }
+    }, [existingLinkedTrip, existingAttachments, reset]);
+
+   // SUBMIT LINKED TRIP FORM DATA
+    const onSubmit = async (data: LinkedTripFormData) => {
+      const { attachments, travelers, ...rest } = data;
+      setIsLoading(true);
+      console.log("data submit linked trip:",data)
+    
+      try {
+        // UPDATE LINKED TRIP
+        if (linkedTripId) {
+          const updatedLinkedTrip = {
+            ...existingLinkedTrip,
+            ...rest,
+            id: Number(existingLinkedTrip?.id),
+          };
+    
+          await dispatch(
+            updateLinkedTripTable({ linkedTrip: updatedLinkedTrip, files: attachments, selectedTravelers: travelers })
+          ).unwrap();
+        } else {
+          // ADD LINKED TRIP
+          const newData = {
+            groupcationId: 333,
+            createdBy: 3,
+            ...rest,
+          };
+    
+          await dispatch(
+            addLinkedTripTable({ linkedTrip: newData, files: attachments, travelers })
+          ).unwrap();
+        }
+    
+        // Only navigate after the async thunk is fully completed
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to save linked trip:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    if (linkedTripId && !existingLinkedTrip) return <div>Loading...</div>
 
   return (
     <FormContainer
@@ -176,7 +211,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
               <InputSelect
                 label="Select Travelers"
                 name="travelers"
-                options={options}
+                options={travelers}
                 placeholder="Choose your companions..."
                 control={control}
               />
@@ -198,6 +233,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
                   setValue={setValue}
                   name={"attachments"}
                   defaultFiles={existingLinkedTrip?.attachments || []}
+                  allowMultiple={false}
                 />
               </SectionInputs>
             </SectionContents>
@@ -209,6 +245,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
         color="primary"
         ariaLabel="submit"
         type="submit"
+        isLoading={isLoading}
       >
         {!linkedTripId ? "Add Linked Trip" : "Update Linked Trip"}
       </Button>

@@ -6,6 +6,7 @@ interface LinkedTripContainerProps {
 }
 
 export const LinkedTripContainer = styled.div<LinkedTripContainerProps>`
+  width: 100%;
 	border-radius: 12px;
 	display: inline-flex;
 	justify-content: space-between;

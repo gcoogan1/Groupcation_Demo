@@ -24,6 +24,7 @@ interface InputAttachmentProps {
   setValue: UseFormSetValue<any>;
   name: string;
   defaultFiles?: TrainAttachments[];
+  allowMultiple?: boolean;
 }
 
 const InputAttachment: React.FC<InputAttachmentProps> = ({
@@ -31,6 +32,7 @@ const InputAttachment: React.FC<InputAttachmentProps> = ({
   setValue,
   name,
   defaultFiles = [],
+  allowMultiple = true
 }) => {
   const [uploadedFiles, setUploadedFiles] =
     useState<TrainAttachments[]>(defaultFiles);
@@ -39,7 +41,11 @@ const InputAttachment: React.FC<InputAttachmentProps> = ({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const selectedFiles = Array.from(event.target.files);
+      let selectedFiles = Array.from(event.target.files);
+
+      if (!allowMultiple) {
+        selectedFiles = [selectedFiles[0]]; // Only keep one
+      }
 
       // Filter out any repeating files
       const newAttachments = selectedFiles
@@ -109,7 +115,7 @@ const InputAttachment: React.FC<InputAttachmentProps> = ({
         type="file"
         {...register(name)}
         onChange={handleFileChange}
-        multiple
+        multiple={allowMultiple}
         ref={fileInput}
       />
     </AttachmentContainer>

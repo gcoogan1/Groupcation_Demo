@@ -174,10 +174,11 @@ const Panel = () => {
         </SectionHeader>
         <SectionList>
           {panelExtraRoutes.map((route) => {
+            const panelType = (route.type === 'note') ? 'noteOpacity' : 'groupcationOpacity'
             return (
               <MenuItem
                 pictogram={
-                  <Pictogram size="medium" type={route.type}>
+                  <Pictogram size="medium" type={panelType}>
                     {route.icon}
                   </Pictogram>
                 }

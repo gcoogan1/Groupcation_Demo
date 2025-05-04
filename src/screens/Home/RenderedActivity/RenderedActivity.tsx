@@ -6,6 +6,7 @@ import {
   DrivingRouteItem,
   EventItem,
   FlightItem,
+  LinkedTripItem,
   NoteItem,
   RentalItem,
   RestaurantItem,
@@ -36,13 +37,14 @@ import RestaurantActivity from "@components/Filters/Activites/RestaurantActivity
 import CelebrationActivity from "@components/Filters/Activites/CelebrationActivity/CelebrationActivity";
 import ActivityRoute from "@/components/Route/Route";
 import Note from "@/components/Note/Note";
+import LinkedTrip from "@/components/LinkedTrip/LinkedTrip";
 
 export const activityRenderMap = {
   train: (
     item: TravelItem,
     users: UserTable[],
-    handleEditClick: (type: string, id: string) => void,
-    handleOpenModal: (
+    handleEditClick?: (type: string, id: string) => void,
+    handleOpenModal?: (
       type: "cost" | "attachments" | "notes",
       item: TravelItem
     ) => void
@@ -53,6 +55,8 @@ export const activityRenderMap = {
     const travelers = train.travelers
       ? convertTableTraveler(train.travelers, users)
       : [];
+
+      // console.log("train", train.travelers)
 
     const duration = getDurationInDaysHoursAndMinutes(
       train.departureDate.toLocaleString(),
@@ -659,6 +663,39 @@ export const activityRenderMap = {
         extendedNotesTitle={note.noteTitle}
         extendedNoteText={note.noteContent}
         footerText={footer}
+      />
+    );
+  },
+
+  linkedTrip: (
+    item: TravelItem,
+    users: UserTable[],
+  ) => {
+    if (item.type !== "linkedTrip") return null;
+
+    const linkedTrip = item as LinkedTripItem;
+    const duration = `${formatDateToDayMonthYear(linkedTrip.startDate)} to ${formatDateToDayMonthYear(linkedTrip.endDate)}`
+    const travelers = linkedTrip.travelers
+    ? convertTableTraveler(linkedTrip.travelers, users)
+    : [];
+    // console.log("Linked", linkedTrip.travelers)
+    // const backgroundURl = linkedTrip.attachments && linkedTrip?.attachments.map(attachment => attachment.fileUrl)
+    // console.log("image", backgroundURl[0])
+    const backgroundUrl = linkedTrip.attachments?.[0]?.fileUrl;
+
+    // console.log("linkedTrip", travelers);
+    
+    // console.log("duration", duration);
+    // console.log("travelers:", travelers)
+    
+
+    return (
+      <LinkedTrip 
+        tripName={linkedTrip.linkedTripTitle} 
+        duration={duration} 
+        travelers={travelers} 
+        backgroundImg={backgroundUrl}      
+    
       />
     );
   },

@@ -71,6 +71,7 @@ import {
   selectEvents,
   selectFlights,
   selectGroupcationById,
+  selectLinkedTrips,
   selectNotes,
   selectRentals,
   selectRestaurants,
@@ -298,12 +299,14 @@ const HomeScreen = () => {
   const drivingRoutes = useSelector(selectDrivingRoutes);
   const walkingRoutes = useSelector(selecWalkingRoutes);
   const notes = useSelector(selectNotes);
+  const linkedTrips = useSelector(selectLinkedTrips);
   const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
     () =>
       groupTravelItemsByDate(
+        linkedTrips,
         notes,
         walkingRoutes,
         drivingRoutes,
@@ -319,6 +322,7 @@ const HomeScreen = () => {
         groupcation
       ),
     [
+      linkedTrips,
       notes,
       walkingRoutes,
       drivingRoutes,

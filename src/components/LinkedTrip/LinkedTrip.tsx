@@ -7,6 +7,7 @@ import {
 	LinkedTripName,
 	LinkedTripTextContainer,
 } from "./LinkedTrip.styles";
+import BackgroundImageDefault from "../../assets/background.jpeg"
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -19,7 +20,7 @@ interface LinkedTripProps {
 	tripName: string;
 	duration: string;
 	travelers: Traveler[];
-	backgroundImg: string;
+	backgroundImg?: string;
 }
 
 const LinkedTrip: React.FC<LinkedTripProps> = ({
@@ -29,7 +30,7 @@ const LinkedTrip: React.FC<LinkedTripProps> = ({
 	backgroundImg,
 }) => {
 	return (
-		<LinkedTripContainer background={backgroundImg}>
+		<LinkedTripContainer background={backgroundImg || BackgroundImageDefault}>
 			<LinkedTripTextContainer>
 				<LinkedTripName>{tripName}</LinkedTripName>
 				<LinkedTripDuration>{duration}</LinkedTripDuration>

@@ -14,6 +14,7 @@ import { fetchCelebrationByGroupcationId } from "@modules/activities/celebration
 import { fetchDrivingRouteByGroupcationId } from "@/modules/routes/driving/thunk/drivingThunk";
 import { fetchNoteByGroupcationId } from "@/modules/extras/note/thunk/noteThunk";
 import { fetchWalkingRouteByGroupcationId } from "@/modules/routes/walking/thunk/walkingThunk";
+import { fetchLinkedTripByGroupcationId } from "@/modules/extras/linkedTrip/thunk/linkedTripThunk";
 
 
 export const fetchAllGroupcationData = createAsyncThunk<
@@ -35,6 +36,7 @@ export const fetchAllGroupcationData = createAsyncThunk<
     dispatch(fetchDrivingRouteByGroupcationId(groupcationId)),
     dispatch(fetchWalkingRouteByGroupcationId(groupcationId)),
     dispatch(fetchNoteByGroupcationId(groupcationId)),
+    dispatch(fetchLinkedTripByGroupcationId(groupcationId)),
     dispatch(fetchUsersTable()),
   ]);
 });

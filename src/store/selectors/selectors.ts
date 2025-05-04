@@ -159,7 +159,7 @@ export const selectWalkingRouteById = createSelector(
   (walkingRoutes, walkingId) => (walkingId ? walkingRoutes.find((walkingRoute) => walkingRoute.id === walkingId) : undefined)
 );
 
-// Memoized selector for  notes
+// Memoized selector for notes
 export const selectNotes = createSelector(
   [(state: RootState) => state.note.notes],
   (notes) => [...notes]
@@ -169,4 +169,16 @@ export const selectNotes = createSelector(
 export const selectNoteById = createSelector(
   [(state: RootState) => state.note.notes, (_, noteId?: string) => noteId],
   (notes, noteId) => (noteId ? notes.find((note) => note.id === noteId) : undefined)
+);
+
+// Memoized selector for linkedTrips
+export const selectLinkedTrips = createSelector(
+  [(state: RootState) => state.linkedTrip.linkedTrips],
+  (linkedTrips) => [...linkedTrips]
+);
+
+// Memoized selector for linkedTrip (found linkedTrip id)
+export const selectLinkedTripById = createSelector(
+  [(state: RootState) => state.linkedTrip.linkedTrips, (_, linkedTripId?: string) => linkedTripId],
+  (linkedTrips, linkedTripId) => (linkedTripId ? linkedTrips.find((linkedTrip) => linkedTrip.id === linkedTripId) : undefined)
 );

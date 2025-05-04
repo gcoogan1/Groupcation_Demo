@@ -25,6 +25,7 @@ import { CelebrationUITable } from "./celebrationTable.types";
 import { DrivingRouteUITable } from "./drivingRouteTable";
 import { WalkingRouteUITable } from "./walkingRouteTable";
 import { NoteUITable } from "./noteTable.types";
+import { LinkedTripUITable } from "./linkedTripsTable.types";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
@@ -66,6 +67,7 @@ export type DrivingRouteItem = DrivingRouteUITable &
 export type WalkingRouteItem = WalkingRouteUITable &
   BaseTravelItem & { type: "walkingRoute" };
 export type NoteItem = NoteUITable & BaseTravelItem & { type: "note" };
+export type LinkedTripItem = LinkedTripUITable & BaseTravelItem & { type: "linkedTrip" };
 
 export type TravelItem =
   | TrainItem
@@ -79,7 +81,8 @@ export type TravelItem =
   | CelebrationItem
   | DrivingRouteItem
   | WalkingRouteItem
-  | NoteItem;
+  | NoteItem
+  | LinkedTripItem;
 
 export type GroupedTravelItems = Record<string, TravelItem[]>;
 
