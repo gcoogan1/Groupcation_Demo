@@ -14,7 +14,7 @@ export const StyledLabel = styled.label`
   left: 12px;
   background: ${theme.base};
   padding: 0 4px;
-	z-index: 1;
+	z-index: 2;
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
