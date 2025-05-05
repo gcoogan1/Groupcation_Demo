@@ -44,9 +44,9 @@ export type RentalTable = {
 export type RentalTraveler = {
   id?: number;
   createdAt?: Date;
-  rental_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  rentalId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type RentalAttachments = {

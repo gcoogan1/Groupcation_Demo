@@ -44,9 +44,9 @@ export type TrainTable = {
 export type TrainTraveler = {
   id?: number;
   createdAt?: Date;
-  train_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  trainId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type TrainAttachments = {

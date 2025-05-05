@@ -48,9 +48,9 @@ export type FlightTable = {
 export type FlightTraveler = {
   id?: number;
   createdAt?: Date;
-  flight_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  flightId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type FlightAttachments = {

@@ -42,9 +42,9 @@ export type CelebrationTable = {
 export type CelebrationTraveler = {
   id?: number;
   createdAt?: Date;
-  celebration_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  celebrationId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type CelebrationAttachments = {

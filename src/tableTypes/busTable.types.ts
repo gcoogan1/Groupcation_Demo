@@ -44,9 +44,9 @@ export type BusTable = {
 export type BusTraveler = {
   id?: number;
   createdAt?: Date;
-  bus_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  busId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type BusAttachments = {

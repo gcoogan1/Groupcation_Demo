@@ -41,9 +41,9 @@ export type StayTable = {
 export type StayTraveler = {
   id?: number;
   createdAt?: Date;
-  stay_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  stayId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type StayAttachments = {

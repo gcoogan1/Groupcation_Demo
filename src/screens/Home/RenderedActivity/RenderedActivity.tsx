@@ -678,16 +678,7 @@ export const activityRenderMap = {
     const travelers = linkedTrip.travelers
     ? convertTableTraveler(linkedTrip.travelers, users)
     : [];
-    // console.log("Linked", linkedTrip.travelers)
-    // const backgroundURl = linkedTrip.attachments && linkedTrip?.attachments.map(attachment => attachment.fileUrl)
-    // console.log("image", backgroundURl[0])
     const backgroundUrl = linkedTrip.attachments?.[0]?.fileUrl;
-
-    // console.log("linkedTrip", travelers);
-    
-    // console.log("duration", duration);
-    // console.log("travelers:", travelers)
-    
 
     return (
       <LinkedTrip 

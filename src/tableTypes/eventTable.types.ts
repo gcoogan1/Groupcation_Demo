@@ -44,9 +44,9 @@ export type EventTable = {
 export type EventTraveler = {
   id?: number;
   createdAt?: Date;
-  event_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  eventId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type EventAttachments = {

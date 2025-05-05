@@ -30,9 +30,9 @@ export type LinkedTripTable = {
 export type LinkedTripTraveler = {
   id?: number;
   createdAt?: Date;
-  linked_trip_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  linkedTripId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type LinkedTripAttachments = {

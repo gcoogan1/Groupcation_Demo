@@ -38,9 +38,9 @@ export type RestaurantTable = {
 export type RestaurantTraveler = {
   id?: number;
   createdAt?: Date;
-  restaurant_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  restaurantId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type RestaurantAttachments = {

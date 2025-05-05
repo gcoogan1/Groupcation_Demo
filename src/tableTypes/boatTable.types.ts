@@ -44,9 +44,9 @@ export type BoatTable = {
 export type BoatTraveler = {
   id?: number;
   createdAt?: Date;
-  boat_id: number;
-  traveler_id: number;
-  traveler_full_name: string;
+  boatId: number;
+  travelerId: number;
+  travelerFullName: string;
 };
 
 export type BoatAttachments = {
