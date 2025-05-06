@@ -37,11 +37,11 @@ const InputTime: React.FC<InputTimeProps> = ({
 				<Controller
 					name={name}
 					control={control}
-					render={({ field }) => (
+					render={({ field: { value, onChange, ref } }) => (
 						<DatePicker
-							{...field}
-							selected={field.value}
-							onChange={(time) => field.onChange(time)}
+							{...ref}
+							selected={value ? new Date(value) : null}
+							onChange={(time) => onChange(time ?? null)}
 							showTimeSelect
 							showTimeSelectOnly
 							timeIntervals={15}

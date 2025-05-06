@@ -62,8 +62,10 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const existingTrain = useSelector((state: RootState) =>
     selectTrainById(state, trainId)
   );
+
   // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
   const users = useSelector(selectConvertedUsers);  
+  
   // FETCH ANY EXISTING ATTACHMENTS 
   const existingAttachments = !!existingTrain?.attachments && existingTrain.attachments.length > 0
 
@@ -126,6 +128,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           ? new Date(existingTrain.arrivalTime)
           : new Date(),
       };
+      
       reset(convertedTrain);
 
       if (existingAttachments) {
