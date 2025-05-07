@@ -137,6 +137,7 @@ const HomeScreen = () => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TravelItem | null>(null);
+  const [expandedActivityId, setAcivityExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!openPanel) return;
@@ -263,6 +264,10 @@ const HomeScreen = () => {
     const path = `/${type}-form/${id}`;
     return navigate(path);
   };
+
+  const toogleExpandedActivity = (id: string) => {
+    setAcivityExpandedId((prev) => (prev === id ? null : id));
+  }
 
   // FILTER FUNCTIONS
   const toggleActivityExpand = () => {
@@ -652,7 +657,9 @@ const HomeScreen = () => {
                                 item,
                                 users,
                                 handleEditCardClick,
-                                handleOpenModal
+                                toogleExpandedActivity,
+                                expandedActivityId,
+                                handleOpenModal,
                               )}
                             </>
                           );

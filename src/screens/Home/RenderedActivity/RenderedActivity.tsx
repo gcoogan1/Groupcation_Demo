@@ -45,12 +45,14 @@ export const activityRenderMap = {
   train: (
     item: TravelItem,
     users: UserTable[],
-    handleEditClick?: (type: string, id: string) => void,
+    handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal?: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
       travelers?: TravelerUIInfo[]
-    ) => void
+    ) => void,
   ) => {
     if (item.type !== "train") return null;
 
@@ -88,6 +90,9 @@ export const activityRenderMap = {
         onAttachmentClick={() => handleOpenModal?.("attachments", train)}
         onAddNotesClick={() => handleOpenModal?.("notes", train)}
         onTravelersClick={() => handleOpenModal?.("travelers", train, travelers)}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(train.id)}
+        id={train.id}
         hightlightedActivityAction="Train"
         activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -101,8 +106,7 @@ export const activityRenderMap = {
           arrivalTime: cardArrivalDateTime,
           arrivalLocation: train.arrivalStation,
           travelers: travelers,
-        }}
-      />
+        }}      />
     );
   },
 
@@ -110,11 +114,13 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
       travelers?: TravelerUIInfo[]
-    ) => void
+    ) => void,
   ) => {
     if (item.type !== "flight") return null;
 
@@ -146,6 +152,9 @@ export const activityRenderMap = {
       <FlightActivity
         onEditClick={() => handleEditClick("flight", flight.id)}
         cost={flight?.cost}
+        id={flight.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(flight.id)}
         attachments={flight.attachments}
         noteText={flight.notes}
         onCostClick={() => handleOpenModal("cost", flight)}
@@ -174,6 +183,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -204,6 +215,9 @@ export const activityRenderMap = {
       <StayActivity
         onEditClick={() => handleEditClick("stay", stay.id)}
         cost={stay?.cost}
+        id={stay.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(stay.id)}
         attachments={stay.attachments}
         noteText={stay.notes}
         onCostClick={() => handleOpenModal("cost", stay)}
@@ -231,6 +245,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -268,6 +284,9 @@ export const activityRenderMap = {
       <BusActivity
         onEditClick={() => handleEditClick("bus", bus.id)}
         cost={bus?.cost}
+        id={bus.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(bus.id)}
         attachments={bus.attachments}
         noteText={bus.notes}
         onCostClick={() => handleOpenModal("cost", bus)}
@@ -296,6 +315,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -333,6 +354,9 @@ export const activityRenderMap = {
       <BoatActivity
         onEditClick={() => handleEditClick("boat", boat.id)}
         cost={boat?.cost}
+        id={boat.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(boat.id)}
         attachments={boat.attachments}
         noteText={boat.notes}
         onCostClick={() => handleOpenModal("cost", boat)}
@@ -361,6 +385,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -399,6 +425,9 @@ export const activityRenderMap = {
       <RentalActivity
         onEditClick={() => handleEditClick("rental", rental.id)}
         cost={rental?.cost}
+        id={rental.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(rental.id)}
         attachments={rental.attachments}
         noteText={rental.notes}
         onCostClick={() => handleOpenModal("cost", rental)}
@@ -429,6 +458,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -467,6 +498,9 @@ export const activityRenderMap = {
       <EventActivity
         onEditClick={() => handleEditClick("event", event.id)}
         cost={event?.cost}
+        id={event.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(event.id)}
         attachments={event.attachments}
         noteText={event.notes}
         onCostClick={() => handleOpenModal("cost", event)}
@@ -495,6 +529,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -522,6 +558,9 @@ export const activityRenderMap = {
       <RestaurantActivity
         onEditClick={() => handleEditClick("restaurant", restaurant.id)}
         cost={restaurant?.cost}
+        id={restaurant.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(restaurant.id)}
         attachments={restaurant.attachments}
         noteText={restaurant.notes}
         onCostClick={() => handleOpenModal("cost", restaurant)}
@@ -547,6 +586,8 @@ export const activityRenderMap = {
     item: TravelItem,
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
+    toogleExpandedActivity: (id: string) => void,
+    expandedActivityId: string | null,
     handleOpenModal: (
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
@@ -585,6 +626,9 @@ export const activityRenderMap = {
       <CelebrationActivity
         onEditClick={() => handleEditClick("celebration", celebration.id)}
         cost={celebration?.cost}
+        id={celebration.id}
+        isExpandedActivityId={expandedActivityId}
+        toogleExpandedActivity={() => toogleExpandedActivity(celebration.id)}
         attachments={celebration.attachments}
         noteText={celebration.notes}
         onCostClick={() => handleOpenModal("cost", celebration)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   ContentContainer,
   ExpandableContent,
@@ -56,6 +56,7 @@ interface EventActivitysProps {
   onEditClick: () => void;
   cost?: string;
   onCostClick: () => void;
+  id: string;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
   onTravelersClick: () => void;
@@ -66,11 +67,14 @@ interface EventActivitysProps {
   attachments?: EventAttachments[];
   footerText: string;
   activityCardDetails: EventActivityCardDetails;
+  isExpandedActivityId: string | null;
+  toogleExpandedActivity: (id: string | null) => void;
 }
 
 const EventActivity: React.FC<EventActivitysProps> = ({
   onEditClick,
   cost,
+  id,
   onCostClick,
   attachments,
   onAttachmentClick,
@@ -82,8 +86,9 @@ const EventActivity: React.FC<EventActivitysProps> = ({
   departureTime,
   footerText,
   activityCardDetails,
+  isExpandedActivityId,
+  toogleExpandedActivity
 }) => {
-  const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -97,34 +102,23 @@ const EventActivity: React.FC<EventActivitysProps> = ({
     travelers,
   } = activityCardDetails;
 
-  useEffect(() => {
-    if (!expanded) return;
-    const handleResize = () => {
-      setExpanded(false);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [expanded]);
+  const isExpanded = isExpandedActivityId === id;
 
   const toggleExpand = () => {
-    if (expanded) return;
+    if (isExpanded) return;
     if (contentRef.current) {
-      const newHeight = expanded ? "0" : `${contentRef.current.scrollHeight}px`;
-      contentRef.current.style.height = newHeight;
-      setExpanded((prev) => !prev);
+      contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+      toogleExpandedActivity(id);
     }
   };
 
   return (
     <ActivityContainer
-      isExpanded={expanded}
+      isExpanded={isExpanded}
       onClick={toggleExpand}
       style={{ flexDirection: "column" }}
     >
-      <ActivityItem isExpanded={expanded}>
+      <ActivityItem isExpanded={isExpanded}>
         <ActivityItemContent>
           <Pictogram type={"event"}>
             <EventIcon color={theme.base} />
@@ -140,11 +134,11 @@ const EventActivity: React.FC<EventActivitysProps> = ({
           </div>
         </ActivityItemContent>
         <CollapseButtonContainer>
-          {expanded && (
+          {isExpanded && (
             <CollapaseButton
               onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
-                setExpanded(false);
+                toogleExpandedActivity(null);
               }}
             />
           )}
@@ -152,9 +146,9 @@ const EventActivity: React.FC<EventActivitysProps> = ({
       </ActivityItem>
 
       <ExpandableContent
-        isExpanded={expanded}
+        isExpanded={isExpanded}
         ref={contentRef}
-        style={{ maxHeight: expanded ? contentRef.current?.scrollHeight : 0 }}
+        style={{ maxHeight: isExpanded ? contentRef.current?.scrollHeight : 0 }}
       >
         <ContentContainer>
           <EventCard

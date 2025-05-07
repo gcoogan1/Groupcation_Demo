@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   ContentContainer,
   ExpandableContent,
@@ -55,6 +55,7 @@ export type RentalActivityCardDetails = {
 interface RentalActivitysProps {
   onEditClick: () => void;
   cost?: string;
+  id: string;
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
@@ -66,11 +67,14 @@ interface RentalActivitysProps {
   attachments?: RentalAttachments[];
   footerText: string;
   activityCardDetails: RentalActivityCardDetails;
+  isExpandedActivityId: string | null;
+  toogleExpandedActivity: (id: string | null) => void;
 }
 
 const RentalActivity: React.FC<RentalActivitysProps> = ({
   onEditClick,
   cost,
+  id,
   onCostClick,
   attachments,
   onAttachmentClick,
@@ -82,8 +86,9 @@ const RentalActivity: React.FC<RentalActivitysProps> = ({
   departureTime,
   footerText,
   activityCardDetails,
+  isExpandedActivityId,
+  toogleExpandedActivity
 }) => {
-  const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -97,34 +102,23 @@ const RentalActivity: React.FC<RentalActivitysProps> = ({
     travelers,
   } = activityCardDetails;
 
-  useEffect(() => {
-    if (!expanded) return;
-    const handleResize = () => {
-      setExpanded(false);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [expanded]);
+  const isExpanded = isExpandedActivityId === id;
 
   const toggleExpand = () => {
-    if (expanded) return;
+    if (isExpanded) return;
     if (contentRef.current) {
-      const newHeight = expanded ? "0" : `${contentRef.current.scrollHeight}px`;
-      contentRef.current.style.height = newHeight;
-      setExpanded((prev) => !prev);
+      contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+      toogleExpandedActivity(id);
     }
   };
 
   return (
     <ActivityContainer
-      isExpanded={expanded}
+      isExpanded={isExpanded}
       onClick={toggleExpand}
       style={{ flexDirection: "column" }}
     >
-      <ActivityItem isExpanded={expanded}>
+      <ActivityItem isExpanded={isExpanded}>
         <ActivityItemContent>
           <Pictogram type={"rental"}>
             <RentalIcon color={theme.base} />
@@ -140,11 +134,11 @@ const RentalActivity: React.FC<RentalActivitysProps> = ({
           </div>
         </ActivityItemContent>
         <CollapseButtonContainer>
-          {expanded && (
+          {isExpanded && (
             <CollapaseButton
               onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
-                setExpanded(false);
+                toogleExpandedActivity(null);
               }}
             />
           )}
@@ -152,9 +146,9 @@ const RentalActivity: React.FC<RentalActivitysProps> = ({
       </ActivityItem>
 
       <ExpandableContent
-        isExpanded={expanded}
+        isExpanded={isExpanded}
         ref={contentRef}
-        style={{ maxHeight: expanded ? contentRef.current?.scrollHeight : 0 }}
+        style={{ maxHeight: isExpanded ? contentRef.current?.scrollHeight : 0 }}
       >
         <ContentContainer>
           <RentalCard
