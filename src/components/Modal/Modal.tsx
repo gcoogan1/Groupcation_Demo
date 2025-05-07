@@ -1,6 +1,8 @@
 import React from "react";
 import CostIcon from "@assets/Cost.svg?react";
-import FileIcon from "@assets/File.svg?react";
+import AttachmentIcon from "@assets/Attachments.svg?react";
+import UserIcon from "@assets/Users.svg?react";
+import NotesIcon from "@assets/AdditionalNotes.svg?react";
 import {
   FileContainer,
   FileIconWrapper,
@@ -49,6 +51,16 @@ const Modal: React.FC<ModalProps> = ({
 
   if (!openModal.open) return null;
 
+  // Dynamically change icon based on type
+  const typeToIcon: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
+    cost: CostIcon,
+    attachments: AttachmentIcon,
+    notes: NotesIcon,
+    travelers: UserIcon,
+  };
+  const IconComponent = openModal.type ? typeToIcon[openModal.type] : null;
+  
+
   const formatedAttachments = attachments
     ? attachments.map((att) => transformToCamelCase(att))
     : [];
@@ -61,7 +73,7 @@ const Modal: React.FC<ModalProps> = ({
     <ModalOverlay>
       <ModalWrapper>
         <ModalHeader>
-          <CostIcon color={theme.secondary} />
+          {IconComponent && <IconComponent color={theme.secondary} />}
           <HeaderText>
             {openModal.type === "notes"
               ? `Additional ${openModal.type}`
