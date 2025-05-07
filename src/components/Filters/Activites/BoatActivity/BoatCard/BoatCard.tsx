@@ -22,6 +22,7 @@ interface BoatCardProps {
   arrivalTime: string;
   arrivalLocation: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const BoatCard: React.FC<BoatCardProps> = ({
@@ -32,7 +33,8 @@ const BoatCard: React.FC<BoatCardProps> = ({
   durationTime,
   arrivalTime,
   arrivalLocation,
-  travelers
+  travelers,
+  onTravelersClick
 }) => {
     const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
 
@@ -71,7 +73,7 @@ const BoatCard: React.FC<BoatCardProps> = ({
               </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
             <FooterTextContainer>
             <Users style={{ width: '20px', height: '20px' }} color={theme.iconText} />
               <div>

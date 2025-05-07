@@ -40,6 +40,7 @@ interface CelebrationCardProps {
   durationTime: string;
   endCardTime: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const CelebrationCard: React.FC<CelebrationCardProps> = ({
@@ -50,6 +51,7 @@ const CelebrationCard: React.FC<CelebrationCardProps> = ({
   durationTime,
   endCardTime,
   travelers,
+  onTravelersClick
 }) => {
   const additionalTravelers =
     travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
@@ -88,7 +90,7 @@ const CelebrationCard: React.FC<CelebrationCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}

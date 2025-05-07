@@ -7,5 +7,6 @@ export type UserTable = {
   createdAt: string;
   firstName: string;
   lastName: string;
-  avatarColor:  AvatarThemeKeys
+  avatarColor:  AvatarThemeKeys;
+  relationship?: string;
 }

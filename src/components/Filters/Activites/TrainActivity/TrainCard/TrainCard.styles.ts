@@ -116,6 +116,7 @@ export const ContentFooter = styled.div`
 	border-top: 1px solid ${theme.line};
   width: 100%;
   justify-content: space-between;
+	cursor: pointer;
 `;
 
 export const FooterContents = styled.div`

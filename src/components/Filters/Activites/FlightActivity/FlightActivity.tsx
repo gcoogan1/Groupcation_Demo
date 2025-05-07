@@ -59,6 +59,7 @@ interface FlightActivitysProps {
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
+  onTravelersClick: () => void;
   noteText?: string;
   hightlightedActivityAction: string;
   activityText: string;
@@ -75,6 +76,7 @@ const FlightActivity: React.FC<FlightActivitysProps> = ({
   attachments,
   onAttachmentClick,
   onAddNotesClick,
+  onTravelersClick,
   noteText,
   hightlightedActivityAction,
   activityText,
@@ -165,6 +167,8 @@ const FlightActivity: React.FC<FlightActivitysProps> = ({
             arrivalTime={arrivalTime}
             arrivalAirport={arrivalAirport}
             travelers={travelers}
+            onTravelersClick={onTravelersClick}
+            
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

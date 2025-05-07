@@ -57,6 +57,7 @@ interface StayActivitysProps {
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
+  onTravelersClick: () => void;
   noteText?: string;
   hightlightedActivityAction: string;
   activityText: string;
@@ -73,6 +74,7 @@ const TrainActivity: React.FC<StayActivitysProps> = ({
   attachments,
   onAttachmentClick,
   onAddNotesClick,
+  onTravelersClick,
   noteText,
   hightlightedActivityAction,
   activityText,
@@ -161,6 +163,7 @@ const TrainActivity: React.FC<StayActivitysProps> = ({
             durationTime={durationTime}
             checkOutTime={checkOutDateTime}
             travelers={travelers}
+            onTravelersClick={onTravelersClick}
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

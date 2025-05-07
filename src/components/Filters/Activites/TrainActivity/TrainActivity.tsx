@@ -58,6 +58,7 @@ interface TrainActivitysProps {
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
+  onTravelersClick: () => void;
   noteText?: string;
   hightlightedActivityAction: string;
   activityText: string;
@@ -74,6 +75,7 @@ const TrainActivity: React.FC<TrainActivitysProps> = ({
   attachments,
   onAttachmentClick,
   onAddNotesClick,
+  onTravelersClick,
   noteText,
   hightlightedActivityAction,
   activityText,
@@ -164,6 +166,7 @@ const TrainActivity: React.FC<TrainActivitysProps> = ({
             arrivalTime={arrivalTime}
             arrivalLocation={arrivalLocation}
             travelers={travelers}
+            onTravelersClick={onTravelersClick}
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

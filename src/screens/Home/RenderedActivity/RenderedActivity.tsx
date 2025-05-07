@@ -12,6 +12,7 @@ import {
   RestaurantItem,
   StayItem,
   TrainItem,
+  TravelerUIInfo,
   TravelItem,
   WalkingRouteItem,
 } from "@tableTypes/filter.types";
@@ -39,14 +40,16 @@ import ActivityRoute from "@/components/Route/Route";
 import Note from "@/components/Note/Note";
 import LinkedTrip from "@/components/LinkedTrip/LinkedTrip";
 
+
 export const activityRenderMap = {
   train: (
     item: TravelItem,
     users: UserTable[],
     handleEditClick?: (type: string, id: string) => void,
     handleOpenModal?: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "train") return null;
@@ -55,8 +58,6 @@ export const activityRenderMap = {
     const travelers = train.travelers
       ? convertTableTraveler(train.travelers, users)
       : [];
-
-      // console.log("train", train.travelers)
 
     const duration = getDurationInDaysHoursAndMinutes(
       train.departureDate.toLocaleString(),
@@ -79,13 +80,14 @@ export const activityRenderMap = {
 
     return (
       <TrainActivity
-        onEditClick={() => handleEditClick("train", train.id)}
+        onEditClick={() => handleEditClick?.("train", train.id)}
         cost={train?.cost}
         attachments={train.attachments}
         noteText={train.notes}
-        onCostClick={() => handleOpenModal("cost", train)}
-        onAttachmentClick={() => handleOpenModal("attachments", train)}
-        onAddNotesClick={() => handleOpenModal("notes", train)}
+        onCostClick={() => handleOpenModal?.("cost", train)}
+        onAttachmentClick={() => handleOpenModal?.("attachments", train)}
+        onAddNotesClick={() => handleOpenModal?.("notes", train)}
+        onTravelersClick={() => handleOpenModal?.("travelers", train, travelers)}
         hightlightedActivityAction="Train"
         activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -109,8 +111,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "flight") return null;
@@ -148,6 +151,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", flight)}
         onAttachmentClick={() => handleOpenModal("attachments", flight)}
         onAddNotesClick={() => handleOpenModal("notes", flight)}
+        onTravelersClick={() => handleOpenModal?.("travelers", flight, travelers)}
         hightlightedActivityAction="Flight"
         activityText={`from ${flight.departureAirport} to ${flight.arrivalAirport}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -171,8 +175,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "stay") return null;
@@ -204,6 +209,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", stay)}
         onAttachmentClick={() => handleOpenModal("attachments", stay)}
         onAddNotesClick={() => handleOpenModal("notes", stay)}
+        onTravelersClick={() => handleOpenModal?.("travelers", stay, travelers)}
         hightlightedActivityAction="Stay in"
         activityText={`${stay.placeName}`}
         checkInTime={`Check-in at ${checkInTime}`}
@@ -226,8 +232,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "bus") return null;
@@ -266,6 +273,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", bus)}
         onAttachmentClick={() => handleOpenModal("attachments", bus)}
         onAddNotesClick={() => handleOpenModal("notes", bus)}
+        onTravelersClick={() => handleOpenModal?.("travelers", bus, travelers)}
         hightlightedActivityAction="Bus"
         activityText={`from ${bus.departureBusStop} to ${bus.arrivalBusStop}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -289,8 +297,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "boat") return null;
@@ -329,6 +338,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", boat)}
         onAttachmentClick={() => handleOpenModal("attachments", boat)}
         onAddNotesClick={() => handleOpenModal("notes", boat)}
+        onTravelersClick={() => handleOpenModal?.("travelers", boat, travelers)}
         hightlightedActivityAction="Boat"
         activityText={`from ${boat.departureDock} to ${boat.arrivalDock}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -352,8 +362,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "rental") return null;
@@ -393,6 +404,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", rental)}
         onAttachmentClick={() => handleOpenModal("attachments", rental)}
         onAddNotesClick={() => handleOpenModal("notes", rental)}
+        onTravelersClick={() => handleOpenModal?.("travelers", rental, travelers)}
         hightlightedActivityAction="Rental"
         activityText={`from ${rental.pickUpLocation}`}
         departureTime={`Pick up at ${departureTime}`}
@@ -418,8 +430,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "event") return null;
@@ -459,6 +472,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", event)}
         onAttachmentClick={() => handleOpenModal("attachments", event)}
         onAddNotesClick={() => handleOpenModal("notes", event)}
+        onTravelersClick={() => handleOpenModal?.("travelers", event, travelers)}
         hightlightedActivityAction=""
         activityText={`${event.eventName}`}
         departureTime={`Starts at ${departureTime}`}
@@ -482,8 +496,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "restaurant") return null;
@@ -512,6 +527,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", restaurant)}
         onAttachmentClick={() => handleOpenModal("attachments", restaurant)}
         onAddNotesClick={() => handleOpenModal("notes", restaurant)}
+        onTravelersClick={() => handleOpenModal?.("travelers", restaurant, travelers)}
         hightlightedActivityAction=""
         activityText={`${restaurant.restaurantName}`}
         reservationTime={`Reservation for ${departureTime}`}
@@ -532,8 +548,9 @@ export const activityRenderMap = {
     users: UserTable[],
     handleEditClick: (type: string, id: string) => void,
     handleOpenModal: (
-      type: "cost" | "attachments" | "notes",
-      item: TravelItem
+      type: "cost" | "attachments" | "notes" | "travelers",
+      item: TravelItem,
+      travelers?: TravelerUIInfo[]
     ) => void
   ) => {
     if (item.type !== "celebration") return null;
@@ -573,6 +590,7 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", celebration)}
         onAttachmentClick={() => handleOpenModal("attachments", celebration)}
         onAddNotesClick={() => handleOpenModal("notes", celebration)}
+        onTravelersClick={() => handleOpenModal?.("travelers", celebration, travelers)}
         hightlightedActivityAction="Celebration"
         activityText={`${celebration.celebrationName}`}
         startTime={`Starts at ${startTime}`}
@@ -667,26 +685,24 @@ export const activityRenderMap = {
     );
   },
 
-  linkedTrip: (
-    item: TravelItem,
-    users: UserTable[],
-  ) => {
+  linkedTrip: (item: TravelItem, users: UserTable[]) => {
     if (item.type !== "linkedTrip") return null;
 
     const linkedTrip = item as LinkedTripItem;
-    const duration = `${formatDateToDayMonthYear(linkedTrip.startDate)} to ${formatDateToDayMonthYear(linkedTrip.endDate)}`
+    const duration = `${formatDateToDayMonthYear(
+      linkedTrip.startDate
+    )} to ${formatDateToDayMonthYear(linkedTrip.endDate)}`;
     const travelers = linkedTrip.travelers
-    ? convertTableTraveler(linkedTrip.travelers, users)
-    : [];
+      ? convertTableTraveler(linkedTrip.travelers, users)
+      : [];
     const backgroundUrl = linkedTrip.attachments?.[0]?.fileUrl;
 
     return (
-      <LinkedTrip 
-        tripName={linkedTrip.linkedTripTitle} 
-        duration={duration} 
-        travelers={travelers} 
-        backgroundImg={backgroundUrl}      
-    
+      <LinkedTrip
+        tripName={linkedTrip.linkedTripTitle}
+        duration={duration}
+        travelers={travelers}
+        backgroundImg={backgroundUrl}
       />
     );
   },

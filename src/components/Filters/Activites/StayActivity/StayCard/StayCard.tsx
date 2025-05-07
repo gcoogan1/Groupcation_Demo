@@ -40,6 +40,7 @@ interface StayCardProps {
   checkOutTime: string;
   durationTime: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const StayCard: React.FC<StayCardProps> = ({
@@ -50,6 +51,7 @@ const StayCard: React.FC<StayCardProps> = ({
   durationTime,
   checkOutTime,
   travelers,
+  onTravelersClick
 }) => {
   const additionalTravelers =
     travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
@@ -88,7 +90,7 @@ const StayCard: React.FC<StayCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}

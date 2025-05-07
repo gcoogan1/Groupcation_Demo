@@ -41,6 +41,7 @@ interface RentalCardProps {
   arrivalTime: string;
   arrivalLocation: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const RentalCard: React.FC<RentalCardProps> = ({
@@ -52,6 +53,7 @@ const RentalCard: React.FC<RentalCardProps> = ({
   arrivalTime,
   arrivalLocation,
   travelers,
+  onTravelersClick
 }) => {
   const additionalTravelers =
     travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
@@ -91,7 +93,7 @@ const RentalCard: React.FC<RentalCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}

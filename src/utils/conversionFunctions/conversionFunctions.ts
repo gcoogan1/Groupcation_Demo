@@ -126,6 +126,8 @@ export const convertTableTraveler = (
         ? convertFullNameToInitials(matchedUser.firstName, matchedUser.lastName)
         : "",
       color: matchedUser ? matchedUser.avatarColor : "gray",
+      travelerFullName: `${matchedUser?.firstName} ${matchedUser?.lastName}`,
+      relationshipToCreator: matchedUser?.relationship
     };
   });
 };

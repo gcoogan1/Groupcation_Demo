@@ -41,6 +41,7 @@ interface EventCardProps {
   arrivalTime: string;
   arrivalLocation: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -52,6 +53,7 @@ const EventCard: React.FC<EventCardProps> = ({
   arrivalTime,
   arrivalLocation,
   travelers,
+  onTravelersClick
 }) => {
   const additionalTravelers =
     travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
@@ -91,7 +93,7 @@ const EventCard: React.FC<EventCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}

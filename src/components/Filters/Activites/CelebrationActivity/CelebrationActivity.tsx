@@ -57,6 +57,7 @@ interface CelebrationActivitysProps {
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
+  onTravelersClick: () => void;
   noteText?: string;
   hightlightedActivityAction: string;
   activityText: string;
@@ -73,6 +74,7 @@ const CelebrationActivity: React.FC<CelebrationActivitysProps> = ({
   attachments,
   onAttachmentClick,
   onAddNotesClick,
+  onTravelersClick,
   noteText,
   hightlightedActivityAction,
   activityText,
@@ -161,6 +163,7 @@ const CelebrationActivity: React.FC<CelebrationActivitysProps> = ({
             celebrationLocation={celebrationLocation}
             durationTime={durationTime}
             endCardTime={endCardTime}
+            onTravelersClick={onTravelersClick}
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

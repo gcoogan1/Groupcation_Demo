@@ -62,6 +62,7 @@ interface RestaurantActivitysProps {
   attachments?: RestaurantAttachments[];
   footerText: string;
   activityCardDetails: RestaurantActivityCardDetails;
+  onTravelersClick: () => void;
 }
 
 const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
@@ -71,6 +72,7 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
   attachments,
   onAttachmentClick,
   onAddNotesClick,
+  onTravelersClick,
   noteText,
   hightlightedActivityAction,
   activityText,
@@ -150,6 +152,7 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
             reservationTime={activityCardDetails.reservationTime}
             restaurantLocation={restaurantLocation}
             travelers={travelers}
+            onTravelersClick={onTravelersClick}
           />
           <SecondaryContent>
             <SecondaryLink onClick={onCostClick}>

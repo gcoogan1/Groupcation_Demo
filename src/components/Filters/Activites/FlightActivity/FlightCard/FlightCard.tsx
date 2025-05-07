@@ -21,6 +21,7 @@ interface FlightCardProps {
   arrivalTime: string;
   arrivalAirport: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const FlightCard: React.FC<FlightCardProps> = ({
@@ -31,7 +32,8 @@ const FlightCard: React.FC<FlightCardProps> = ({
   durationTime,
   arrivalTime,
   arrivalAirport,
-  travelers
+  travelers,
+  onTravelersClick
 }) => {
 
   const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
@@ -71,7 +73,7 @@ const FlightCard: React.FC<FlightCardProps> = ({
               </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
             <FooterTextContainer>
             <Users style={{ width: '20px', height: '20px' }} color={theme.iconText} />
               <div>

@@ -15,14 +15,24 @@ import {
   ModalCostHeader,
   ModalHeader,
   ModalOverlay,
+  ModalUserContent,
   ModalWrapper,
+  User,
+  UserContent,
+  UserList,
+  UserName,
+  UserRelationship,
 } from "./Modal.styles";
 import { theme } from "@styles/theme";
 import CloseButton from "../CloseButton/CloseButton";
 import { transformToCamelCase } from "@utils/conversionFunctions/conversionFunctions";
+import Avatar from "../Avatar/Avatar";
+import { TravelerUIInfo } from "@/tableTypes/filter.types";
+
+
 
 interface ModalProps {
-  openModal: { open: boolean; type: string | null };
+  openModal: { open: boolean; type: string | null; travelers?: TravelerUIInfo[] };
   onClose: () => void;
   cost?: string;
   attachments?: any[];
@@ -36,11 +46,13 @@ const Modal: React.FC<ModalProps> = ({
   attachments,
   notes,
 }) => {
+
   if (!openModal.open) return null;
 
   const formatedAttachments = attachments
     ? attachments.map((att) => transformToCamelCase(att))
     : [];
+
   const handleOpenFile = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -115,6 +127,29 @@ const Modal: React.FC<ModalProps> = ({
                 <ModalCostHeader>{notes}</ModalCostHeader>
               )}
             </ModalContent>
+          )}
+          {openModal.type === "travelers" && (
+            <ModalUserContent>
+              {(openModal.travelers && openModal.travelers?.length <= 0) ? (
+                <>
+                  <ModalCostHeader>No Travelers have been added.</ModalCostHeader>
+                </>
+              ) : (
+                <UserList>
+                  {openModal.travelers?.map(traveler => {
+                    return (
+                      <User key={traveler.travelerFullName}>
+                        <UserContent>
+                          <Avatar initials={traveler.initials} color={traveler.color} />
+                          <UserName>{traveler.travelerFullName}</UserName>
+                          <UserRelationship>{traveler.relationshipToCreator}</UserRelationship>
+                        </UserContent>
+                      </User>
+                    )
+                  })}
+                </UserList>
+              )}
+            </ModalUserContent>
           )}
         </ModalBody>
       </ModalWrapper>

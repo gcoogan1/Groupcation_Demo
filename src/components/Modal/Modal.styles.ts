@@ -24,6 +24,7 @@ export const ModalWrapper = styled.div`
   background: ${theme.base};
   width: 90%;
   position: relative;
+  max-height: 90vh;
 `;
 
 export const ModalHeader = styled.div`
@@ -128,3 +129,58 @@ export const FileSize = styled.p`
 	font-weight: 400;
 	color: ${theme.iconText};
 `;
+
+
+export const ModalUserContent = styled.div`
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+`
+
+export const UserList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 8px;
+  border: 1px solid ${theme.line};
+  max-height: 576px; // not in doc
+  overflow-y: auto;
+`
+
+export const User = styled.div`
+  display: flex;
+  padding: 4px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-bottom: 1px solid ${theme.line};
+`
+
+export const UserContent = styled.div`
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 4px;
+`
+
+export const UserName = styled.p`
+  font-size: 14px;
+  color: ${theme.secondary};
+  font-weight: 600;
+  flex: 1;
+  line-height: 20px;
+`
+
+export const UserRelationship = styled.p`
+  font-size: 12px;
+  color: ${theme.iconText};
+  font-weight: 400;
+  line-height: 16px
+`

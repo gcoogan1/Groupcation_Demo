@@ -22,6 +22,7 @@ interface BusCardProps {
   arrivalTime: string;
   arrivalLocation: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const BusCard: React.FC<BusCardProps> = ({
@@ -32,7 +33,8 @@ const BusCard: React.FC<BusCardProps> = ({
   durationTime,
   arrivalTime,
   arrivalLocation,
-  travelers
+  travelers,
+  onTravelersClick
 }) => {
     const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
 
@@ -71,7 +73,7 @@ const BusCard: React.FC<BusCardProps> = ({
               </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
             <FooterTextContainer>
             <Users style={{ width: '20px', height: '20px' }} color={theme.iconText} />
               <div>

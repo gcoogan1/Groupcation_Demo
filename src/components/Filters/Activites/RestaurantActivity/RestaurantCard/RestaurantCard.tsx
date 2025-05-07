@@ -33,6 +33,7 @@ interface RestaurantCardProps {
   reservationTime: string;
   restaurantLocation: string;
   travelers: Traveler[] | [];
+  onTravelersClick: () => void;
 }
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({
@@ -41,6 +42,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
   reservationTime,
   restaurantLocation,
   travelers,
+  onTravelersClick
 }) => {
   const additionalTravelers =
     travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
@@ -63,7 +65,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter>
+        <ContentFooter onClick={onTravelersClick}>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}

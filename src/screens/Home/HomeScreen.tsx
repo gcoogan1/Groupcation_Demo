@@ -85,6 +85,7 @@ import {
   EXTRAS_OPTIONS,
   GroupcationDate,
   ROUTES_OPTIONS,
+  TravelerUIInfo,
   TravelItem,
 } from "@tableTypes/filter.types";
 import Button from "@components/Button/Button";
@@ -129,7 +130,8 @@ const HomeScreen = () => {
   const [selectedTravelers, setSelectedTravelers] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState<{
     open: boolean;
-    type: "cost" | "attachments" | "notes" | null;
+    type: "cost" | "attachments" | "notes" | "travelers" | null;
+    travelers?: TravelerUIInfo[];
   }>({ open: false, type: null });
   const [openPanel, setOpenPanel] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
@@ -156,11 +158,12 @@ const HomeScreen = () => {
   // HELPER FUNCTIONS
 
   const handleOpenModal = (
-    type: "cost" | "attachments" | "notes",
-    item: TravelItem
+    type: "cost" | "attachments" | "notes" | "travelers",
+    item: TravelItem,
+    travelers?: TravelerUIInfo[]
   ) => {
     setSelectedItem(item);
-    setOpenModal({ open: true, type });
+    setOpenModal({ open: true, type, travelers });
   };
 
   const handleCloseModal = () => {

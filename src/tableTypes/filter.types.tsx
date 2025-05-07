@@ -1,5 +1,5 @@
 import React from "react";
-import { theme } from "../styles/theme";
+import { avatarTheme, theme } from "../styles/theme";
 import Stay from "../assets/Stay.svg?react";
 import Flight from "../assets/Flight.svg?react";
 import Train from "../assets/Train.svg?react";
@@ -29,12 +29,20 @@ import { LinkedTripUITable } from "./linkedTripsTable.types";
 
 type Actions = "checkbox" | "switch";
 type ThemeKeys = keyof typeof theme;
+type AvatarThemeKeys = keyof typeof avatarTheme;
 
 export type FilterItems = {
   action: Actions;
   icon: React.ReactNode;
   label: string;
   value: ThemeKeys;
+};
+
+export type TravelerUIInfo = {
+  initials: string;
+  color: AvatarThemeKeys;
+  travelerFullName?: string;
+  relationshipToCreator?: string
 };
 
 export type TravelerItems = {
