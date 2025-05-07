@@ -16,6 +16,7 @@ interface InputDateProps {
 	placeholder?: string;
 	name: string;
 	error?: FieldError;
+	minDate?: Date;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<any>;
 }
@@ -25,6 +26,7 @@ const InputDate: React.FC<InputDateProps> = ({
 	placeholder,
 	name,
 	error,
+	minDate,
 	control,
 }) => {
 	return (
@@ -45,6 +47,7 @@ const InputDate: React.FC<InputDateProps> = ({
 							}}
 							dateFormat="dd/MM/yyyy"
 							placeholderText="DD/MM/YYYY"
+							minDate={minDate}
 							customInput={
 								<StyledInput
 									is_error={!!error}

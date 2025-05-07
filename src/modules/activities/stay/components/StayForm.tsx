@@ -91,10 +91,14 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<StayFormData>({
     resolver: zodResolver(staySchema),
   });
+
+  // WATCH CHECK-IN DATE FOR CHECK-OUT MIN DATE
+  const checkInDate = watch("checkInDate");
 
   // FETCH STAY DATA FROM API
   useEffect(() => {
@@ -122,6 +126,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
           ? new Date(existingStay.checkOutTime)
           : new Date(),
       };
+
       reset(convertedStay);
       if (existingAttachments) {
         setShowAttachments(true);
@@ -222,6 +227,11 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
                   error={errors.checkOutDate}
                   label={"Check-out Date"}
                   name={"checkOutDate"}
+                  minDate={
+                    checkInDate
+                      ? new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1))
+                      : undefined
+                  }
                 />
                 <InputTime
                   control={control}

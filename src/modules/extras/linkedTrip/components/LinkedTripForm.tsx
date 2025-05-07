@@ -30,7 +30,11 @@ import ChevRight from "@assets/Chevron_Right.svg?react";
 import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment";
 import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@/store/selectors/selectors";
-import { addLinkedTripTable, fetchLinkedTripTable, updateLinkedTripTable } from "../thunk/linkedTripThunk";
+import {
+  addLinkedTripTable,
+  fetchLinkedTripTable,
+  updateLinkedTripTable,
+} from "../thunk/linkedTripThunk";
 
 // NOTE: ALL LINKED TRIP DATA (see linkedTripSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -44,16 +48,20 @@ interface LinkedTripFormProps {
 
 const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // FETCH EXISTING LINKED TRIP DATA FROM STATE IF ID PASSED
   const existingLinkedTrip = useSelector((state: RootState) =>
-    state.linkedTrip.linkedTrips.find((linkedTrip) => linkedTrip.id === linkedTripId)
+    state.linkedTrip.linkedTrips.find(
+      (linkedTrip) => linkedTrip.id === linkedTripId
+    )
   );
   // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
-  const users = useSelector(selectConvertedUsers);  
-  // FETCH ANY EXISTING ATTACHMENTS 
-  const existingAttachments = !!existingLinkedTrip?.attachments && existingLinkedTrip.attachments.length > 0
+  const users = useSelector(selectConvertedUsers);
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingLinkedTrip?.attachments &&
+    existingLinkedTrip.attachments.length > 0;
 
   // FORM STATE
   const [travelers, setTravelers] = useState(users);
@@ -66,83 +74,93 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<LinkedTripFormData>({
     resolver: zodResolver(linkedTripSchema),
   });
 
-   // FETCH LINKED TRIP DATA FROM API
-    useEffect(() => {
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-  
+  // WATCH START DATE FOR END MIN DATE
+  const startDate = watch("startDate");
+
+  // FETCH LINKED TRIP DATA FROM API
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (linkedTripId) {
+      dispatch(fetchLinkedTripTable(linkedTripId));
+    }
+  }, [dispatch, linkedTripId]);
+
+  // SET/CONVERT FORM IF EXISTING DATA
+  useEffect(() => {
+    if (existingLinkedTrip) {
+      // Reset to todays date/time if remaining train date/time is not present
+      const convertedLinkedTrip = {
+        ...existingLinkedTrip,
+        startDate: existingLinkedTrip.startDate
+          ? new Date(existingLinkedTrip.startDate)
+          : new Date(),
+        endDate: existingLinkedTrip.endDate
+          ? new Date(existingLinkedTrip.endDate)
+          : new Date(),
+      };
+      reset(convertedLinkedTrip);
+    } else {
+      reset();
+    }
+  }, [existingLinkedTrip, existingAttachments, reset]);
+
+  // SUBMIT LINKED TRIP FORM DATA
+  const onSubmit = async (data: LinkedTripFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
+    console.log("data submit linked trip:", data);
+
+    try {
+      // UPDATE LINKED TRIP
       if (linkedTripId) {
-        dispatch(fetchLinkedTripTable(linkedTripId));
-      }
-    }, [dispatch, linkedTripId]);
-
-
-    // SET/CONVERT FORM IF EXISTING DATA
-    useEffect(() => {
-      if (existingLinkedTrip) {
-        // Reset to todays date/time if remaining train date/time is not present
-        const convertedLinkedTrip = {
+        const updatedLinkedTrip = {
           ...existingLinkedTrip,
-          startDate: existingLinkedTrip.startDate
-            ? new Date(existingLinkedTrip.startDate)
-            : new Date(),
-          endDate: existingLinkedTrip.endDate
-            ? new Date(existingLinkedTrip.endDate)
-            : new Date(),
+          ...rest,
+          id: Number(existingLinkedTrip?.id),
         };
-        reset(convertedLinkedTrip);
 
+        await dispatch(
+          updateLinkedTripTable({
+            linkedTrip: updatedLinkedTrip,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
       } else {
-        reset();
-      }
-    }, [existingLinkedTrip, existingAttachments, reset]);
+        // ADD LINKED TRIP
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
 
-   // SUBMIT LINKED TRIP FORM DATA
-    const onSubmit = async (data: LinkedTripFormData) => {
-      const { attachments, travelers, ...rest } = data;
-      setIsLoading(true);
-      console.log("data submit linked trip:",data)
-    
-      try {
-        // UPDATE LINKED TRIP
-        if (linkedTripId) {
-          const updatedLinkedTrip = {
-            ...existingLinkedTrip,
-            ...rest,
-            id: Number(existingLinkedTrip?.id),
-          };
-    
-          await dispatch(
-            updateLinkedTripTable({ linkedTrip: updatedLinkedTrip, files: attachments, selectedTravelers: travelers })
-          ).unwrap();
-        } else {
-          // ADD LINKED TRIP
-          const newData = {
-            groupcationId: 333,
-            createdBy: 3,
-            ...rest,
-          };
-    
-          await dispatch(
-            addLinkedTripTable({ linkedTrip: newData, files: attachments, travelers })
-          ).unwrap();
-        }
-    
-        // Only navigate after the async thunk is fully completed
-        navigate("/");
-      } catch (error) {
-        console.error("Failed to save linked trip:", error);
-      } finally {
-        setIsLoading(false);
+        await dispatch(
+          addLinkedTripTable({
+            linkedTrip: newData,
+            files: attachments,
+            travelers,
+          })
+        ).unwrap();
       }
-    };
-  
-    if (linkedTripId && !existingLinkedTrip) return <div>Loading...</div>
+
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save linked trip:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (linkedTripId && !existingLinkedTrip) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -181,7 +199,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
               <ContentTitle>Duration</ContentTitle>
             </ContentTitleContainer>
             <SectionInputs>
-            <InputDatesRow>
+              <InputDatesRow>
                 <InputDate
                   control={control}
                   error={errors.startDate}
@@ -193,6 +211,15 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
                   error={errors.endDate}
                   label={"End Date"}
                   name={"endDate"}
+                  minDate={
+                    startDate
+                      ? new Date(
+                          new Date(startDate).setDate(
+                            new Date(startDate).getDate() + 1
+                          )
+                        )
+                      : undefined
+                  }
                 />
               </InputDatesRow>
             </SectionInputs>
@@ -219,25 +246,25 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
           </SectionContents>
         </Section>
         <Section>
-            <SectionGraphics>
-              <AttachmentsIcon color={theme.iconText} />
-              <SectionGraphicsLine />
-            </SectionGraphics>
-            <SectionContents>
-              <ContentTitleContainer>
-                <ContentTitle>Background Photo</ContentTitle>
-              </ContentTitleContainer>
-              <SectionInputs>
-                <InputAttachment
-                  register={register}
-                  setValue={setValue}
-                  name={"attachments"}
-                  defaultFiles={existingLinkedTrip?.attachments || []}
-                  allowMultiple={false}
-                />
-              </SectionInputs>
-            </SectionContents>
-          </Section>
+          <SectionGraphics>
+            <AttachmentsIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Background Photo</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputAttachment
+                register={register}
+                setValue={setValue}
+                name={"attachments"}
+                defaultFiles={existingLinkedTrip?.attachments || []}
+                allowMultiple={false}
+              />
+            </SectionInputs>
+          </SectionContents>
+        </Section>
       </FormSections>
       <Button
         rightIcon={<ChevRight color={theme.base} />}

@@ -32,4 +32,20 @@ export const celebrationSchema = z.object({
       })
     ).optional(),
   notes: z.string().min(10, "Must have at least 10 characters.").nullable().optional()
+}).refine((data) => {
+  const startDate = data.startDate;
+  const endDate = data.endDate;
+
+  // If either date is missing, skip validation
+  if (!startDate || !endDate) return true;
+
+  // Zero out the time parts to compare only calendar date
+  const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+
+  return endDateOnly > startDateOnly;
+}, {
+  path: ["endDate"],
+  message: "End date must be the same day or after the start date.",
 });

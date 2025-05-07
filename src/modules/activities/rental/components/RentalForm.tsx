@@ -111,10 +111,14 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<RentalFormData>({
     resolver: zodResolver(rentalSchema),
   });
+
+  // WATCH START DATE FOR END MIN DATE
+  const pickUpDate = watch("pickUpDate");
 
   // FETCH RENTAL DATA FROM API
   useEffect(() => {
@@ -181,7 +185,6 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
           })
         ).unwrap();
       } else {
-
         // ADD RENTAL
         const newData = {
           groupcationId: 333,
@@ -260,6 +263,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
                   control={control}
                   error={errors.dropOffDate}
                   label={"Drop-off Date"}
+                  minDate={pickUpDate ?? undefined}
                   name={"dropOffDate"}
                 />
                 <InputTime
@@ -385,7 +389,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
-                  key={existingRental?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={
+                    existingRental?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}

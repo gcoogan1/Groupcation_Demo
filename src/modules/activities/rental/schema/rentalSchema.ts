@@ -33,4 +33,20 @@ attachments: z
     })
   ).optional(),
 notes: z.string().min(10, "Must have at least 10 characters.").nullable().optional()
+}).refine((data) => {
+  const pickUpDate = data.pickUpDate;
+  const dropOffDate = data.dropOffDate;
+
+  // If either date is missing, skip validation
+  if (!pickUpDate || !dropOffDate) return true;
+
+  // Zero out the time parts to compare only calendar date
+  const pickUpOnly = new Date(pickUpDate.getFullYear(), pickUpDate.getMonth(), pickUpDate.getDate());
+  const dropOffOnly = new Date(dropOffDate.getFullYear(), dropOffDate.getMonth(), dropOffDate.getDate());
+
+
+  return dropOffOnly >= pickUpOnly;
+}, {
+  path: ["dropOffDate"],
+  message: "Drop-off date must be the same day or after the pick-up date.",
 });

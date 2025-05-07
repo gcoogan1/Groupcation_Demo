@@ -87,10 +87,14 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
   });
+
+    // WATCH START DATE FOR END MIN DATE
+    const startDate = watch("startDate");
 
   // FETCH EVENT DATA FROM API
   useEffect(() => {
@@ -242,6 +246,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
                   control={control}
                   error={errors.endDate}
                   label={"End Date"}
+                  minDate={startDate ?? undefined}
                   name={"endDate"}
                 />
                 <InputTime

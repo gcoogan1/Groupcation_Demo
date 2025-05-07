@@ -93,10 +93,14 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FlightFormData>({
     resolver: zodResolver(flightSchema),
   });
+
+    // WATCH DEPARTURE DATE FOR ARRIVAL MIN DATE
+    const departureDate = watch("departureDate");
 
   // FETCH FLIGHT DATA FROM API
   useEffect(() => {
@@ -262,6 +266,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                   control={control}
                   error={errors.arrivalDate}
                   label={"Date"}
+                  minDate={departureDate ?? undefined}
                   name={"arrivalDate"}
                 />
                 <InputTime

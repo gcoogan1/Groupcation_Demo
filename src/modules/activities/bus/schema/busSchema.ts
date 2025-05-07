@@ -38,4 +38,20 @@ export const busSchema = z.object({
     .min(10, "Must have at least 10 characters.")
     .nullable()
     .optional(),
+}).refine((data) => {
+  const departure = data.departureDate;
+  const arrival = data.arrivalDate;
+
+  // If either date is missing, skip validation
+  if (!departure || !arrival) return true;
+
+  // Zero out the time parts to compare only calendar date
+  const depDateOnly = new Date(departure.getFullYear(), departure.getMonth(), departure.getDate());
+  const arrDateOnly = new Date(arrival.getFullYear(), arrival.getMonth(), arrival.getDate());
+
+  return arrDateOnly >= depDateOnly;
+}, {
+  path: ["arrivalDate"],
+  message: "Arrival date must be the same day or after the departure date.",
 });
+;

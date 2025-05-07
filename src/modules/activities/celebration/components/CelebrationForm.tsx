@@ -40,7 +40,11 @@ import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment"
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
-import { addCelebrationTable, fetchCelebrationTable, updateCelebrationTable } from "../thunk/celebrationThunk";
+import {
+  addCelebrationTable,
+  fetchCelebrationTable,
+  updateCelebrationTable,
+} from "../thunk/celebrationThunk";
 
 type CelebrationFormData = z.infer<typeof celebrationSchema>;
 
@@ -54,18 +58,23 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
 
   // FETCH EXISTING CELEBRATION DATA FROM STATE IF ID PASSED
   const existingCelebration = useSelector((state: RootState) =>
-    state.celebration.celebrations.find((celebration) => celebration.id === celebrationId)
+    state.celebration.celebrations.find(
+      (celebration) => celebration.id === celebrationId
+    )
   );
   // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
   const users = useSelector(selectConvertedUsers);
   // FETCH ANY EXISTING ATTACHMENTS
   const existingAttachments =
-    !!existingCelebration?.attachments && existingCelebration.attachments.length > 0;
+    !!existingCelebration?.attachments &&
+    existingCelebration.attachments.length > 0;
 
   // FORM STATE
   const [showCost, setShowCost] = useState(!!existingCelebration?.cost);
   const [showAttachments, setShowAttachments] = useState(false);
-  const [showAddNotes, setShowAddNotes] = useState(!!existingCelebration?.notes);
+  const [showAddNotes, setShowAddNotes] = useState(
+    !!existingCelebration?.notes
+  );
   const [amount, setAmount] = useState(() => {
     const costString = existingCelebration?.cost;
     if (costString) {
@@ -87,10 +96,14 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<CelebrationFormData>({
     resolver: zodResolver(celebrationSchema),
   });
+
+  // WATCH START DATE FOR END MIN DATE
+  const startDate = watch("startDate");
 
   // FETCH CELEBRATION DATA FROM API
   useEffect(() => {
@@ -165,7 +178,11 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
         };
 
         await dispatch(
-          addCelebrationTable({ celebration: newData, files: attachments, travelers })
+          addCelebrationTable({
+            celebration: newData,
+            files: attachments,
+            travelers,
+          })
         ).unwrap();
       }
 
@@ -243,6 +260,7 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
                   error={errors.endDate}
                   label={"End Date"}
                   name={"endDate"}
+                  minDate={startDate ?? undefined}
                 />
                 <InputTime
                   control={control}
@@ -341,7 +359,11 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
-                  key={existingCelebration?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={
+                    existingCelebration?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -351,7 +373,8 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
             </SectionContents>
           </Section>
         )}
-        {(!!showAddNotes || (!!showAddNotes && !!existingCelebration?.notes)) && (
+        {(!!showAddNotes ||
+          (!!showAddNotes && !!existingCelebration?.notes)) && (
           <Section>
             <SectionGraphics>
               <AddNotesIcon color={theme.iconText} />

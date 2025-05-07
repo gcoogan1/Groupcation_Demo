@@ -92,10 +92,14 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<BusFormData>({
     resolver: zodResolver(busSchema),
   });
+
+  // WATCH DEPARTURE DATE FOR ARRIVAL MIN DATE
+  const departureDate = watch("departureDate");
 
   // FETCH BUS DATA FROM API
   useEffect(() => {
@@ -248,6 +252,7 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
                   error={errors.arrivalDate}
                   label={"Date"}
                   name={"arrivalDate"}
+                  minDate={departureDate ?? undefined}
                 />
                 <InputTime
                   control={control}

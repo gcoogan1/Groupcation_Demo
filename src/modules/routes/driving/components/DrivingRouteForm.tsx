@@ -76,10 +76,14 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<DrivingRouteFormData>({
     resolver: zodResolver(drivingRouteSchema),
   });
+
+  // WATCH DEPARTURE DATE FOR ARRIVAL MIN DATE
+  const departureDate = watch("departureDate");
 
   // FETCH DRIVING DATA FROM API
   useEffect(() => {
@@ -114,9 +118,8 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
       }
 
       if (existingDrivingRoute.arrivalDate) {
-        setShowArrivalDate(true)
+        setShowArrivalDate(true);
       }
-
     } else {
       reset();
     }
@@ -125,7 +128,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
   // HELPER FUNCTION
   const handleDropoffCheckbox = () => {
     if (showArrivalDate) {
-      setValue("arrivalDate", null);
+      setValue("arrivalDate", undefined);
     }
     setShowArrivalDate((prev) => !prev);
   };
@@ -263,6 +266,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
                     control={control}
                     error={errors.arrivalDate}
                     label={"Arrival Date"}
+                    minDate={departureDate ?? undefined}
                     name={"arrivalDate"}
                   />
                 )}

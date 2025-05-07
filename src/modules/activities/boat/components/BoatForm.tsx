@@ -92,10 +92,14 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<BoatFormData>({
     resolver: zodResolver(boatSchema),
   });
+
+   // WATCH DEPARTURE DATE FOR ARRIVAL MIN DATE
+  const departureDate = watch("departureDate");
 
   // FETCH BOAT DATA FROM API
   useEffect(() => {
@@ -247,6 +251,7 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
                   control={control}
                   error={errors.arrivalDate}
                   label={"Date"}
+                  minDate={departureDate ?? undefined}
                   name={"arrivalDate"}
                 />
                 <InputTime

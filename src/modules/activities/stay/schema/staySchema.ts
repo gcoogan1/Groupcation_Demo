@@ -36,4 +36,21 @@ export const staySchema = z.object({
     .min(10, "Must have at least 10 characters.")
     .nullable()
     .optional(),
+}).refine((data) => {
+  const checkInDate = data.checkInDate;
+  const checkOutDate = data.checkOutDate;
+
+  // If either date is missing, skip validation
+  if (!checkInDate || !checkOutDate) return true;
+
+  // Zero out the time parts to compare only calendar date
+  const checkInOnly = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate());
+  const checkOutOnly = new Date(checkOutDate.getFullYear(), checkOutDate.getMonth(), checkOutDate.getDate());
+
+
+  return checkOutOnly > checkInOnly;
+}, {
+  path: ["checkOutDate"],
+  message: "Check-out date must be after the check-in date.",
 });
+;

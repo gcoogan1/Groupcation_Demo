@@ -94,10 +94,14 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     control,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<TrainFormData>({
     resolver: zodResolver(trainSchema),
   });
+
+  // WATCH DEPARTURE DATE FOR ARRIVAL MIN DATE
+  const departureDate = watch("departureDate");
 
   // FETCH TRAIN DATA FROM API
   useEffect(() => {
@@ -246,6 +250,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
                   control={control}
                   error={errors.arrivalDate}
                   label={"Date"}
+                  minDate={departureDate ?? undefined}
                   name={"arrivalDate"}
                 />
                 <InputTime
