@@ -6,10 +6,7 @@ import {
 } from "@utils/conversionFunctions/conversionFunctions";
 import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
 import { supabase } from "@lib/supabase";
-import {
-  EventTable,
-  EventAttachments,
-} from "@tableTypes/eventTable.types";
+import { EventTable, EventAttachments } from "@tableTypes/eventTable.types";
 
 // ----> NOTES <---- //
 // EVENT STATE: camalCASE
@@ -372,13 +369,34 @@ export const updateEventTable = createAsyncThunk(
 export const deleteEventTable = createAsyncThunk(
   "event/deleteEvent",
   async (eventId: string) => {
-    // --- STEP 1: DETELE EVENT TABLE BASED ON EVENT ID --- //
-    const { error } = await supabase.from("events").delete().eq("id", eventId);
-    if (error) {
-      throw new Error(error.message);
+    // --- STEP 1: DELETE EVENT TRAVELERS ASSOCIATED WITH THIS EVENT ID --- //
+    const { error: travelerError } = await supabase
+      .from("event_travelers")
+      .delete()
+      .eq("event_id", eventId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS EVENT ID TO STATE (so state can delete event) ---//
+    // --- STEP 2: DELETE EVENT ATTACHMENTS ASSOCIATED WITH THIS EVENT ID --- //
+    const { error: attachmentError } = await supabase
+      .from("event_attachments")
+      .delete()
+      .eq("event_id", eventId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE EVENT TABLE --- //
+    const { error } = await supabase.from("events").delete().eq("id", eventId);
+
+    if (error) {
+      throw new Error(`Error deleting event: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN EVENT ID TO STATE --- //
     return eventId;
   }
 );

@@ -43,7 +43,7 @@ import {
   selectBusById,
   selectConvertedUsers,
 } from "@store/selectors/selectors";
-import { addBusTable, fetchBusTable, updateBusTable } from "../thunk/busThunk";
+import { addBusTable, deleteBusTable, fetchBusTable, updateBusTable } from "../thunk/busThunk";
 
 // NOTE: ALL BUS DATA (see busSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -185,6 +185,17 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
       setIsLoading(false);
     }
   };
+
+  const deleteTable = async () => {
+      try {
+        if (busId) await dispatch(deleteBusTable(busId)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to delete bus:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   if (busId && !existingBus) return <div>Loading...</div>;
 
@@ -458,6 +469,11 @@ const BusForm: React.FC<BusFormProps> = ({ busId }) => {
       >
         {!busId ? "Add Bus" : "Update Bus"}
       </Button>
+      {busId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

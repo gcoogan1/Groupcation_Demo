@@ -39,7 +39,12 @@ import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment"
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
-import { addRestaurantTable, fetchRestaurantTable, updateRestaurantTable } from "../thunk/restaurantThunks";
+import {
+  addRestaurantTable,
+  deleteRestaurantTable,
+  fetchRestaurantTable,
+  updateRestaurantTable,
+} from "../thunk/restaurantThunks";
 
 type RestaurantFormData = z.infer<typeof restaurantSchema>;
 
@@ -79,10 +84,10 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
   const [travelers, setTravelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
-    // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
+  // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
 
-   // REACT-HOOK-FORM FUNCTIONS
+  // REACT-HOOK-FORM FUNCTIONS
   const {
     register,
     handleSubmit,
@@ -95,14 +100,14 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
   });
 
   // FETCH TRAIN DATA FROM API
-    useEffect(() => {
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-  
-      if (restaurantId) {
-        dispatch(fetchRestaurantTable(restaurantId));
-      }
-    }, [dispatch, restaurantId]);
+  useEffect(() => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (restaurantId) {
+      dispatch(fetchRestaurantTable(restaurantId));
+    }
+  }, [dispatch, restaurantId]);
 
   // SET/CONVERT FORM IF EXISTING DATA
   useEffect(() => {
@@ -124,56 +129,73 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
         setShowAttachments(true);
       }
       if (existingRestaurant.notes) {
-        setShowAddNotes(true)
+        setShowAddNotes(true);
       }
-
     } else {
       reset();
     }
   }, [existingRestaurant, existingAttachments, reset]);
 
+  // SUBMIT RESTAURANT FORM DATA
+  const onSubmit = async (data: RestaurantFormData) => {
+    const { attachments, travelers, ...rest } = data;
+    setIsLoading(true);
 
-    // SUBMIT RESTAURANT FORM DATA
-    const onSubmit = async (data: RestaurantFormData) => {
-      const { attachments, travelers, ...rest } = data;
-      setIsLoading(true);
-    
-      try {
-        // UPDATE RESTAURANT
-        if (restaurantId) {
-          const updatedRestaurant = {
-            ...existingRestaurant,
-            ...rest,
-            id: Number(existingRestaurant?.id),
-          };
-    
-          await dispatch(
-            updateRestaurantTable({ restaurant: updatedRestaurant, files: attachments, selectedTravelers: travelers })
-          ).unwrap();
-        } else {
-          // ADD RESTAURANT
-          const newData = {
-            groupcationId: 333,
-            createdBy: 3,
-            ...rest,
-          };
-    
-          await dispatch(
-            addRestaurantTable({ restaurant: newData, files: attachments, travelers })
-          ).unwrap();
-        }
-    
-        // Only navigate after the async thunk is fully completed
-        navigate("/");
-      } catch (error) {
-        console.error("Failed to save train:", error);
-      } finally {
-        setIsLoading(false);
+    try {
+      // UPDATE RESTAURANT
+      if (restaurantId) {
+        const updatedRestaurant = {
+          ...existingRestaurant,
+          ...rest,
+          id: Number(existingRestaurant?.id),
+        };
+
+        await dispatch(
+          updateRestaurantTable({
+            restaurant: updatedRestaurant,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
+        ).unwrap();
+      } else {
+        // ADD RESTAURANT
+        const newData = {
+          groupcationId: 333,
+          createdBy: 3,
+          ...rest,
+        };
+
+        await dispatch(
+          addRestaurantTable({
+            restaurant: newData,
+            files: attachments,
+            travelers,
+          })
+        ).unwrap();
       }
-    };
-  
-    if (restaurantId && !existingRestaurant) return <div>Loading...</div>
 
+      // Only navigate after the async thunk is fully completed
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to save train:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTable = async () => {
+    try {
+      if (restaurantId)
+        await dispatch(deleteRestaurantTable(restaurantId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete restaurant:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (restaurantId && !existingRestaurant) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -310,7 +332,11 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
-                  key={existingRestaurant?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={
+                    existingRestaurant?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -407,6 +433,11 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({ restaurantId }) => {
       >
         {!restaurantId ? "Add Restaurant" : "Update Restaurant"}
       </Button>
+      {restaurantId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

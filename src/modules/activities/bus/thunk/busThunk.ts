@@ -366,14 +366,35 @@ export const updateBusTable = createAsyncThunk(
 export const deleteBusTable = createAsyncThunk(
   "bus/deleteBus",
   async (busId: string) => {
-    // --- STEP 1: DETELE BUS TABLE BASED ON BUS ID --- //
-    const { error } = await supabase.from("buses").delete().eq("id", busId);
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    // --- STEP 2: PASS BUS ID TO STATE (so state can delete bus) ---//
-    return busId;
+        // --- STEP 1: DELETE BUS TRAVELERS ASSOCIATED WITH THIS BUS ID --- //
+        const { error: travelerError } = await supabase
+        .from("bus_travelers")
+        .delete()
+        .eq("bus_id", busId);
+  
+      if (travelerError) {
+        throw new Error(`Error deleting travelers: ${travelerError.message}`);
+      }
+  
+      // --- STEP 2: DELETE BUS ATTACHMENTS ASSOCIATED WITH THIS BUS ID --- //
+      const { error: attachmentError } = await supabase
+        .from("bus_attachments")
+        .delete()
+        .eq("bus_id", busId);
+  
+      if (attachmentError) {
+        throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+      }
+  
+      // --- STEP 3: DELETE THE BUS TABLE --- //
+      const { error } = await supabase.from("buses").delete().eq("id", busId);
+  
+      if (error) {
+        throw new Error(`Error deleting bus: ${error.message}`);
+      }
+  
+      // --- STEP 4: RETURN BUS ID TO STATE --- //
+      return busId;
   }
 );
 

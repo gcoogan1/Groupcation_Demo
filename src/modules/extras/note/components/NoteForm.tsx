@@ -27,7 +27,12 @@ import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import InputDate from "@components/Inputs/InputDate/InputDate";
 import InputTime from "@components/Inputs/InputTime/InputTime";
 import { useNavigate } from "react-router-dom";
-import { addNoteTable, fetchNoteTable, updateNoteTable } from "../thunk/noteThunk";
+import {
+  addNoteTable,
+  deleteNoteTable,
+  fetchNoteTable,
+  updateNoteTable,
+} from "../thunk/noteThunk";
 
 // NOTE: ALL WALKING DATA (see NoteSchema) MUST BE PRESENT FOR SUBMIT TO WORK
 
@@ -102,9 +107,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
           id: Number(existingNote?.id),
         };
 
-        await dispatch(
-          updateNoteTable({ note: updatedNote })
-        ).unwrap();
+        await dispatch(updateNoteTable({ note: updatedNote })).unwrap();
       } else {
         // ADD NOTE
         const newData = {
@@ -120,6 +123,17 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
       navigate("/");
     } catch (error) {
       console.error("Failed to save note:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTable = async () => {
+    try {
+      if (noteId) await dispatch(deleteNoteTable(noteId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete note:", error);
     } finally {
       setIsLoading(false);
     }
@@ -197,6 +211,11 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
       >
         {!noteId ? "Add Note" : "Update Note"}
       </Button>
+      {noteId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

@@ -42,6 +42,7 @@ import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
 import {
   addCelebrationTable,
+  deleteCelebrationTable,
   fetchCelebrationTable,
   updateCelebrationTable,
 } from "../thunk/celebrationThunk";
@@ -193,6 +194,17 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
       setIsLoading(false);
     }
   };
+
+    const deleteTable = async () => {
+      try {
+        if (celebrationId) await dispatch(deleteCelebrationTable(celebrationId)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to delete celebration:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   if (celebrationId && !existingCelebration) return <div>Loading...</div>;
 
@@ -460,6 +472,11 @@ const CelebrationForm: React.FC<CelebrationFormProps> = ({ celebrationId }) => {
       >
         {!celebrationId ? "Add Celebration" : "Update Celebration"}
       </Button>
+      {celebrationId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

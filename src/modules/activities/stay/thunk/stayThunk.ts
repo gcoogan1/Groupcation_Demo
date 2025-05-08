@@ -6,10 +6,7 @@ import {
 } from "@utils/conversionFunctions/conversionFunctions";
 import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
 import { supabase } from "@lib/supabase";
-import {
-  StayTable,
-  StayAttachments,
-} from "@tableTypes/stayTable.types";
+import { StayTable, StayAttachments } from "@tableTypes/stayTable.types";
 
 // ----> NOTES <---- //
 // STAY STATE: camalCASE
@@ -374,13 +371,34 @@ export const updateStayTable = createAsyncThunk(
 export const deleteStayTable = createAsyncThunk(
   "stay/deleteStay",
   async (stayId: string) => {
-    // --- STEP 1: DETELE STAY TABLE BASED ON STAY ID --- //
-    const { error } = await supabase.from("stays").delete().eq("id", stayId);
-    if (error) {
-      throw new Error(error.message);
+    // --- STEP 1: DELETE STAY TRAVELERS ASSOCIATED WITH THIS STAY ID --- //
+    const { error: travelerError } = await supabase
+      .from("stay_travelers")
+      .delete()
+      .eq("stay_id", stayId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS STAY ID TO STATE (so state can delete stay) ---//
+    // --- STEP 2: DELETE STAY ATTACHMENTS ASSOCIATED WITH THIS STAY ID --- //
+    const { error: attachmentError } = await supabase
+      .from("stay_attachments")
+      .delete()
+      .eq("stay_id", stayId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE STAY TABLE --- //
+    const { error } = await supabase.from("stays").delete().eq("id", stayId);
+
+    if (error) {
+      throw new Error(`Error deleting stay: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN STAY ID TO STATE --- //
     return stayId;
   }
 );

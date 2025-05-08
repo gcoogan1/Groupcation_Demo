@@ -376,16 +376,34 @@ export const updateRestaurantTable = createAsyncThunk(
 export const deleteRestaurantTable = createAsyncThunk(
   "restaurant/deleteRestaurant",
   async (restaurantId: string) => {
-    // --- STEP 1: DETELE RESTAURANT TABLE BASED ON RESTAURANT ID --- //
-    const { error } = await supabase
-      .from("restaurants")
+      // --- STEP 1: DELETE RESTAURANT TRAVELERS ASSOCIATED WITH THIS ID --- //
+      const { error: travelerError } = await supabase
+      .from("restaurant_travelers")
       .delete()
-      .eq("id", restaurantId);
-    if (error) {
-      throw new Error(error.message);
+      .eq("restaurant_id", restaurantId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS RESTAURANT ID TO STATE (so state can delete restaurant) ---//
+    // --- STEP 2: DELETE RESTAURANT ATTACHMENTS ASSOCIATED WITH THIS ID --- //
+    const { error: attachmentError } = await supabase
+      .from("restaurant_attachments")
+      .delete()
+      .eq("restaurant_id", restaurantId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE RESTAURANT TABLE --- //
+    const { error } = await supabase.from("restaurants").delete().eq("id", restaurantId);
+
+    if (error) {
+      throw new Error(`Error deleting restaurant: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN RESTAURANT ID TO STATE --- //
     return restaurantId;
   }
 );

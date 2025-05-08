@@ -47,6 +47,7 @@ import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
 import {
   addRentalTable,
+  deleteRentalTable,
   fetchRentalTable,
   updateRentalTable,
 } from "../thunk/rentalThunk";
@@ -200,6 +201,17 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
       navigate("/");
     } catch (error) {
       console.error("Failed to save rental:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTable = async () => {
+    try {
+      if (rentalId) await dispatch(deleteRentalTable(rentalId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete rental:", error);
     } finally {
       setIsLoading(false);
     }
@@ -489,6 +501,11 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
       >
         {!rentalId ? "Add Rental" : "Update Rental"}
       </Button>
+      {rentalId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

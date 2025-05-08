@@ -18,7 +18,7 @@ import {
 type Traveler = {
   value: number;
   label: string;
-}; 
+};
 
 interface LinkedTrip {
   id: string;
@@ -45,7 +45,6 @@ export const fetchLinkedTripByGroupcationId = createAsyncThunk(
     if (linkedTripError) throw new Error(linkedTripError.message);
     if (!linkedTrips || linkedTrips.length === 0) return [];
 
-
     // --- STEP 2: FETCH TRAVELER DATA BASED ON LINKED TRIP ID --- //
     const { data: travelers, error: travelerError } = await supabase
       .from("linked_trip_travelers")
@@ -55,7 +54,7 @@ export const fetchLinkedTripByGroupcationId = createAsyncThunk(
         linkedTrips.map((linkedTrip) => linkedTrip.id)
       );
 
-      console.log("linked trip:", travelers)
+    console.log("linked trip:", travelers);
 
     if (travelerError) throw new Error(travelerError.message);
 
@@ -77,7 +76,7 @@ export const fetchLinkedTripByGroupcationId = createAsyncThunk(
         (traveler) => traveler.linked_trip_id === linkedTrip.id
       );
 
-      console.log("LINKED", linkedTripTravelers)
+      console.log("LINKED", linkedTripTravelers);
 
       // Get attachments for the current linkedTrip
       const linkedTripAttachments = attachments.filter(
@@ -183,8 +182,7 @@ export const addLinkedTripTable = createAsyncThunk(
     // --- STEP 1: CONVERT PASSED IN DATA TO MATCH LINKED TRIP TABLE (for storage in supabase) --- ///
     const convertedLinkedTripData = transformToSnakeCase(linkedTrip);
 
-    console.log("converted:", convertedLinkedTripData)
-
+    console.log("converted:", convertedLinkedTripData);
 
     // --- STEP 2: ADD LINKED TRIP TABLE --- ///
     const { data, error } = await supabase
@@ -229,7 +227,10 @@ export const addLinkedTripTable = createAsyncThunk(
 
     if (travelers && travelers.length > 0) {
       await dispatch(
-        addLinkedTripTravelersTable({ travelers, linkedTripId: convertedData.id })
+        addLinkedTripTravelersTable({
+          travelers,
+          linkedTripId: convertedData.id,
+        })
       ).unwrap();
     }
 
@@ -374,13 +375,37 @@ export const updateLinkedTripTable = createAsyncThunk(
 export const deleteLinkedTripTable = createAsyncThunk(
   "linkedTrip/deleteLinkedTrip",
   async (linkedTripId: string) => {
-    // --- STEP 1: DETELE LINKED TRIP TABLE BASED ON LINKED TRIP ID --- //
-    const { error } = await supabase.from("linked_trips").delete().eq("id", linkedTripId);
-    if (error) {
-      throw new Error(error.message);
+    // --- STEP 1: DELETE LINKED TRIP TRAVELERS ASSOCIATED WITH THIS ID --- //
+    const { error: travelerError } = await supabase
+      .from("linked_trip_travelers")
+      .delete()
+      .eq("linked_trip_id", linkedTripId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS LINKED TRIP ID TO STATE (so state can delete linkedTrip) ---//
+    // --- STEP 2: DELETE LINKED TRIP ATTACHMENTS ASSOCIATED WITH THIS ID --- //
+    const { error: attachmentError } = await supabase
+      .from("linked_trip_attachments")
+      .delete()
+      .eq("linked_trip_id", linkedTripId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE LINKED TRIP TABLE --- //
+    const { error } = await supabase
+      .from("linked_trips")
+      .delete()
+      .eq("id", linkedTripId);
+
+    if (error) {
+      throw new Error(`Error deleting linked trip: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN LINKED TRIP ID TO STATE --- //
     return linkedTripId;
   }
 );

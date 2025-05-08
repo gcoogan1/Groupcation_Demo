@@ -729,7 +729,7 @@ export const activityRenderMap = {
     );
   },
 
-  linkedTrip: (item: TravelItem, users: UserTable[]) => {
+  linkedTrip: (item: TravelItem, users: UserTable[], handleEditClick: (type: string, id: string) => void) => {
     if (item.type !== "linkedTrip") return null;
 
     const linkedTrip = item as LinkedTripItem;
@@ -747,6 +747,7 @@ export const activityRenderMap = {
         duration={duration}
         travelers={travelers}
         backgroundImg={backgroundUrl}
+        onEditClick={() => handleEditClick("linked-trip", linkedTrip.id)}
       />
     );
   },

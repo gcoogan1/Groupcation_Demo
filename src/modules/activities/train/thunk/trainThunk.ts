@@ -373,16 +373,38 @@ export const updateTrainTable = createAsyncThunk(
 export const deleteTrainTable = createAsyncThunk(
   "train/deleteTrain",
   async (trainId: string) => {
-    // --- STEP 1: DETELE TRAIN TABLE BASED ON TRAIN ID --- //
-    const { error } = await supabase.from("trains").delete().eq("id", trainId);
-    if (error) {
-      throw new Error(error.message);
+    // --- STEP 1: DELETE TRAIN TRAVELERS ASSOCIATED WITH THIS TRAIN ID --- //
+    const { error: travelerError } = await supabase
+      .from("train_travelers")
+      .delete()
+      .eq("train_id", trainId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS TRAIN ID TO STATE (so state can delete train) ---//
+    // --- STEP 2: DELETE TRAIN ATTACHMENTS ASSOCIATED WITH THIS TRAIN ID --- //
+    const { error: attachmentError } = await supabase
+      .from("train_attachments")
+      .delete()
+      .eq("train_id", trainId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE TRAIN TABLE --- //
+    const { error } = await supabase.from("trains").delete().eq("id", trainId);
+
+    if (error) {
+      throw new Error(`Error deleting train: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN TRAIN ID TO STATE --- //
     return trainId;
   }
 );
+
 
 // --- TRAIN ATTACHMENTS --- //
 export const addTrainAttachmentsTable = createAsyncThunk(

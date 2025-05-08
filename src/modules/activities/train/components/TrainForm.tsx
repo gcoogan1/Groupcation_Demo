@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { selectConvertedUsers, selectTrainById } from "@store/selectors/selectors";
+import {
+  selectConvertedUsers,
+  selectTrainById,
+} from "@store/selectors/selectors";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +45,7 @@ import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment"
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import {
   addTrainTable,
+  deleteTrainTable,
   fetchTrainTable,
   updateTrainTable,
 } from "../thunk/trainThunk";
@@ -56,7 +60,7 @@ interface TrainFormProps {
 
 const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // FETCH EXISTING TRAIN DATA FROM STATE IF ID PASSED
   const existingTrain = useSelector((state: RootState) =>
@@ -64,10 +68,11 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   );
 
   // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
-  const users = useSelector(selectConvertedUsers);  
-  
-  // FETCH ANY EXISTING ATTACHMENTS 
-  const existingAttachments = !!existingTrain?.attachments && existingTrain.attachments.length > 0
+  const users = useSelector(selectConvertedUsers);
+
+  // FETCH ANY EXISTING ATTACHMENTS
+  const existingAttachments =
+    !!existingTrain?.attachments && existingTrain.attachments.length > 0;
 
   // FORM STATE
   const [showCost, setShowCost] = useState(!!existingTrain?.cost);
@@ -132,14 +137,14 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           ? new Date(existingTrain.arrivalTime)
           : new Date(),
       };
-      
+
       reset(convertedTrain);
 
       if (existingAttachments) {
         setShowAttachments(true);
       }
       if (existingTrain.notes) {
-        setShowAddNotes(true)
+        setShowAddNotes(true);
       }
     } else {
       reset();
@@ -150,7 +155,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
   const onSubmit = async (data: TrainFormData) => {
     const { attachments, travelers, ...rest } = data;
     setIsLoading(true);
-  
+
     try {
       // UPDATE TRAIN
       if (trainId) {
@@ -159,9 +164,13 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           ...rest,
           id: Number(existingTrain?.id),
         };
-  
+
         await dispatch(
-          updateTrainTable({ train: updatedTrain, files: attachments, selectedTravelers: travelers })
+          updateTrainTable({
+            train: updatedTrain,
+            files: attachments,
+            selectedTravelers: travelers,
+          })
         ).unwrap();
       } else {
         // ADD TRAIN
@@ -170,12 +179,12 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
           createdBy: 3,
           ...rest,
         };
-  
+
         await dispatch(
           addTrainTable({ train: newData, files: attachments, travelers })
         ).unwrap();
       }
-  
+
       // Only navigate after the async thunk is fully completed
       navigate("/");
     } catch (error) {
@@ -185,7 +194,18 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
     }
   };
 
-  if (trainId && !existingTrain) return <div>Loading...</div>
+  const deleteTable = async () => {
+    try {
+      if (trainId) await dispatch(deleteTrainTable(trainId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete train:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (trainId && !existingTrain) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -358,7 +378,11 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
               <SectionInputs>
                 <InputAttachment
                   // Key tells React to completely re-render the component if the file names change, avoiding stale props
-                  key={existingTrain?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={
+                    existingTrain?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -446,7 +470,7 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       </FormSections>
       <Button
         rightIcon={<ChevRight color={theme.base} />}
-        onClick={() => console.log("reset form or close to homepage")}
+        onClick={() => {}}
         color="primary"
         ariaLabel="submit"
         type="submit"
@@ -454,6 +478,11 @@ const TrainForm: React.FC<TrainFormProps> = ({ trainId }) => {
       >
         {!trainId ? "Add Train" : "Update Train"}
       </Button>
+      {trainId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

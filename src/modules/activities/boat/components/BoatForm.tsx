@@ -42,6 +42,7 @@ import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
 import {
   addBoatTable,
+  deleteBoatTable,
   fetchBoatTable,
   updateBoatTable,
 } from "../thunk/boatThunk";
@@ -185,6 +186,17 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
       setIsLoading(false);
     }
   };
+
+  const deleteTable = async () => {
+      try {
+        if (boatId) await dispatch(deleteBoatTable(boatId)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to delete boat:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   if (boatId && !existingBoat) return <div>Loading...</div>
 
@@ -454,6 +466,11 @@ const BoatForm: React.FC<BoatFormProps> = ({ boatId }) => {
       >
         {!boatId ? "Add Boat" : "Update Boat"}
       </Button>
+      {boatId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

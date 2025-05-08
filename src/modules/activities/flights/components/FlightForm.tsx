@@ -46,6 +46,7 @@ import {
 } from "@store/selectors/selectors";
 import {
   addFlightTable,
+  deleteFlightTable,
   fetchFlightTable,
   updateFlightTable,
 } from "../thunk/flightThunk";
@@ -181,6 +182,17 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
       setIsLoading(false)
     }
   };
+
+  const deleteTable = async () => {
+      try {
+        if (flightId) await dispatch(deleteFlightTable(flightId)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to delete flight:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   if (flightId && !existingFlight) return <div>Loading...</div>
 
@@ -477,6 +489,11 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
       >
         {!flightId ? "Add Flight" : "Update Flight"}
       </Button>
+      {flightId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

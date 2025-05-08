@@ -32,6 +32,7 @@ import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@/store/selectors/selectors";
 import {
   addLinkedTripTable,
+  deleteLinkedTripTable,
   fetchLinkedTripTable,
   updateLinkedTripTable,
 } from "../thunk/linkedTripThunk";
@@ -160,6 +161,18 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
     }
   };
 
+  const deleteTable = async () => {
+    try {
+      if (linkedTripId)
+        await dispatch(deleteLinkedTripTable(linkedTripId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete linked trip:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (linkedTripId && !existingLinkedTrip) return <div>Loading...</div>;
 
   return (
@@ -276,6 +289,11 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
       >
         {!linkedTripId ? "Add Linked Trip" : "Update Linked Trip"}
       </Button>
+      {linkedTripId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

@@ -373,16 +373,34 @@ export const updateRentalTable = createAsyncThunk(
 export const deleteRentalTable = createAsyncThunk(
   "rental/deleteRental",
   async (rentalId: string) => {
-    // --- STEP 1: DETELE RENTAL TABLE BASED ON RENTAL ID --- //
-    const { error } = await supabase
-      .from("rentals")
+      // --- STEP 1: DELETE RENTAL TRAVELERS ASSOCIATED WITH THIS ID --- //
+      const { error: travelerError } = await supabase
+      .from("rental_travelers")
       .delete()
-      .eq("id", rentalId);
-    if (error) {
-      throw new Error(error.message);
+      .eq("rental_id", rentalId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
     }
 
-    // --- STEP 2: PASS RENTAL ID TO STATE (so state can delete rental) ---//
+    // --- STEP 2: DELETE RENTAL ATTACHMENTS ASSOCIATED WITH THIS ID --- //
+    const { error: attachmentError } = await supabase
+      .from("rental_attachments")
+      .delete()
+      .eq("rental_id", rentalId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE RENTAL TABLE --- //
+    const { error } = await supabase.from("rentals").delete().eq("id", rentalId);
+
+    if (error) {
+      throw new Error(`Error deleting rental: ${error.message}`);
+    }
+
+    // --- STEP 4: RETURN RENTAL ID TO STATE --- //
     return rentalId;
   }
 );

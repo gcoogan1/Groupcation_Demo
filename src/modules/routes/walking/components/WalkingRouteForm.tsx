@@ -34,6 +34,7 @@ import InputTime from "@components/Inputs/InputTime/InputTime";
 import { useNavigate } from "react-router-dom";
 import {
   addWalkingTable,
+  deleteWalkingTable,
   fetchWalkingRouteTable,
   updateWalkingTable,
 } from "../thunk/walkingThunk";
@@ -139,6 +140,17 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
       navigate("/");
     } catch (error) {
       console.error("Failed to save walking route:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTable = async () => {
+    try {
+      if (walkingId) await dispatch(deleteWalkingTable(walkingId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete walking route:", error);
     } finally {
       setIsLoading(false);
     }
@@ -292,6 +304,11 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
       >
         {!walkingId ? "Add Walking Route" : "Update Walking Route"}
       </Button>
+      {walkingId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

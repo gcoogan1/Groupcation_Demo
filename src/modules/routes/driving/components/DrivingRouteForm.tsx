@@ -40,6 +40,7 @@ import { useNavigate } from "react-router-dom";
 import { selectDrivingRouteById } from "@/store/selectors/selectors";
 import {
   addDrivingTable,
+  deleteDrivingTable,
   fetchDrivingRouteTable,
   updateDrivingTable,
 } from "../thunk/drivingThunk";
@@ -165,6 +166,17 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
       navigate("/");
     } catch (error) {
       console.error("Failed to save driving route:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTable = async () => {
+    try {
+      if (drivingId) await dispatch(deleteDrivingTable(drivingId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete driving route:", error);
     } finally {
       setIsLoading(false);
     }
@@ -339,6 +351,11 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
       >
         {!drivingId ? "Add Driving Route" : "Update Driving Route"}
       </Button>
+      {drivingId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

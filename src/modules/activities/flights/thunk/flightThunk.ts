@@ -6,10 +6,7 @@ import {
 } from "@utils/conversionFunctions/conversionFunctions";
 import { convertFormDatesToString } from "@utils/dateFunctions/dateFunctions";
 import { supabase } from "@lib/supabase";
-import {
-  FlightTable,
-  FlightAttachments,
-} from "@tableTypes/flightTable.types";
+import { FlightTable, FlightAttachments } from "@tableTypes/flightTable.types";
 
 // ----> NOTES <---- //
 // FLIGHT STATE: camalCASE
@@ -86,7 +83,7 @@ export const fetchFlightByGroupcationId = createAsyncThunk(
         (attachment) => attachment.flight_id === flight.id
       );
 
-      // Combine the train data with its associated travelers and attachments
+      // Combine the flight data with its associated travelers and attachments
       const sanitizedFlight = replaceNullWithUndefined(flight);
       const convertedDataDates = convertFormDatesToString(sanitizedFlight);
       const combinedFlightData = transformToCamelCase({
@@ -372,16 +369,37 @@ export const updateFlightTable = createAsyncThunk(
 export const deleteFlightTable = createAsyncThunk(
   "flight/deleteFlight",
   async (flightId: string) => {
-    // --- STEP 1: DETELE FLIGHT TABLE BASED ON FLIGHT ID --- //
+    // --- STEP 1: DELETE FLIGHT TRAVELERS ASSOCIATED WITH THIS FLIGHT ID --- //
+    const { error: travelerError } = await supabase
+      .from("flight_travelers")
+      .delete()
+      .eq("flight_id", flightId);
+
+    if (travelerError) {
+      throw new Error(`Error deleting travelers: ${travelerError.message}`);
+    }
+
+    // --- STEP 2: DELETE FLIGHT ATTACHMENTS ASSOCIATED WITH THIS FLIGHT ID --- //
+    const { error: attachmentError } = await supabase
+      .from("flight_attachments")
+      .delete()
+      .eq("flight_id", flightId);
+
+    if (attachmentError) {
+      throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+    }
+
+    // --- STEP 3: DELETE THE FLIGHT TABLE --- //
     const { error } = await supabase
       .from("flights")
       .delete()
       .eq("id", flightId);
+
     if (error) {
-      throw new Error(error.message);
+      throw new Error(`Error deleting flight: ${error.message}`);
     }
 
-    // --- STEP 2: PASS FLIGHT ID TO STATE (so state can delete flight) ---//
+    // --- STEP 4: RETURN FLIGHT ID TO STATE --- //
     return flightId;
   }
 );

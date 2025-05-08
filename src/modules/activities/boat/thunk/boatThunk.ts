@@ -373,14 +373,35 @@ export const updateBoatTable = createAsyncThunk(
 export const deleteBoatTable = createAsyncThunk(
   "boat/deleteBoat",
   async (boatId: string) => {
-    // --- STEP 1: DETELE BOAT TABLE BASED ON BOAT ID --- //
-    const { error } = await supabase.from("boats").delete().eq("id", boatId);
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    // --- STEP 2: PASS BOAT ID TO STATE (so state can delete boat) ---//
-    return boatId;
+        // --- STEP 1: DELETE BOAT TRAVELERS ASSOCIATED WITH THIS BOAT ID --- //
+        const { error: travelerError } = await supabase
+        .from("boat_travelers")
+        .delete()
+        .eq("boat_id", boatId);
+  
+      if (travelerError) {
+        throw new Error(`Error deleting travelers: ${travelerError.message}`);
+      }
+  
+      // --- STEP 2: DELETE BOAT ATTACHMENTS ASSOCIATED WITH THIS BOAT ID --- //
+      const { error: attachmentError } = await supabase
+        .from("boat_attachments")
+        .delete()
+        .eq("boat_id", boatId);
+  
+      if (attachmentError) {
+        throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+      }
+  
+      // --- STEP 3: DELETE THE BOAT TABLE --- //
+      const { error } = await supabase.from("boats").delete().eq("id", boatId);
+  
+      if (error) {
+        throw new Error(`Error deleting boat: ${error.message}`);
+      }
+  
+      // --- STEP 4: RETURN BOAT ID TO STATE --- //
+      return boatId;
   }
 );
 

@@ -21,6 +21,7 @@ interface LinkedTripProps {
 	duration: string;
 	travelers: Traveler[];
 	backgroundImg?: string;
+	onEditClick: () => void;
 }
 
 const LinkedTrip: React.FC<LinkedTripProps> = ({
@@ -28,9 +29,10 @@ const LinkedTrip: React.FC<LinkedTripProps> = ({
 	duration,
 	travelers,
 	backgroundImg,
+	onEditClick
 }) => {
 	return (
-		<LinkedTripContainer background={backgroundImg || BackgroundImageDefault}>
+		<LinkedTripContainer onClick={onEditClick} background={backgroundImg || BackgroundImageDefault}>
 			<LinkedTripTextContainer>
 				<LinkedTripName>{tripName}</LinkedTripName>
 				<LinkedTripDuration>{duration}</LinkedTripDuration>

@@ -8,7 +8,7 @@ export const FormContainer = styled.form`
   flex-direction: column;
   justify-content: center;
   align-content: center;
-  gap: 64px;
+  gap: 12px;
 
   @media (max-width: 512px) {
     width: 100%;
@@ -21,6 +21,7 @@ export const FormSections = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding-bottom: 64px;
 `;
 
 export const Section = styled.div`

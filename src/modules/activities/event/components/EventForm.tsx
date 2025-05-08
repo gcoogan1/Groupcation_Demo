@@ -40,7 +40,7 @@ import InputAttachment from "@components/Inputs/InputAttachment/InputAttachment"
 import InputTextArea from "@components/Inputs/InputTextArea/InputTextArea";
 import { useNavigate } from "react-router-dom";
 import { selectConvertedUsers } from "@store/selectors/selectors";
-import { addEventTable, fetchEventTable, updateEventTable } from "../thunk/eventThunk";
+import { addEventTable, deleteEventTable, fetchEventTable, updateEventTable } from "../thunk/eventThunk";
 
 type EventFormData = z.infer<typeof eventSchema>;
 
@@ -180,6 +180,17 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
       setIsLoading(false);
     }
   };
+
+  const deleteTable = async () => {
+      try {
+        if (eventId) await dispatch(deleteEventTable(eventId)).unwrap();
+        navigate("/");
+      } catch (error) {
+        console.error("Failed to delete event:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   if (eventId && !existingEvent) return <div>Loading...</div>;
 
@@ -449,6 +460,11 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
       >
         {!eventId ? "Add Event" : "Update Event"}
       </Button>
+      {eventId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

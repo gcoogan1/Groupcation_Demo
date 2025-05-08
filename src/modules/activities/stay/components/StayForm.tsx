@@ -45,6 +45,7 @@ import {
 } from "@store/selectors/selectors";
 import {
   addStayTable,
+  deleteStayTable,
   fetchStayTable,
   updateStayTable,
 } from "../thunk/stayThunk";
@@ -79,7 +80,6 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
   const [amount, setAmount] = useState(0);
   const [travelers, setTravelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
-
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
   const allDetailsShown = showCost && showAddNotes && showAttachments;
@@ -132,9 +132,8 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
         setShowAttachments(true);
       }
       if (existingStay.notes) {
-        setShowAddNotes(true)
+        setShowAddNotes(true);
       }
-      
     }
   }, [existingStay, existingAttachments, reset]);
 
@@ -150,7 +149,7 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
           ...rest,
           id: Number(existingStay?.id),
         };
-  
+
         await dispatch(
           updateStayTable({
             stay: updatedStay,
@@ -165,17 +164,32 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
           createdBy: 3,
           ...rest,
         };
-        
-        await dispatch(addStayTable({ stay: newData, files: attachments, travelers })).unwrap();
+
+        await dispatch(
+          addStayTable({ stay: newData, files: attachments, travelers })
+        ).unwrap();
       }
 
-      navigate("/")
+      navigate("/");
     } catch (error) {
-      console.error("Failed to save stay:", error)
+      console.error("Failed to save stay:", error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const deleteTable = async () => {
+    try {
+      if (stayId) await dispatch(deleteStayTable(stayId)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to delete train:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (stayId && !existingStay) return <div>Loading...</div>;
 
   return (
     <FormContainer
@@ -229,7 +243,11 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
                   name={"checkOutDate"}
                   minDate={
                     checkInDate
-                      ? new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1))
+                      ? new Date(
+                          new Date(checkInDate).setDate(
+                            new Date(checkInDate).getDate() + 1
+                          )
+                        )
                       : undefined
                   }
                 />
@@ -337,7 +355,11 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
               </ContentTitleContainer>
               <SectionInputs>
                 <InputAttachment
-                  key={existingStay?.attachments?.map((a) => a.fileName).join(",") ?? "new"}
+                  key={
+                    existingStay?.attachments
+                      ?.map((a) => a.fileName)
+                      .join(",") ?? "new"
+                  }
                   register={register}
                   setValue={setValue}
                   name={"attachments"}
@@ -433,6 +455,11 @@ const StayForm: React.FC<StayFormProps> = ({ stayId }) => {
       >
         {!stayId ? "Add stay" : "Update stay"}
       </Button>
+      {stayId && (
+        <Button color={"outlined"} ariaLabel={"delete"} onClick={deleteTable}>
+          Delete
+        </Button>
+      )}
     </FormContainer>
   );
 };

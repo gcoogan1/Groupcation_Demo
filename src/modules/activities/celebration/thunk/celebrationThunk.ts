@@ -375,17 +375,35 @@ export const updateCelebrationTable = createAsyncThunk(
 export const deleteCelebrationTable = createAsyncThunk(
   "celebration/deleteCelebration",
   async (celebrationId: string) => {
-    // --- STEP 1: DETELE CELEBRATION TABLE BASED ON CELEBRATION ID --- //
-    const { error } = await supabase
-      .from("celebrations")
-      .delete()
-      .eq("id", celebrationId);
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    // --- STEP 2: PASS CELEBRATION ID TO STATE (so state can delete celebration) ---//
-    return celebrationId;
+        // --- STEP 1: DELETE CELEBRATION TRAVELERS ASSOCIATED WITH THIS CELEBRATION ID --- //
+        const { error: travelerError } = await supabase
+        .from("celebration_travelers")
+        .delete()
+        .eq("celebration_id", celebrationId);
+  
+      if (travelerError) {
+        throw new Error(`Error deleting travelers: ${travelerError.message}`);
+      }
+  
+      // --- STEP 2: DELETE CELEBRATION ATTACHMENTS ASSOCIATED WITH THIS CELEBRATION ID --- //
+      const { error: attachmentError } = await supabase
+        .from("celebration_attachments")
+        .delete()
+        .eq("celebration_id", celebrationId);
+  
+      if (attachmentError) {
+        throw new Error(`Error deleting attachments: ${attachmentError.message}`);
+      }
+  
+      // --- STEP 3: DELETE THE CELEBRATION TABLE --- //
+      const { error } = await supabase.from("celebrations").delete().eq("id", celebrationId);
+  
+      if (error) {
+        throw new Error(`Error deleting celebration: ${error.message}`);
+      }
+  
+      // --- STEP 4: RETURN CELEBRATION ID TO STATE --- //
+      return celebrationId;
   }
 );
 
