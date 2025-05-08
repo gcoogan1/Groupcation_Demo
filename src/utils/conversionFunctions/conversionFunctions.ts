@@ -186,8 +186,8 @@ export const groupTravelItemsByDate = (
   // CHECK LINKED TRIP TO ADD ENTRY
   // Loop through all linkedTrips and add each with a startDate to the grouped list
   linkedTrips.forEach((linkedTrip) => {
-    if (linkedTrip.startDate) {
-      const date = new Date(linkedTrip.startDate);
+    if (linkedTrip?.startDate) {
+      const date = new Date(linkedTrip?.startDate);
       pushItem({
         ...linkedTrip,
         type: "linkedTrip",
