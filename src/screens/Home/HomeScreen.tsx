@@ -146,7 +146,6 @@ const HomeScreen = () => {
     fetchData()
   }, [dispatch]);
 
-
   useEffect(() => {
     if (!openPanel) return;
 
