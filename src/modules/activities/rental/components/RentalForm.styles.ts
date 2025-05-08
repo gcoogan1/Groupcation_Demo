@@ -88,6 +88,7 @@ export const DropoffContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   border-radius: 8px;
+  margin-top: 18px;
   padding: 16px;
 `
 

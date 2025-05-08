@@ -49,4 +49,33 @@ notes: z.string().min(10, "Must have at least 10 characters.").nullable().option
 }, {
   path: ["dropOffDate"],
   message: "Drop-off date must be the same day or after the pick-up date.",
-});
+}).refine(
+  (data) => {
+    const {
+      pickUpDate,
+      dropOffDate,
+      pickUpTime,
+      dropOffTime,
+    } = data;
+
+    if (!pickUpDate || !dropOffDate || !pickUpTime || !dropOffTime) {
+      return true;
+    }
+
+    const sameDay =
+      pickUpDate.getFullYear() === dropOffDate.getFullYear() &&
+      pickUpDate.getMonth() === dropOffDate.getMonth() &&
+      pickUpDate.getDate() === dropOffDate.getDate();
+
+    if (sameDay) {
+      return dropOffTime > pickUpTime;
+    }
+
+    return true;
+  },
+  {
+    path: ["dropOffTime"],
+    message:
+      "Drop-off time must be after pick-up time.",
+  }
+);

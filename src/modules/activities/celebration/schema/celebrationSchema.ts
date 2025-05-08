@@ -44,8 +44,37 @@ export const celebrationSchema = z.object({
   const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 
 
-  return endDateOnly > startDateOnly;
+  return endDateOnly >= startDateOnly;
 }, {
   path: ["endDate"],
   message: "End date must be the same day or after the start date.",
-});
+}).refine(
+  (data) => {
+    const {
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+    } = data;
+
+    if (!startDate || !endDate || !startTime || !endTime) {
+      return true;
+    }
+
+    const sameDay =
+      startDate.getFullYear() === endDate.getFullYear() &&
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getDate() === endDate.getDate();
+
+    if (sameDay) {
+      return endTime > startTime;
+    }
+
+    return true;
+  },
+  {
+    path: ["endTime"],
+    message:
+      "End time must be after start time.",
+  }
+);

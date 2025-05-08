@@ -53,5 +53,33 @@ export const busSchema = z.object({
 }, {
   path: ["arrivalDate"],
   message: "Arrival date must be the same day or after the departure date.",
-});
-;
+}).refine(
+  (data) => {
+    const {
+      departureDate,
+      arrivalDate,
+      departureTime,
+      arrivalTime,
+    } = data;
+
+    if (!departureDate || !arrivalDate || !departureTime || !arrivalTime) {
+      return true;
+    }
+
+    const sameDay =
+      departureDate.getFullYear() === arrivalDate.getFullYear() &&
+      departureDate.getMonth() === arrivalDate.getMonth() &&
+      departureDate.getDate() === arrivalDate.getDate();
+
+    if (sameDay) {
+      return arrivalTime > departureTime;
+    }
+
+    return true;
+  },
+  {
+    path: ["arrivalTime"],
+    message:
+      "Arrival time must be after departure time.",
+  }
+);
