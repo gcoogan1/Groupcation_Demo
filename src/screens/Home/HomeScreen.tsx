@@ -140,6 +140,14 @@ const HomeScreen = () => {
   const [expandedActivityId, setAcivityExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchAllGroupcationData(333));
+    };
+    fetchData()
+  }, [dispatch]);
+
+
+  useEffect(() => {
     if (!openPanel) return;
 
     const handleResize = () => {
@@ -152,9 +160,6 @@ const HomeScreen = () => {
     };
   }, [openPanel]);
 
-  useEffect(() => {
-    dispatch(fetchAllGroupcationData(333));
-  }, [dispatch]);
 
   // HELPER FUNCTIONS
 
