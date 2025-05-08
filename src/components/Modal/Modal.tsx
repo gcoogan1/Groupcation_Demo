@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import CostIcon from "@assets/Cost.svg?react";
 import AttachmentIcon from "@assets/Attachments.svg?react";
@@ -108,7 +109,7 @@ const Modal: React.FC<ModalProps> = ({
                       >
                         <FileContainer>
                           <FileIconWrapper>
-                            <FileIcon />
+                            <AttachmentIcon />
                           </FileIconWrapper>
                           <div>
                             <FileName>{attachment.fileName}</FileName>{" "}

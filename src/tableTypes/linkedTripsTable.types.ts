@@ -4,7 +4,7 @@ type Traveler = {
 };
 
 export type LinkedTripUITable = {
-  id: string;
+  id?: string;
   createdAt: string;
   createdBy: number;
   groupcationId?: number;
