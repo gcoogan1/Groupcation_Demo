@@ -1,6 +1,4 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage"; 
 import trainReducer from "@modules/activities/train/slice/trainSlice";
 import stayReducer from "@modules/activities/stay/slice/staySlice";
 import flightReducer from "@modules/activities/flights/slice/flightSlice";
@@ -17,15 +15,7 @@ import linkedTripReducer from "@modules/extras/linkedTrip/slice/linkedTripSlice"
 import groupcationReducer from "./slice/groupcationSlice";
 import userReducer from "./slice/usersSlice";
 
-// FIX ERROR WITH FILE BEING ADDED TO STATE
-
-// SAVE TO LOCAL STORAGE
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["train", "flight", "groupcation", "user"],
-};
-
+// Combine Reducers
 const rootReducer = combineReducers({
   train: trainReducer,
   stay: stayReducer,
@@ -41,49 +31,25 @@ const rootReducer = combineReducers({
   note: noteReducer,
   linkedTrip: linkedTripReducer,
   groupcation: groupcationReducer,
-  user: userReducer
-})
+  user: userReducer,
+});
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
+// Configure Store
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredPaths: ["train.attachments"], // Ignore files in persistence
-        ignoredActions: ["train/addTrainAttachment/fulfilled"], // Ignore file-related actions
+        ignoredActions: [
+          // Add any ignored actions if needed (e.g., if you have special actions in your reducers)
+        ],
+        ignoredPaths: [
+          // Add any ignored paths if needed (e.g., if you have non-serializable data like file attachments)
+        ],
       },
     }),
 });
 
-// export const store = configureStore({
-//   reducer: {
-//     train: trainReducer,
-//     stay: stayReducer,
-//     flight: flightReducer,
-//     bus: busReducer,
-//     boat: boatReducer,
-//     rental: rentalReducer,
-//     restaurant: restaurantReducer,
-//     event: eventReducer,
-//     walkingRoute: walkingRouteReducer,
-//     drivingRoute: drivingRouteReducer,
-//     note: noteReducer,
-//     linkedTrip: linkedTripReducer,
-//     groupcation: groupcationReducer,
-//     user: userReducer
-//   },
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({
-//       serializableCheck: {
-//         ignoredPaths: ['train.attachments'],
-//         ignoredActions: ['train/addTrainAttachment/fulfilled'],
-//       },
-//     }),
-// });
-
-export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

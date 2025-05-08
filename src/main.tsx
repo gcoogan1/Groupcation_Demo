@@ -3,9 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { Provider } from 'react-redux';
-import { persistor, store } from '@store/index.ts';
+import { store } from '@store/index.ts';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import { PersistGate } from 'redux-persist/integration/react';
 import { createGlobalStyle } from 'styled-components';
 import { theme } from './styles/theme.ts';
 
@@ -34,12 +33,10 @@ export const DatepickerGlobalStyles = createGlobalStyle`
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
       <DatepickerGlobalStyles />
         <App />
       </QueryClientProvider>
-    </PersistGate>
     </Provider>
   </StrictMode>,
 )

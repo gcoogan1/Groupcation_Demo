@@ -16,10 +16,10 @@ export const getRenderableDays = (
   const renderable: RenderableDay[] = [];
 
   // Create a Set of "during" dates to avoid duplicates later
-  const duringDates = new Set(groupcationDates.map(({ date }) => date));
+  const duringDates = new Set(groupcationDates?.map(({ date }) => date));
 
   // Add all groupcation "during" dates (always shown)
-  groupcationDates.forEach(({ date, dow, dayNumber }) => {
+  groupcationDates?.forEach(({ date, dow, dayNumber }) => {
     const items = (filteredGrouped[date] as TravelItem[]) || [];
 
     renderable.push({

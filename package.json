@@ -30,7 +30,6 @@
     "react-query": "^3.39.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.4.0",
-    "redux-persist": "^6.0.0",
     "styled-components": "^6.1.15",
     "uuid": "^11.1.0",
     "vite-tsconfig-paths": "^5.1.4",
