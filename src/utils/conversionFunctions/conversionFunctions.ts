@@ -159,10 +159,16 @@ export const groupTravelItemsByDate = (
   groupcation: GroupcationTable
 ): GroupedTravelItems => {
   const grouped: GroupedTravelItems = {};
+  
+  if (!groupcation || !groupcation.startDate || !groupcation.endDate) {
+    console.warn("Missing groupcation or date fields:", groupcation);
+    return grouped;
+  }
 
   // GROUPCATION DATES
   const groupcationStart = new Date(groupcation.startDate);
   const groupcationEnd = new Date(groupcation.endDate);
+
 
   // --> Helper Function -> Get/Set time period between groupcation date
   const getPeriod = (date: Date): TravelPeriod => {
