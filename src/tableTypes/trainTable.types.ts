@@ -9,7 +9,7 @@ export type TrainUITable = {
   createdBy: number;
   groupcationId?: number;
   railwayLine: string;
-  class?: string;
+  class: string;
   departureStation: string;
   departureDate: string | Date; 
   departureTime: string;
@@ -28,7 +28,7 @@ export type TrainTable = {
   createdBy?: number;
   groupcationId?: number;
   railwayLine: string;
-  class?: string;
+  class: string;
   departureStation: string;
   departureDate: Date; 
   departureTime: Date;
@@ -42,6 +42,8 @@ export type TrainTable = {
 };
 
 export type TrainTraveler = {
+  value: any;
+  label: any;
   id?: number;
   createdAt?: Date;
   trainId: number;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -66,7 +65,7 @@ const LinkedTripForm: React.FC<LinkedTripFormProps> = ({ linkedTripId }) => {
     existingLinkedTrip.attachments.length > 0;
 
   // FORM STATE
-  const [travelers, setTravelers] = useState(users);
+  const [travelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
   // REACT-HOOK-FORM FUNCTIONS

@@ -56,7 +56,9 @@ export const filterGroups = (
         // Only include items with matching travelers (if travelers are selected)
         const matchesTraveler =
           selectedTravelerIds.length > 0
-            ? item.travelers?.some((traveler) =>
+            ? // Narrow down to TravelItem type that has the travelers property
+              "travelers" in item &&
+              item.travelers?.some((traveler) =>
                 selectedTravelerIds.includes(traveler.travelerId)
               )
             : true; // No traveler filter = include all

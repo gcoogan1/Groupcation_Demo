@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   replaceNullWithUndefined,

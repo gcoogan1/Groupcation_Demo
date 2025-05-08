@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -82,7 +81,7 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
   const [showAttachments, setShowAttachments] = useState(false);
   const [showAddNotes, setShowAddNotes] = useState(!!existingFlight?.notes);
   const [amount, setAmount] = useState(0);
-  const [travelers, setTravelers] = useState(users);
+  const [travelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"

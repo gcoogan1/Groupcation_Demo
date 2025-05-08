@@ -74,7 +74,7 @@ const EventForm: React.FC<EventFormProps> = ({ eventId }) => {
     }
     return 0;
   });
-  const [travelers, setTravelers] = useState(users);
+  const [travelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"

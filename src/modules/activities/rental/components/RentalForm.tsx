@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,7 +91,7 @@ const RentalForm: React.FC<RentalFormProps> = ({ rentalId }) => {
   const [showDropOffLocal, setShowDropOffLocal] = useState(
     !!existingRental?.dropOffLocation
   );
-  const [travelers, setTravelers] = useState(users);
+  const [travelers] = useState(users);
   const [isLoading, setIsLoading] = useState(false);
 
   // IF ALL DETAILS SHOWN, HIDE "ADD MORE DETAILS"
