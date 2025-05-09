@@ -1,10 +1,29 @@
 import { avatarTheme, theme } from "@styles/theme";
 import AvatarStack from "../../../../AvatarStack/AvatarStack";
 import Users from "@assets/Users.svg?react";
-import Duration from "@assets/Duration.svg?react"
-import { CardContainer, CardTitle, CardSubTitle, CardContents, ContentDetails, StartEndDetails, DetailsContainer, DetailsTitle, DetailsText, TimeText, LocationText, DurationDetails, Graphics, GraphicsLine, DurationText, ContentFooter, FooterTextContainer, FooterTitle, FooterText, CardHeader } from "./BoatCard.styles";
-
-
+import Duration from "@assets/Duration.svg?react";
+import {
+  CardContainer,
+  CardTitle,
+  CardSubTitle,
+  CardContents,
+  ContentDetails,
+  StartEndDetails,
+  DetailsContainer,
+  DetailsTitle,
+  DetailsText,
+  TimeText,
+  LocationText,
+  DurationDetails,
+  Graphics,
+  GraphicsLine,
+  DurationText,
+  ContentFooter,
+  FooterTextContainer,
+  FooterTitle,
+  FooterText,
+  CardHeader,
+} from "./BoatCard.styles";
 
 type AvatarThemeKeys = keyof typeof avatarTheme;
 
@@ -34,9 +53,15 @@ const BoatCard: React.FC<BoatCardProps> = ({
   arrivalTime,
   arrivalLocation,
   travelers,
-  onTravelersClick
+  onTravelersClick,
 }) => {
-    const additionalTravelers = (travelers.length > 1) ? `and ${travelers.length - 1} others` : ''
+  const additionalCount = travelers.length - 1;
+  const additionalTravelers =
+    additionalCount === 1
+      ? "and 1 other"
+      : additionalCount > 1
+      ? `and ${additionalCount} others`
+      : "";
 
   return (
     <CardContainer>
@@ -50,10 +75,10 @@ const BoatCard: React.FC<BoatCardProps> = ({
             <DetailsContainer>
               <DetailsTitle>Sets sail at</DetailsTitle>
             </DetailsContainer>
-              <DetailsText>
-                <TimeText>{depatureTime}</TimeText>
-                <LocationText>{departureLocation}</LocationText>
-              </DetailsText>
+            <DetailsText>
+              <TimeText>{depatureTime}</TimeText>
+              <LocationText>{departureLocation}</LocationText>
+            </DetailsText>
           </StartEndDetails>
           <DurationDetails>
             <Graphics>
@@ -67,25 +92,28 @@ const BoatCard: React.FC<BoatCardProps> = ({
             <DetailsContainer>
               <DetailsTitle>Docks at</DetailsTitle>
             </DetailsContainer>
-              <DetailsText>
-                <TimeText>{arrivalTime}</TimeText>
-                <LocationText>{arrivalLocation}</LocationText>
-              </DetailsText>
+            <DetailsText>
+              <TimeText>{arrivalTime}</TimeText>
+              <LocationText>{arrivalLocation}</LocationText>
+            </DetailsText>
           </StartEndDetails>
         </ContentDetails>
         <ContentFooter onClick={onTravelersClick}>
-            <FooterTextContainer>
-            <Users style={{ width: '20px', height: '20px' }} color={theme.iconText} />
-              <div>
+          <FooterTextContainer>
+            <Users
+              style={{ width: "20px", height: "20px" }}
+              color={theme.iconText}
+            />
+            <div>
               <FooterTitle>Travelers</FooterTitle>
               <FooterText>You {additionalTravelers}</FooterText>
-              </div>
-            </FooterTextContainer>
+            </div>
+          </FooterTextContainer>
           <AvatarStack travelers={travelers} />
         </ContentFooter>
       </CardContents>
     </CardContainer>
-  )
-}
+  );
+};
 
-export default BoatCard
+export default BoatCard;

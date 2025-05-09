@@ -34,6 +34,7 @@ import UsersIcon from "@assets/Users.svg?react";
 import CostIcon from "@assets/Cost.svg?react";
 import AddNotesIcon from "@assets/AdditionalNotes.svg?react";
 import AttachmentsIcon from "@assets/Attachments.svg?react";
+import TimeIcon from "@assets/Time.svg?react";
 import ChevRight from "@assets/Chevron_Right.svg?react";
 import InputNumber from "@components/Inputs/InputNumber/InputNumber";
 import RemoveButton from "@components/RemoveButton/RemoveButton";
@@ -215,6 +216,8 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
     },
   ];
 
+  console.log("errors", errors)
+
   return (
     <FormContainer
       onSubmit={handleSubmit((data) => {
@@ -253,6 +256,26 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                   name={"departureTime"}
                 />
               </InputDatesRow>
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        <Section>
+          <SectionGraphics>
+            <TimeIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Duration</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputText
+                error={errors.flightDuration}
+                register={register}
+                label={"Duration"}
+                name={"flightDuration"}
+                placeholder="E.g. 8hrs 12min"
+              />
             </SectionInputs>
           </SectionContents>
         </Section>

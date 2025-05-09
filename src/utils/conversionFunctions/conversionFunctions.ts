@@ -105,8 +105,10 @@ export const convertUsersToTravelers = (userArray: UserTable[]) => {
 export const createdByUserInfo = (
   createdBy: number,
   userArray: UserTable[]
-) => {
-  return userArray.find((user) => user.id === createdBy);
+): UserTable => {
+  const user = userArray.find((user) => user.id === createdBy);
+  if (!user) throw new Error(`User with id ${createdBy} not found`);
+  return user;
 };
 
 type TravelerTable = {
@@ -126,6 +128,7 @@ export const convertTableTraveler = (
         ? convertFullNameToInitials(matchedUser.firstName, matchedUser.lastName)
         : "",
       color: matchedUser ? matchedUser.avatarColor : "gray",
+      travelerId: matchedUser?.id,
       travelerFullName: `${matchedUser?.firstName} ${matchedUser?.lastName}`,
       relationshipToCreator: matchedUser?.relationship
     };

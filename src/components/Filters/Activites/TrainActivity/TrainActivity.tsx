@@ -45,6 +45,7 @@ export type TrainActivityCardDetails = {
   activityTitle: string;
   activitySubTitle?: string;
   depatureTime: string;
+  createdBy?: string;
   departureLocation: string;
   durationTime: string;
   arrivalTime: string;

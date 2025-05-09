@@ -24,6 +24,7 @@ interface Flight {
   createdBy?: number;
   railwayLine: string;
   class: string;
+  flightDuration: string;
   departureStation: string;
   departureDate: string;
   departureTime: string;

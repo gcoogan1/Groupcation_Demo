@@ -24,6 +24,7 @@ interface Flight {
   groupcationId?: number;
   createdBy?: number;
   airline: string;
+  flightDuration: string;
   flightClass: FlightClass;
   flightNumber?: string;
   departureAirport: string;

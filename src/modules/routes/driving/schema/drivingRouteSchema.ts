@@ -2,11 +2,20 @@ import { z } from "zod";
 
 export const drivingRouteSchema = z
   .object({
-    driveDuration: z.string().min(3, "Drive duration is required."),
-    departureLocation: z.string().min(2, "Departure location is required."),
+    driveDuration: z
+      .string({ required_error: "Drive duration is required." })
+      .nonempty("Drive duration is required.")
+      .min(4, "Must have at least 4 characters."),
+    departureLocation: z
+      .string({ required_error: "Departure location is required." })
+      .nonempty("Departure location is required.")
+      .min(5, "Must have at least 5 characters."),
     departureDate: z.date({ required_error: "Departure date is required." }),
     departureTime: z.date({ required_error: "Departure time is required." }),
-    arrivalLocation: z.string().min(2, "Arrival location is required."),
+    arrivalLocation: z
+      .string({ required_error: "Arrival location is required." })
+      .nonempty("Arrival location is required.")
+      .min(5, "Must have at least 5 characters."),
     arrivalDate: z
       .date({ required_error: "Arrival date is required." })
       .optional(),

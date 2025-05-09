@@ -11,6 +11,7 @@ export type FlightUITable = {
   createdBy: number;
   groupcationId?: number;
   airline: string;
+  flightDuration: string;
   flightClass?: FlightClass;
   flightNumber?: string;
   departureDate: string | Date; 
@@ -31,6 +32,7 @@ export type FlightTable = {
   createdBy?: number;
   groupcationId?: number;
   airline: string;
+  flightDuration: string;
   flightClass?: FlightClass;
   flightNumber?: string;
   departureAirport: string;

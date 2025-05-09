@@ -40,7 +40,6 @@ import ActivityRoute from "@/components/Route/Route";
 import Note from "@/components/Note/Note";
 import LinkedTrip from "@/components/LinkedTrip/LinkedTrip";
 
-
 export const activityRenderMap = {
   train: (
     item: TravelItem,
@@ -52,14 +51,29 @@ export const activityRenderMap = {
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
       travelers?: TravelerUIInfo[]
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "train") return null;
 
     const train = item as TrainItem;
-    const travelers = train.travelers
-      ? convertTableTraveler(train.travelers, users)
+
+    // Get creator info
+    const createdBy = createdByUserInfo(train.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = train.travelers
+      ? convertTableTraveler(train.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
 
     const duration = getDurationInDaysHoursAndMinutes(
       train.departureDate.toLocaleString(),
@@ -67,7 +81,6 @@ export const activityRenderMap = {
       train.arrivalDate,
       train.arrivalTime
     );
-    const createdBy = createdByUserInfo(train.createdBy, users);
     const createdAt = formatDateToDayMonthYear(train.createdAt);
     const departureTime = convertTimeToString(train.departureTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -78,8 +91,8 @@ export const activityRenderMap = {
       train.arrivalTime,
       train.arrivalDate
     );
-    const extendedId = `train${train.id}`
-    const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
+    const extendedId = `train${train.id}`;
+    const footer = `${createdBy.firstName} ${createdBy.lastName} on ${createdAt}`;
 
     return (
       <TrainActivity
@@ -90,7 +103,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal?.("cost", train)}
         onAttachmentClick={() => handleOpenModal?.("attachments", train)}
         onAddNotesClick={() => handleOpenModal?.("notes", train)}
-        onTravelersClick={() => handleOpenModal?.("travelers", train, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", train, travelers)
+        }
         isExpandedActivityId={expandedActivityId}
         toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         id={extendedId}
@@ -107,7 +122,8 @@ export const activityRenderMap = {
           arrivalTime: cardArrivalDateTime,
           arrivalLocation: train.arrivalStation,
           travelers: travelers,
-        }}      />
+        }}
+      />
     );
   },
 
@@ -121,22 +137,36 @@ export const activityRenderMap = {
       type: "cost" | "attachments" | "notes" | "travelers",
       item: TravelItem,
       travelers?: TravelerUIInfo[]
-    ) => void,
+    ) => void
   ) => {
     if (item.type !== "flight") return null;
 
     const flight = item as FlightItem;
 
-    const travelers = flight.travelers
-      ? convertTableTraveler(flight.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(flight.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = flight.travelers
+      ? convertTableTraveler(flight.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
+
     const duration = getDurationInDaysHoursAndMinutes(
       flight.departureDate.toLocaleString(),
       flight.departureTime,
       flight.arrivalDate,
       flight.arrivalTime
     );
-    const createdBy = createdByUserInfo(flight.createdBy, users);
     const createdAt = formatDateToDayMonthYear(flight.createdAt);
     const departureTime = convertTimeToString(flight.departureTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -147,7 +177,7 @@ export const activityRenderMap = {
       flight.arrivalTime,
       flight.arrivalDate
     );
-    const extendedId = `flight${flight.id}`
+    const extendedId = `flight${flight.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -162,7 +192,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", flight)}
         onAttachmentClick={() => handleOpenModal("attachments", flight)}
         onAddNotesClick={() => handleOpenModal("notes", flight)}
-        onTravelersClick={() => handleOpenModal?.("travelers", flight, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", flight, travelers)
+        }
         hightlightedActivityAction="Flight"
         activityText={`from ${flight.departureAirport} to ${flight.arrivalAirport}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -196,11 +228,25 @@ export const activityRenderMap = {
     if (item.type !== "stay") return null;
     const stay = item as StayItem;
 
-    const travelers = stay.travelers
-      ? convertTableTraveler(stay.travelers, users)
-      : [];
-    const duration = getNumberOfNights(stay.checkInDate, stay.checkOutDate);
+    // Get creator info
     const createdBy = createdByUserInfo(stay.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = stay.travelers
+      ? convertTableTraveler(stay.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
+      : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
+
+    const duration = getNumberOfNights(stay.checkInDate, stay.checkOutDate);
     const createdAt = formatDateToDayMonthYear(stay.createdAt);
     const checkInTime = convertTimeToString(stay.checkInTime);
     const cardCheckInDateTime = formatDateTimeForCard(
@@ -211,7 +257,7 @@ export const activityRenderMap = {
       stay.checkOutTime,
       stay.checkOutDate
     );
-    const extendedId = `stay${stay.id}`
+    const extendedId = `stay${stay.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -260,9 +306,23 @@ export const activityRenderMap = {
 
     const bus = item as BusItem;
 
-    const travelers = bus.travelers
-      ? convertTableTraveler(bus.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(bus.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = bus.travelers
+      ? convertTableTraveler(bus.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+  
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];;
 
     const duration = getDurationInDaysHoursAndMinutes(
       bus.departureDate.toLocaleString(),
@@ -270,7 +330,6 @@ export const activityRenderMap = {
       bus.arrivalDate,
       bus.arrivalTime
     );
-    const createdBy = createdByUserInfo(bus.createdBy, users);
     const createdAt = formatDateToDayMonthYear(bus.createdAt);
     const departureTime = convertTimeToString(bus.departureTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -281,7 +340,7 @@ export const activityRenderMap = {
       bus.arrivalTime,
       bus.arrivalDate
     );
-    const extendedId = `bus${bus.id}`
+    const extendedId = `bus${bus.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -331,9 +390,23 @@ export const activityRenderMap = {
 
     const boat = item as BoatItem;
 
-    const travelers = boat.travelers
-      ? convertTableTraveler(boat.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(boat.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = boat.travelers
+      ? convertTableTraveler(boat.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
 
     const duration = getDurationInDaysHoursAndMinutes(
       boat.departureDate.toLocaleString(),
@@ -341,7 +414,6 @@ export const activityRenderMap = {
       boat.arrivalDate,
       boat.arrivalTime
     );
-    const createdBy = createdByUserInfo(boat.createdBy, users);
     const createdAt = formatDateToDayMonthYear(boat.createdAt);
     const departureTime = convertTimeToString(boat.departureTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -352,7 +424,7 @@ export const activityRenderMap = {
       boat.arrivalTime,
       boat.arrivalDate
     );
-    const extendedId = `boat${boat.id}`
+    const extendedId = `boat${boat.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -402,9 +474,23 @@ export const activityRenderMap = {
 
     const rental = item as RentalItem;
 
-    const travelers = rental.travelers
-      ? convertTableTraveler(rental.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(rental.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = rental.travelers
+      ? convertTableTraveler(rental.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
 
     const duration = getDurationInDaysHoursAndMinutes(
       rental.pickUpDate.toLocaleString(),
@@ -412,8 +498,6 @@ export const activityRenderMap = {
       rental.dropOffDate,
       rental.dropOffTime
     );
-
-    const createdBy = createdByUserInfo(rental.createdBy, users);
     const createdAt = formatDateToDayMonthYear(rental.createdAt);
     const departureTime = convertTimeToString(rental.pickUpTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -424,7 +508,7 @@ export const activityRenderMap = {
       rental.dropOffTime,
       rental.dropOffDate
     );
-    const extendedId = `rental${rental.id}`
+    const extendedId = `rental${rental.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -439,7 +523,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", rental)}
         onAttachmentClick={() => handleOpenModal("attachments", rental)}
         onAddNotesClick={() => handleOpenModal("notes", rental)}
-        onTravelersClick={() => handleOpenModal?.("travelers", rental, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", rental, travelers)
+        }
         hightlightedActivityAction="Rental"
         activityText={`from ${rental.pickUpLocation}`}
         departureTime={`Pick up at ${departureTime}`}
@@ -476,9 +562,23 @@ export const activityRenderMap = {
 
     const event = item as EventItem;
 
-    const travelers = event.travelers
-      ? convertTableTraveler(event.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(event.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = event.travelers
+      ? convertTableTraveler(event.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
 
     const duration = getDurationInDaysHoursAndMinutes(
       event.startDate.toLocaleString(),
@@ -486,8 +586,6 @@ export const activityRenderMap = {
       event.endDate,
       event.endTime
     );
-
-    const createdBy = createdByUserInfo(event.createdBy, users);
     const createdAt = formatDateToDayMonthYear(event.createdAt);
     const departureTime = convertTimeToString(event.startTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -498,7 +596,7 @@ export const activityRenderMap = {
       event.endTime,
       event.endDate
     );
-    const extendedId = `event${event.id}`
+    const extendedId = `event${event.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -513,7 +611,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", event)}
         onAttachmentClick={() => handleOpenModal("attachments", event)}
         onAddNotesClick={() => handleOpenModal("notes", event)}
-        onTravelersClick={() => handleOpenModal?.("travelers", event, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", event, travelers)
+        }
         hightlightedActivityAction=""
         activityText={`${event.eventName}`}
         departureTime={`Starts at ${departureTime}`}
@@ -548,18 +648,31 @@ export const activityRenderMap = {
 
     const restaurant = item as RestaurantItem;
 
-    const travelers = restaurant.travelers
-      ? convertTableTraveler(restaurant.travelers, users)
-      : [];
-
+    // Get creator info
     const createdBy = createdByUserInfo(restaurant.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = restaurant.travelers
+      ? convertTableTraveler(restaurant.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
+      : [];
+  
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
+
     const createdAt = formatDateToDayMonthYear(restaurant.createdAt);
     const departureTime = convertTimeToString(restaurant.reservationTime);
     const cardDepartureDateTime = formatDateTimeForCard(
       restaurant.reservationTime,
       restaurant.reservationTime
     );
-    const extendedId = `restaurant${restaurant.id}`
+    const extendedId = `restaurant${restaurant.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -574,7 +687,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", restaurant)}
         onAttachmentClick={() => handleOpenModal("attachments", restaurant)}
         onAddNotesClick={() => handleOpenModal("notes", restaurant)}
-        onTravelersClick={() => handleOpenModal?.("travelers", restaurant, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", restaurant, travelers)
+        }
         hightlightedActivityAction=""
         activityText={`${restaurant.restaurantName}`}
         reservationTime={`Reservation for ${departureTime}`}
@@ -606,9 +721,23 @@ export const activityRenderMap = {
 
     const celebration = item as CelebrationItem;
 
-    const travelers = celebration.travelers
-      ? convertTableTraveler(celebration.travelers, users)
+    // Get creator info
+    const createdBy = createdByUserInfo(celebration.createdBy, users);
+    const creatorInfo = {
+      travelerId: createdBy.id,
+      travelerFullName: `${createdBy.firstName} ${createdBy.lastName}`,
+    };
+    const creatorAsTraveler = convertTableTraveler([creatorInfo], users);
+
+    // Convert and filter existing travelers
+    const existingTravelers = celebration.travelers
+      ? convertTableTraveler(celebration.travelers, users).filter(
+          (traveler) => traveler.travelerId !== createdBy.id
+        )
       : [];
+
+    // Combine without duplicates
+    const travelers = [...existingTravelers, ...creatorAsTraveler];
 
     const duration = getDurationInDaysHoursAndMinutes(
       celebration.startDate.toLocaleString(),
@@ -616,8 +745,6 @@ export const activityRenderMap = {
       celebration.endDate,
       celebration.endTime
     );
-
-    const createdBy = createdByUserInfo(celebration.createdBy, users);
     const createdAt = formatDateToDayMonthYear(celebration.createdAt);
     const startTime = convertTimeToString(celebration.startTime);
     const cardStartDateTime = formatDateTimeForCard(
@@ -628,7 +755,7 @@ export const activityRenderMap = {
       celebration.endTime,
       celebration.endDate
     );
-    const extendedId = `celebration${celebration.id}`
+    const extendedId = `celebration${celebration.id}`;
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -643,7 +770,9 @@ export const activityRenderMap = {
         onCostClick={() => handleOpenModal("cost", celebration)}
         onAttachmentClick={() => handleOpenModal("attachments", celebration)}
         onAddNotesClick={() => handleOpenModal("notes", celebration)}
-        onTravelersClick={() => handleOpenModal?.("travelers", celebration, travelers)}
+        onTravelersClick={() =>
+          handleOpenModal?.("travelers", celebration, travelers)
+        }
         hightlightedActivityAction="Celebration"
         activityText={`${celebration.celebrationName}`}
         startTime={`Starts at ${startTime}`}
@@ -738,16 +867,23 @@ export const activityRenderMap = {
     );
   },
 
-  linkedTrip: (item: TravelItem, users: UserTable[], handleEditClick: (type: string, id: string) => void) => {
+  linkedTrip: (
+    item: TravelItem,
+    users: UserTable[],
+    handleEditClick: (type: string, id: string) => void
+  ) => {
     if (item.type !== "linkedTrip") return null;
 
     const linkedTrip = item as LinkedTripItem;
+
     const duration = `${formatDateToDayMonthYear(
       linkedTrip.startDate
     )} to ${formatDateToDayMonthYear(linkedTrip.endDate)}`;
+
     const travelers = linkedTrip.travelers
       ? convertTableTraveler(linkedTrip.travelers, users)
       : [];
+      
     const backgroundUrl = linkedTrip.attachments?.[0]?.fileUrl;
 
     return (

@@ -2,12 +2,21 @@ import { z } from "zod";
 
 export const trainSchema = z
   .object({
-    railwayLine: z.string().min(3, "Train Line is required."),
-    class: z.string().min(1, "Class is required."),
-    departureStation: z.string().min(2, "Departure train station is required."),
+    railwayLine: z
+      .string({ required_error: "Train Line is required." })
+      .nonempty("Train Line is required.")
+      .min(3, "Must have at least 3 characters."),
+    class: z.string({ required_error: "Class is required." }).nonempty("Class is required."),
+    departureStation: z
+      .string({ required_error: "Departure train station is required." })
+      .nonempty("Departure train station is required.")
+      .min(3, "Must have at least 3 characters."),
     departureDate: z.date({ required_error: "Departure date is required." }),
     departureTime: z.date({ required_error: "Departure time is required." }),
-    arrivalStation: z.string().min(2, "Arrival train station is required."),
+    arrivalStation: z
+      .string({ required_error: "Arrival train station is required." })
+      .nonempty("Arrival train station is required.")
+      .min(3, "Must have at least 3 characters."),
     arrivalDate: z.date({ required_error: "Arrival date is required." }),
     arrivalTime: z.date({ required_error: "Arrival time is required." }),
     travelers: z
@@ -66,14 +75,10 @@ export const trainSchema = z
       path: ["arrivalDate"],
       message: "Arrival date must be the same day or after the departure date.",
     }
-  ).refine(
+  )
+  .refine(
     (data) => {
-      const {
-        departureDate,
-        arrivalDate,
-        departureTime,
-        arrivalTime,
-      } = data;
+      const { departureDate, arrivalDate, departureTime, arrivalTime } = data;
 
       if (!departureDate || !arrivalDate || !departureTime || !arrivalTime) {
         return true;
@@ -92,7 +97,6 @@ export const trainSchema = z
     },
     {
       path: ["arrivalTime"],
-      message:
-        "Arrival time must be after departure time.",
+      message: "Arrival time must be after departure time.",
     }
   );

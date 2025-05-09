@@ -45,6 +45,13 @@ export type TravelerUIInfo = {
   relationshipToCreator?: string
 };
 
+export type TravelerInfo = {
+  createdAt: Date;
+  id: number;
+  travelerId: number;
+  travelerFullName?: string;
+};
+
 export type TravelerItems = {
   action: Actions;
   label: string;

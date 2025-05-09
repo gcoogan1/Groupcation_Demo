@@ -42,8 +42,8 @@ export type TrainTable = {
 };
 
 export type TrainTraveler = {
-  value: any;
-  label: any;
+  // value: any;
+  // label: any;
   id?: number;
   createdAt?: Date;
   trainId: number;

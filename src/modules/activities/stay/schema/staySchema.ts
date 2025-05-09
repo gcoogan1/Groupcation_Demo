@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const staySchema = z.object({
-  placeName: z.string().min(2, "Name of stay is required."),
-  placeAddress: z.string().min(2, "Address of stay is required."),
+  placeName: z.string({ required_error: "Name of stay is required "}).nonempty("Name of stay is required.").min(5, "Must have at least 5 characters."),
+  placeAddress: z.string({ required_error: "Address is required" }).nonempty("Address is required.").min(5, "Must have at least 5 characters."),
   checkInDate: z.date({ required_error: "Check-in date is required." }),
   checkInTime: z.date({ required_error: "Check-in time is required." }),
   checkOutDate: z.date({ required_error: "Check-out date is required." }),

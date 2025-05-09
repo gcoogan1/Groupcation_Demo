@@ -53,7 +53,7 @@ export const ActivityItemContent = styled.div`
 `;
 
 export const ActivityHighlightText = styled.span`
-	color: ${theme.train};
+	color: ${theme.bus};
 `;
 
 export const ActivityText = styled.p`

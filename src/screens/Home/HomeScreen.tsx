@@ -440,9 +440,9 @@ const HomeScreen = () => {
               <FilterHeader onClick={toggleActivityExpand}>
                 <FilterHeaderText>Activities</FilterHeaderText>
                 {activitiesExpanded ? (
-                  <ChevronDown color={theme.iconText} />
-                ) : (
                   <ChevronUp color={theme.iconText} />
+                ) : (
+                  <ChevronDown color={theme.iconText} />
                 )}
               </FilterHeader>
               <FilterBody
@@ -470,9 +470,9 @@ const HomeScreen = () => {
               <FilterHeader onClick={toggleRouteExpand}>
                 <FilterHeaderText>Routes</FilterHeaderText>
                 {routesExpanded ? (
-                  <ChevronDown color={theme.iconText} />
-                ) : (
                   <ChevronUp color={theme.iconText} />
+                ) : (
+                  <ChevronDown color={theme.iconText} />
                 )}
               </FilterHeader>
               <FilterBody
@@ -503,9 +503,9 @@ const HomeScreen = () => {
               <FilterHeader onClick={toggleExtraExpand}>
                 <FilterHeaderText>Extras</FilterHeaderText>
                 {extrasExpanded ? (
-                  <ChevronDown color={theme.iconText} />
-                ) : (
                   <ChevronUp color={theme.iconText} />
+                ) : (
+                  <ChevronDown color={theme.iconText} />
                 )}
               </FilterHeader>
               <FilterBody
@@ -537,9 +537,9 @@ const HomeScreen = () => {
               <FilterHeader onClick={toggleTravelersExpand}>
                 <FilterHeaderText>Travelers</FilterHeaderText>
                 {travelersExpanded ? (
-                  <ChevronDown color={theme.iconText} />
-                ) : (
                   <ChevronUp color={theme.iconText} />
+                ) : (
+                  <ChevronDown color={theme.iconText} />
                 )}
               </FilterHeader>
               <FilterBody

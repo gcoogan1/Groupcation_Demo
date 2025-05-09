@@ -88,7 +88,7 @@ export const LocationText = styled.p`
 `;
 
 export const DurationDetails = styled.div`
-	padding: 0px 92px;
+	padding-left: 92px;
   align-items: center;
 	display: flex;
 	gap: 4px;
@@ -119,6 +119,7 @@ export const DurationText = styled.p`
 export const ContentFooter = styled.div`
 	padding: 16px;
 	display: flex;
+	gap: 4px;
 	border-top: 1px solid ${theme.line};
   width: 100%;
   justify-content: space-between;

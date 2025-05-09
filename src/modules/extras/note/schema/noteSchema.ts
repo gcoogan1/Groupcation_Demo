@@ -1,8 +1,14 @@
 import { z } from "zod";
 
 export const NoteSchema = z.object({
-  noteTitle: z.string().min(5, "Title is required."),
-  startDate: z.date({ required_error: "A date for the note is required." }),
-  startTime: z.date({ required_error: "A time for the note is required." }),
-  noteContent: z.string().min(10, "Content is required and must be at least 10 characters long."),
+  noteTitle: z
+    .string({ required_error: "Title is required." })
+    .nonempty("Title is required.")
+    .min(5, "Must have at least 5 characters."),
+  startDate: z.date({ required_error: "Date is required." }),
+  startTime: z.date({ required_error: "Time is required." }),
+  noteContent: z
+    .string({ required_error: "Content is required." })
+    .nonempty("Content is required.")
+    .min(10, "Must be at least 10 characters long."),
 });

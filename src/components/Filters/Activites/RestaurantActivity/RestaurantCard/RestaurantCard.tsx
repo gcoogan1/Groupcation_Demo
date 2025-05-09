@@ -42,10 +42,15 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
   reservationTime,
   restaurantLocation,
   travelers,
-  onTravelersClick
+  onTravelersClick,
 }) => {
+  const additionalCount = travelers.length - 1;
   const additionalTravelers =
-    travelers.length > 1 ? `and ${travelers.length - 1} others` : "";
+    additionalCount === 1
+      ? "and 1 other"
+      : additionalCount > 1
+      ? `and ${additionalCount} others`
+      : "";
 
   return (
     <CardContainer>

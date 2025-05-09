@@ -112,6 +112,7 @@ export const DurationText = styled.p`
 export const ContentFooter = styled.div`
 	padding: 16px;
 	display: flex;
+	gap: 4px;
 	border-top: 1px solid ${theme.line};
   width: 100%;
   justify-content: space-between;

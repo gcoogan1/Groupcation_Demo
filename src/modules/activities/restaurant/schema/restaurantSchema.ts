@@ -1,9 +1,18 @@
 import { z } from "zod";
 
 export const restaurantSchema = z.object({
-  restaurantName: z.string().min(3, "Restaurant name is required."),
-  restaurantAddress: z.string().min(3, "Restaurant address is required."),
-  tableType: z.string().min(3, "Must have at least 3 characters."),
+  restaurantName: z
+    .string({ required_error: "Restaurant name is required." })
+    .nonempty("Restaurant name is required.")
+    .min(3, "Must have at least 3 characters."),
+  restaurantAddress: z
+    .string({ required_error: "Restaurant address is required." })
+    .nonempty("Restaurant address is required.")
+    .min(5, "Must have at least 5 characters."),
+  tableType: z
+    .string({ required_error: "Table type is required." })
+    .nonempty("Table type is required.")
+    .min(3, "Must have at least 3 characters."),
   reservationDate: z.date({ required_error: "Reservation date is required." }),
   reservationTime: z.date({ required_error: "Reservation time is required." }),
   travelers: z
