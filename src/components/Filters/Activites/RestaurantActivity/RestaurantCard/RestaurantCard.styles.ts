@@ -31,6 +31,7 @@ export const CardSubTitle = styled.p`
 
 export const CardContents = styled.div`
 	border-radius: 16px;
+	overflow: hidden;
 	background-color: ${theme.base};
 	box-shadow: 0px -4px 16px 0px rgba(0, 0, 0, 0.04);
 	display: flex;
@@ -41,6 +42,10 @@ export const CardContents = styled.div`
 
 export const ContentDetails = styled.div`
 	padding: 16px;
+
+	@media (max-width: 375px) {
+		max-width: 240px;	
+	}
 `;
 
 export const StartEndDetails = styled.div`

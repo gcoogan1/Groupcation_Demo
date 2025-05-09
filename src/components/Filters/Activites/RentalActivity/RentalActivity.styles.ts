@@ -9,6 +9,7 @@ export const ActivityContainer = styled.div<ActivityContainerProps>`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	overflow: hidden;
 	/* max-width: 400px; */
 	width: 100%;
 	border-radius: 8px;

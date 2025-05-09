@@ -78,6 +78,7 @@ export const activityRenderMap = {
       train.arrivalTime,
       train.arrivalDate
     );
+    const extendedId = `train${train.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
@@ -91,8 +92,8 @@ export const activityRenderMap = {
         onAddNotesClick={() => handleOpenModal?.("notes", train)}
         onTravelersClick={() => handleOpenModal?.("travelers", train, travelers)}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(train.id)}
-        id={train.id}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
+        id={extendedId}
         hightlightedActivityAction="Train"
         activityText={`from ${train.departureStation} to ${train.arrivalStation}`}
         departureTime={`Leaves at ${departureTime}`}
@@ -146,15 +147,16 @@ export const activityRenderMap = {
       flight.arrivalTime,
       flight.arrivalDate
     );
+    const extendedId = `flight${flight.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <FlightActivity
         onEditClick={() => handleEditClick("flight", flight.id)}
         cost={flight?.cost}
-        id={flight.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(flight.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={flight.attachments}
         noteText={flight.notes}
         onCostClick={() => handleOpenModal("cost", flight)}
@@ -209,15 +211,16 @@ export const activityRenderMap = {
       stay.checkOutTime,
       stay.checkOutDate
     );
+    const extendedId = `stay${stay.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <StayActivity
         onEditClick={() => handleEditClick("stay", stay.id)}
         cost={stay?.cost}
-        id={stay.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(stay.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={stay.attachments}
         noteText={stay.notes}
         onCostClick={() => handleOpenModal("cost", stay)}
@@ -278,15 +281,16 @@ export const activityRenderMap = {
       bus.arrivalTime,
       bus.arrivalDate
     );
+    const extendedId = `bus${bus.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <BusActivity
         onEditClick={() => handleEditClick("bus", bus.id)}
         cost={bus?.cost}
-        id={bus.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(bus.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={bus.attachments}
         noteText={bus.notes}
         onCostClick={() => handleOpenModal("cost", bus)}
@@ -348,15 +352,16 @@ export const activityRenderMap = {
       boat.arrivalTime,
       boat.arrivalDate
     );
+    const extendedId = `boat${boat.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <BoatActivity
         onEditClick={() => handleEditClick("boat", boat.id)}
         cost={boat?.cost}
-        id={boat.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(boat.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={boat.attachments}
         noteText={boat.notes}
         onCostClick={() => handleOpenModal("cost", boat)}
@@ -419,15 +424,16 @@ export const activityRenderMap = {
       rental.dropOffTime,
       rental.dropOffDate
     );
+    const extendedId = `rental${rental.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <RentalActivity
         onEditClick={() => handleEditClick("rental", rental.id)}
         cost={rental?.cost}
-        id={rental.id}
+        extendedId={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(rental.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={rental.attachments}
         noteText={rental.notes}
         onCostClick={() => handleOpenModal("cost", rental)}
@@ -492,15 +498,16 @@ export const activityRenderMap = {
       event.endTime,
       event.endDate
     );
+    const extendedId = `event${event.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <EventActivity
         onEditClick={() => handleEditClick("event", event.id)}
         cost={event?.cost}
-        id={event.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(event.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={event.attachments}
         noteText={event.notes}
         onCostClick={() => handleOpenModal("cost", event)}
@@ -552,15 +559,16 @@ export const activityRenderMap = {
       restaurant.reservationTime,
       restaurant.reservationTime
     );
+    const extendedId = `restaurant${restaurant.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <RestaurantActivity
         onEditClick={() => handleEditClick("restaurant", restaurant.id)}
         cost={restaurant?.cost}
-        id={restaurant.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(restaurant.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={restaurant.attachments}
         noteText={restaurant.notes}
         onCostClick={() => handleOpenModal("cost", restaurant)}
@@ -620,15 +628,16 @@ export const activityRenderMap = {
       celebration.endTime,
       celebration.endDate
     );
+    const extendedId = `celebration${celebration.id}`
     const footer = `${createdBy?.firstName} ${createdBy?.lastName} on ${createdAt}`;
 
     return (
       <CelebrationActivity
         onEditClick={() => handleEditClick("celebration", celebration.id)}
         cost={celebration?.cost}
-        id={celebration.id}
+        id={extendedId}
         isExpandedActivityId={expandedActivityId}
-        toogleExpandedActivity={() => toogleExpandedActivity(celebration.id)}
+        toogleExpandedActivity={() => toogleExpandedActivity(extendedId)}
         attachments={celebration.attachments}
         noteText={celebration.notes}
         onCostClick={() => handleOpenModal("cost", celebration)}

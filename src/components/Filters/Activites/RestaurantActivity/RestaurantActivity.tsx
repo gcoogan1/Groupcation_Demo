@@ -97,7 +97,7 @@ const RestaurantActivity: React.FC<RestaurantActivitysProps> = ({
     if (isExpanded) return;
     if (contentRef.current) {
       contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
-      toogleExpandedActivity(id);
+      toogleExpandedActivity(`restaurant${id}`);
     }
   };
 

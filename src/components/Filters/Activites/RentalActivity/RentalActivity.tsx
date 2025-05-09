@@ -55,7 +55,7 @@ export type RentalActivityCardDetails = {
 interface RentalActivitysProps {
   onEditClick: () => void;
   cost?: string;
-  id: string;
+  extendedId: string;
   onCostClick: () => void;
   onAttachmentClick: () => void;
   onAddNotesClick: () => void;
@@ -74,7 +74,7 @@ interface RentalActivitysProps {
 const RentalActivity: React.FC<RentalActivitysProps> = ({
   onEditClick,
   cost,
-  id,
+  extendedId,
   onCostClick,
   attachments,
   onAttachmentClick,
@@ -102,13 +102,13 @@ const RentalActivity: React.FC<RentalActivitysProps> = ({
     travelers,
   } = activityCardDetails;
 
-  const isExpanded = isExpandedActivityId === id;
+  const isExpanded = isExpandedActivityId === extendedId;
 
   const toggleExpand = () => {
     if (isExpanded) return;
     if (contentRef.current) {
       contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
-      toogleExpandedActivity(id);
+      toogleExpandedActivity(extendedId);
     }
   };
 

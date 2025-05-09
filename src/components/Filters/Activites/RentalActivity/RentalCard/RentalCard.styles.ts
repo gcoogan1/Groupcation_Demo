@@ -41,6 +41,10 @@ export const CardContents = styled.div`
 
 export const ContentDetails = styled.div`
 	padding: 16px;
+
+	@media (max-width: 375px) {
+		max-width: 240px;	
+	}
 `;
 
 export const StartEndDetails = styled.div`

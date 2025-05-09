@@ -13,6 +13,7 @@ export const ActivityContainer = styled.div<ActivityContainerProps>`
 	width: 100%;
 	border-radius: 8px;
 	min-height: 70px;
+	overflow: hidden;
 	cursor: ${({ isExpanded }) => (isExpanded ? "auto" : "pointer")};
 	border: ${({ isExpanded }) =>
 		isExpanded ? `2px solid ${theme.line}` : "2px solid transparent"};

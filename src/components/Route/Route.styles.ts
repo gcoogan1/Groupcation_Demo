@@ -11,6 +11,7 @@ export const RouteContainer = styled.div<RouteContainerProps>`
 	justify-content: space-between;
 	width: 100%;
 	border-radius: 8px;
+	overflow: hidden;
 	cursor: ${({ isExpanded }) => isExpanded ? 'auto' : 'pointer'};
 	border: ${({ isExpanded }) =>
 		isExpanded ? `2px solid ${theme.line}` : "2px solid transparent"};
