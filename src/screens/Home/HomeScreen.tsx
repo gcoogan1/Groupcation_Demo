@@ -137,13 +137,15 @@ const HomeScreen = () => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TravelItem | null>(null);
-  const [expandedActivityId, setAcivityExpandedId] = useState<string | null>(null);
+  const [expandedActivityId, setAcivityExpandedId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchAllGroupcationData(333));
     };
-    fetchData()
+    fetchData();
   }, [dispatch]);
 
   useEffect(() => {
@@ -158,7 +160,6 @@ const HomeScreen = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [openPanel]);
-
 
   // HELPER FUNCTIONS
 
@@ -271,7 +272,7 @@ const HomeScreen = () => {
 
   const toogleExpandedActivity = (id: string) => {
     setAcivityExpandedId((prev) => (prev === id ? null : id));
-  }
+  };
 
   // FILTER FUNCTIONS
   const toggleActivityExpand = () => {
@@ -663,7 +664,7 @@ const HomeScreen = () => {
                                 handleEditCardClick,
                                 toogleExpandedActivity,
                                 expandedActivityId,
-                                handleOpenModal,
+                                handleOpenModal
                               )}
                             </>
                           );
@@ -793,19 +794,25 @@ const HomeScreen = () => {
                 ref={extraContentRef}
                 style={{ display: extrasExpanded ? "flex" : "none" }}
               >
-                {EXTRAS_OPTIONS.map((extra) => (
-                  <FilterItem
-                    key={extra.value}
-                    action={extra.action}
-                    icon={
-                      <Pictogram type={extra.value}>{extra.icon}</Pictogram>
-                    }
-                    label={extra.label}
-                    value={extra.value}
-                    selected={selectedExtras.includes(extra.value)}
-                    onToggle={handleExtraToggle}
-                  />
-                ))}
+                {EXTRAS_OPTIONS.map((extra) => {
+                  const pictogramType =
+                    extra.value === "note"
+                      ? "noteOpacity"
+                      : "groupcationOpacity";
+                  return (
+                    <FilterItem
+                      key={extra.value}
+                      action={extra.action}
+                      icon={
+                        <Pictogram type={pictogramType}>{extra.icon}</Pictogram>
+                      }
+                      label={extra.label}
+                      value={extra.value}
+                      selected={selectedExtras.includes(extra.value)}
+                      onToggle={handleExtraToggle}
+                    />
+                  );
+                })}
               </FilterBody>
             </Filter>
             <Filter>
