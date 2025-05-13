@@ -30,6 +30,9 @@ export const ModalWrapper = styled.div`
 
 export const ModalHeader = styled.div`
   display: flex;
+  position: sticky;
+  top: 0;
+  background-color: ${theme.base};
   padding: 16px;
   align-items: center;
   gap: 8px;
