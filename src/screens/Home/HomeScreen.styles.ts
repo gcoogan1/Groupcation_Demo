@@ -191,7 +191,6 @@ export const PanelOverlay = styled.div`
     height: 100vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    touch-action: auto;
   }
 `;
 
