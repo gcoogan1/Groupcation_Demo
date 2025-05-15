@@ -705,7 +705,7 @@ const HomeScreen = () => {
             }}
           >
             <ButtonWrapper>
-              <CloseButton onClose={() => setOpenPanel(false)} />
+              <CloseButton onClose={() => console.log("here")} />
             </ButtonWrapper>
             <Panel />
           </PanelWrapper>
