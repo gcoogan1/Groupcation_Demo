@@ -3,13 +3,17 @@ import { theme } from "@styles/theme";
 
 export const PanelContainer = styled.div`
   display: flex;
-  /* width: 256px; */
+  width: 256px;
   flex-direction: column;
   align-items: flex-start;
   border-radius: 16px;
   border: 2px solid ${theme.line};
   background: ${theme.base};
   box-shadow: 0px 8px 32px -4px rgba(0, 0, 0, 0.32);
+
+  @media (max-width: 512px) {
+    width: 100%;
+  }
 `
 
 export const PanelSection = styled.div`
