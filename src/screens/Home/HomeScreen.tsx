@@ -148,18 +148,18 @@ const HomeScreen = () => {
     fetchData();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!openPanel) return;
+  // useEffect(() => {
+  //   if (!openPanel) return;
 
-    const handleResize = () => {
-      setOpenPanel(false);
-    };
+  //   const handleResize = () => {
+  //     setOpenPanel(false);
+  //   };
 
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [openPanel]);
+  //   window.addEventListener("resize", handleResize);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [openPanel]);
 
   // HELPER FUNCTIONS
 
@@ -705,7 +705,7 @@ const HomeScreen = () => {
             }}
           >
             <ButtonWrapper>
-              <CloseButton onClose={() => console.log("here")} />
+              <CloseButton onClose={() => setOpenPanel(false)} />
             </ButtonWrapper>
             <Panel />
           </PanelWrapper>
