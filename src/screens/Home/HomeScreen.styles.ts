@@ -188,8 +188,8 @@ export const PanelOverlay = styled.div`
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
-    height: 100vh;
-    overflow-y: auto;
+    /* height: 100vh; */
+    /* overflow-y: auto; */
   }
 `;
 
