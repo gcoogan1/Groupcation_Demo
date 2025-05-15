@@ -24,7 +24,7 @@ export const ModalWrapper = styled.div`
   background: ${theme.base};
   width: 90%;
   position: relative;
-  max-height: 90vh;
+  /* max-height: 90vh; */
 `;
 
 export const ModalHeader = styled.div`

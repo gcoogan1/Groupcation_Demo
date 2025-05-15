@@ -148,18 +148,20 @@ const HomeScreen = () => {
     fetchData();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (!openPanel) return;
-
-  //   const handleResize = () => {
-  //     setOpenPanel(false);
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, [openPanel]);
+  useEffect(() => {
+    if (!openPanel) return;
+  
+    const handleResize = () => {
+      if (window.innerWidth > 512) {
+        setOpenPanel(false);
+      }
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [openPanel]);
 
   // HELPER FUNCTIONS
 
