@@ -190,7 +190,6 @@ export const PanelOverlay = styled.div`
     background: rgba(0, 0, 0, 0.8);
     height: 100vh;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 `;
 
