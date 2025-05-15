@@ -3,7 +3,7 @@ import { theme } from "@styles/theme";
 
 export const PanelContainer = styled.div`
   display: flex;
-  width: 256px;
+  /* width: 256px; */
   flex-direction: column;
   align-items: flex-start;
   border-radius: 16px;

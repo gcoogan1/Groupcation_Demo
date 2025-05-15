@@ -188,6 +188,9 @@ export const PanelOverlay = styled.div`
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
+    height: 100vh;
+    overflow: hidden;
+    touch-action: none;
   }
 `;
 
@@ -201,7 +204,7 @@ export const PanelWrapper = styled.div`
 
   @media (max-width: 512px) {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     position: relative;
     justify-items: center;
     align-content: center;
@@ -215,9 +218,12 @@ export const ButtonWrapper = styled.div`
 display: none;
   @media (max-width: 512px) {
     padding: 8px 0px;
-    display: block;
+    display: flex;
+    justify-content: end;
+    justify-self: end;
+    /* display: block;
     width: 256px;
-    justify-items: flex-end;
+    justify-items: flex-end; */
   }
 `;
 
