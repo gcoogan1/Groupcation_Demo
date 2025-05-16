@@ -27,6 +27,7 @@ export const CardSubTitle = styled.p`
 	font-size: 14px;
 	line-height: 20px;
 	color: ${theme.iconText};
+	text-transform: capitalize;
 `;
 
 export const CardContents = styled.div`
