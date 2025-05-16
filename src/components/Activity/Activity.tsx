@@ -188,7 +188,7 @@ const Activity: React.FC<ActivitysProps> = ({
                 <Notes color={theme.iconText} />
                 <LinkTextContainer>
                   <LinkTextTitle>Additional Notes</LinkTextTitle>
-                  <LinkText>{noteText ? noteText : "Add notes"}</LinkText>
+                  <LinkText style={{ whiteSpace: 'pre-wrap' }}>{noteText ? noteText : "Add notes"}</LinkText>
                 </LinkTextContainer>
               </LinkContent>
               <ChevIcon>

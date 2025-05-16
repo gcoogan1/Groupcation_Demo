@@ -98,7 +98,7 @@ const EventCard: React.FC<EventCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter onClick={onTravelersClick}>
+        <ContentFooter>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}
@@ -109,7 +109,7 @@ const EventCard: React.FC<EventCardProps> = ({
               <FooterText>You {additionalTravelers}</FooterText>
             </div>
           </FooterTextContainer>
-          <AvatarStack travelers={travelers} />
+          <AvatarStack onClick={onTravelersClick} travelers={travelers} />
         </ContentFooter>
       </CardContents>
     </CardContainer>

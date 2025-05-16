@@ -142,13 +142,6 @@ const HomeScreen = () => {
   );
 
   useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(fetchAllGroupcationData(333));
-    };
-    fetchData();
-  }, [dispatch]);
-
-  useEffect(() => {
     if (!openPanel) return;
   
     const handleResize = () => {
@@ -302,6 +295,7 @@ const HomeScreen = () => {
     selectConvertedUsersForFilters(state)
   );
 
+  const users = useSelector(selectTableUsers);
   const trains = useSelector(selectTrains);
   const flights = useSelector(selectFlights);
   const stays = useSelector(selectStays);
@@ -315,7 +309,6 @@ const HomeScreen = () => {
   const walkingRoutes = useSelector(selecWalkingRoutes);
   const notes = useSelector(selectNotes);
   const linkedTrips = useSelector(selectLinkedTrips);
-  const users = useSelector(selectTableUsers);
 
   // ITINIARY DISPLAY FUNCTIONS
   const grouped = useMemo(
@@ -380,6 +373,9 @@ const HomeScreen = () => {
     filteredGrouped,
     groupcationFullDates
   );
+
+  console.log("day", renderableDays);
+  
 
   const remainingDays =
     groupcation?.startDate && getDaysRemaining(groupcation?.startDate);
@@ -632,8 +628,9 @@ const HomeScreen = () => {
               </ActionButtonsContainer>
             </ItineraryActions>
             <DaysContainer>
-              {renderableDays.map((day) => (
-                <Day key={day.date}>
+              {renderableDays.map((day) => {   
+                return (
+                  <Day key={day.date}>
                   <DayNumber>
                     <NumberContainer period={day.period}>
                       {day.period === "during" ? (
@@ -681,7 +678,8 @@ const HomeScreen = () => {
                     )}
                   </DayList>
                 </Day>
-              ))}
+                )
+              })}
             </DaysContainer>
           </ItineraryContainer>
         </BodyContentContainer>

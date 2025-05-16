@@ -95,7 +95,7 @@ const StayCard: React.FC<StayCardProps> = ({
             </DetailsText>
           </StartEndDetails>
         </ContentDetails>
-        <ContentFooter onClick={onTravelersClick}>
+        <ContentFooter>
           <FooterTextContainer>
             <Users
               style={{ width: "20px", height: "20px" }}
@@ -106,7 +106,7 @@ const StayCard: React.FC<StayCardProps> = ({
               <FooterText>You {additionalTravelers}</FooterText>
             </div>
           </FooterTextContainer>
-          <AvatarStack travelers={travelers} />
+          <AvatarStack onClick={onTravelersClick} travelers={travelers} />
         </ContentFooter>
       </CardContents>
     </CardContainer>

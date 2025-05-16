@@ -1,16 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
 import { Provider } from 'react-redux';
 import { store } from '@store/index.ts';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { createGlobalStyle } from 'styled-components';
 import { theme } from './styles/theme.ts';
+import { fetchAllGroupcationData } from './store/thunk/fetchAllThunk.ts';
 
 const queryClient = new QueryClient();
 
-// Style react-datepicker calender
 export const DatepickerGlobalStyles = createGlobalStyle`
   .react-datepicker-popper {
     position: absolute;
@@ -29,14 +29,23 @@ export const DatepickerGlobalStyles = createGlobalStyle`
   }
 `;
 
+// PRELOAD BEFORE RENDERING
+async function preload() {
+  await Promise.all([
+    store.dispatch(fetchAllGroupcationData(333)),
+  ]);
+}
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-      <DatepickerGlobalStyles />
-        <App />
-      </QueryClientProvider>
-    </Provider>
-  </StrictMode>,
-)
+// Wait for preload THEN render
+preload().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <DatepickerGlobalStyles />
+          <App />
+        </QueryClientProvider>
+      </Provider>
+    </StrictMode>
+  );
+});

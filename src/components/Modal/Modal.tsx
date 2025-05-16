@@ -137,7 +137,7 @@ const Modal: React.FC<ModalProps> = ({
               {!notes ? (
                 <ModalCostHeader>No notes have been added.</ModalCostHeader>
               ) : (
-                <ModalCostHeader>{notes}</ModalCostHeader>
+                <ModalCostHeader style={{ whiteSpace: 'pre-wrap' }}>{notes}</ModalCostHeader>
               )}
             </ModalContent>
           )}

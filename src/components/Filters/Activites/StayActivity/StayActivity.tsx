@@ -126,7 +126,7 @@ const TrainActivity: React.FC<StayActivitysProps> = ({
               <ActivityHighlightText>
                 {hightlightedActivityAction}{" "}
               </ActivityHighlightText>
-              {activityText}
+              in {activityText}
             </ActivityText>
             <DepartureText>{checkInTime}</DepartureText>
           </div>
@@ -197,7 +197,7 @@ const TrainActivity: React.FC<StayActivitysProps> = ({
                 <Notes color={theme.iconText} />
                 <LinkTextContainer>
                   <LinkTextTitle>Additional Notes</LinkTextTitle>
-                  <LinkText>{noteText ? noteText : "Add notes"}</LinkText>
+                  <LinkText style={{ whiteSpace: 'pre-wrap' }}>{noteText ? noteText : "Add notes"}</LinkText>
                 </LinkTextContainer>
               </LinkContent>
               <ChevIcon>

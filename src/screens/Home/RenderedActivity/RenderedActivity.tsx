@@ -161,12 +161,6 @@ export const activityRenderMap = {
     // Combine without duplicates
     const travelers = [...existingTravelers, ...creatorAsTraveler];
 
-    const duration = getDurationInDaysHoursAndMinutes(
-      flight.departureDate.toLocaleString(),
-      flight.departureTime,
-      flight.arrivalDate,
-      flight.arrivalTime
-    );
     const createdAt = formatDateToDayMonthYear(flight.createdAt);
     const departureTime = convertTimeToString(flight.departureTime);
     const cardDepartureDateTime = formatDateTimeForCard(
@@ -204,7 +198,7 @@ export const activityRenderMap = {
           activitySubTitle: `${flight.flightClass} Class`,
           depatureTime: cardDepartureDateTime,
           departureAirport: flight.departureAirport,
-          durationTime: duration,
+          durationTime: flight.flightDuration,
           arrivalTime: cardArrivalDateTime,
           arrivalAirport: flight.arrivalAirport,
           travelers: travelers,
@@ -273,7 +267,7 @@ export const activityRenderMap = {
         onAttachmentClick={() => handleOpenModal("attachments", stay)}
         onAddNotesClick={() => handleOpenModal("notes", stay)}
         onTravelersClick={() => handleOpenModal?.("travelers", stay, travelers)}
-        hightlightedActivityAction="Stay in"
+        hightlightedActivityAction="Stay"
         activityText={`${stay.placeName}`}
         checkInTime={`Check-in at ${checkInTime}`}
         footerText={footer}
@@ -807,7 +801,7 @@ export const activityRenderMap = {
     return (
       <ActivityRoute
         onEditClick={() => handleEditClick("driving", drivingRoute.id)}
-        hightlightedRouteAction={"Driving"}
+        hightlightedRouteAction={"Drive"}
         routeText={duration}
         notesText={drivingRoute?.notes}
         footerText={footer}
@@ -833,7 +827,7 @@ export const activityRenderMap = {
     return (
       <ActivityRoute
         onEditClick={() => handleEditClick("walking", walkingRoute.id)}
-        hightlightedRouteAction={"Walking"}
+        hightlightedRouteAction={"Walk"}
         routeText={duration}
         notesText={walkingRoute?.notes}
         footerText={footer}

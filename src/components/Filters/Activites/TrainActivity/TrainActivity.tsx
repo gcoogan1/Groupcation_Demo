@@ -92,6 +92,8 @@ const TrainActivity: React.FC<TrainActivitysProps> = ({
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
+  console.log("NOTE", noteText)
+
   const {
     activityTitle,
     activitySubTitle,
@@ -202,7 +204,7 @@ const TrainActivity: React.FC<TrainActivitysProps> = ({
                 <Notes color={theme.iconText} />
                 <LinkTextContainer>
                   <LinkTextTitle>Additional Notes</LinkTextTitle>
-                  <LinkText>{noteText ? noteText : "Add notes"}</LinkText>
+                  <LinkText style={{ whiteSpace: 'pre-wrap' }}>{noteText ? noteText : "Add notes"}</LinkText>
                 </LinkTextContainer>
               </LinkContent>
               <ChevIcon>
