@@ -5,10 +5,6 @@ import {
   TravelItem,
 } from "@tableTypes/filter.types";
 
-/**
- * Returns renderable days with all groupcation "during" dates,
- * and only shows "before"/"after" dates if they have matching items (e.g., after filtering).
- */
 const timeFields = [
   "departureTime",
   "arrivalTime",
@@ -21,21 +17,55 @@ const timeFields = [
   "endTime",
 ] as const;
 
-type TimeField = (typeof timeFields)[number];
+const dateFields = [
+  "departureDate",
+  "arrivalDate",
+  "checkInDate",
+  "checkOutDate",
+  "pickUpDate",
+  "dropOffDate",
+  "reservationDate",
+  "startDate",
+  "endDate",
+];
 
-const getTime = (item: TravelItem): number => {
-  for (const field of timeFields) {
-    if (field in item) {
-      const value = item[field as keyof typeof item];
-      if (value) {
-        const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          return date.getTime();
-        }
+
+/**
+ * Filter each day item by time.
+ */
+const getTime = (item: any): number => {
+  // Try matching any date + time pair
+  for (const dateField of dateFields) {
+    const dateVal = item[dateField];
+    if (!dateVal) continue;
+
+    for (const timeField of timeFields) {
+      const timeVal = item[timeField];
+      if (!timeVal) continue;
+
+      try {
+        // Combine date + time and return timestamp
+        const isoDate = dateVal.slice(0, 10) + 'T' + timeVal.slice(11);
+        const timestamp = new Date(isoDate).getTime();
+        if (!isNaN(timestamp)) return timestamp;
+      } catch (err) {
+        continue;
       }
     }
+
+    // If date exists but no time, use just the date
+    const dateOnly = new Date(dateVal).getTime();
+    if (!isNaN(dateOnly)) return dateOnly;
   }
-  return Infinity; // fallback for missing or invalid time
+
+  // Final fallback: check for `date` property directly
+  if (item.date) {
+    const fallbackDate = new Date(item.date).getTime();
+    if (!isNaN(fallbackDate)) return fallbackDate;
+  }
+
+  // Nothing found
+  return 0;
 };
 
 /**
@@ -53,7 +83,7 @@ export const getRenderableDays = (
   groupcationDates?.forEach(({ date, dow, dayNumber }) => {
     const items = (filteredGrouped[date] as TravelItem[]) || [];
     const sortedItems = [...items].sort((a, b) => getTime(a) - getTime(b));
-
+    
     renderable.push({
       date,
       dow,
