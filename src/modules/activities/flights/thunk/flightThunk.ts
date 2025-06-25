@@ -25,10 +25,12 @@ interface Flight {
   railwayLine: string;
   class: string;
   flightDuration: string;
-  departureStation: string;
+  departureAirport: string;
+  departureCity: string;
   departureDate: string;
   departureTime: string;
-  arrivalStation: string;
+  arrivalAirport: string;
+  arrivalCity: string;
   arrivalDate: string;
   arrivalTime: string;
   travelers?: Traveler[];

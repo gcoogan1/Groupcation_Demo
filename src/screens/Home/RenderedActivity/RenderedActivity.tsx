@@ -190,7 +190,7 @@ export const activityRenderMap = {
           handleOpenModal?.("travelers", flight, travelers)
         }
         hightlightedActivityAction="Flight"
-        activityText={`from ${flight.departureAirport} to ${flight.arrivalAirport}`}
+        activityText={`from ${flight.departureCity} to ${flight.arrivalCity}`}
         departureTime={`Leaves at ${departureTime}`}
         footerText={footer}
         activityCardDetails={{

@@ -21,7 +21,9 @@ export type FlightUITable = {
   cost?: string;
   notes?: string;
   departureAirport: string;
+  departureCity: string;
   arrivalAirport: string;
+  arrivalCity: string;
   attachments?: FlightAttachments[],
   travelers?: FlightTraveler[];
 }
@@ -36,9 +38,11 @@ export type FlightTable = {
   flightClass?: FlightClass;
   flightNumber?: string;
   departureAirport: string;
+  departureCity: string;
   departureDate: Date; 
   departureTime: Date;
   arrivalAirport: string;
+  arrivalCity: string;
   arrivalDate: Date;
   arrivalTime: Date;
   cost?: string | null;

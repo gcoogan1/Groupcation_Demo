@@ -242,6 +242,13 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                 name={"departureAirport"}
                 placeholder="Enter name of the departure airport"
               />
+              <InputText
+                error={errors.departureCity}
+                register={register}
+                label={"City"}
+                name={"departureCity"}
+                placeholder="Enter name of the departure city"
+              />
               <InputDatesRow>
                 <InputDate
                   control={control}
@@ -295,6 +302,13 @@ const FlightForm: React.FC<FlightFormProps> = ({ flightId }) => {
                 label={"Station"}
                 name={"arrivalAirport"}
                 placeholder="Enter name of arrival airport"
+              />
+              <InputText
+                error={errors.arrivalCity}
+                register={register}
+                label={"City"}
+                name={"arrivalCity"}
+                placeholder="Enter name of arrival city"
               />
               <InputDatesRow>
                 <InputDate

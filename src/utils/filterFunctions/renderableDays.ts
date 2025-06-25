@@ -29,7 +29,6 @@ const dateFields = [
   "endDate",
 ];
 
-
 /**
  * Filter each day item by time.
  */
@@ -45,7 +44,7 @@ const getTime = (item: any): number => {
 
       try {
         // Combine date + time and return timestamp
-        const isoDate = dateVal.slice(0, 10) + 'T' + timeVal.slice(11);
+        const isoDate = dateVal.slice(0, 10) + "T" + timeVal.slice(11);
         const timestamp = new Date(isoDate).getTime();
         if (!isNaN(timestamp)) return timestamp;
       } catch (err) {
@@ -83,7 +82,7 @@ export const getRenderableDays = (
   groupcationDates?.forEach(({ date, dow, dayNumber }) => {
     const items = (filteredGrouped[date] as TravelItem[]) || [];
     const sortedItems = [...items].sort((a, b) => getTime(a) - getTime(b));
-    
+
     renderable.push({
       date,
       dow,

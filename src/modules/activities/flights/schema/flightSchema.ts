@@ -23,14 +23,22 @@ export const flightSchema = z
         required_error: "Duration of flight is required.",
       })
       .nonempty("Duration of flight is required.")
-      .min(6, "Must have at least 6 characters."),
+      .min(2, "Must have at least 6 characters."),
     departureAirport: z
       .string({ required_error: "Departure airport is required." })
+      .nonempty("Departure airport is required.")
+      .min(3, "Must have at least 3 characters."),
+    departureCity: z
+      .string({ required_error: "Departure city is required." })
       .nonempty("Departure airport is required.")
       .min(3, "Must have at least 3 characters."),
     departureDate: z.date({ required_error: "Departure date is required." }),
     departureTime: z.date({ required_error: "Departure time is required." }),
     arrivalAirport: z
+      .string({ required_error: "Arrival city is required." })
+      .nonempty("Arrival airport is required.")
+      .min(3, "Must have at least 3 characters."),
+    arrivalCity: z
       .string({ required_error: "Arrival airport is required." })
       .nonempty("Arrival airport is required.")
       .min(3, "Must have at least 3 characters."),
@@ -51,7 +59,7 @@ export const flightSchema = z
           id: z.union([z.string(), z.number()]).optional(),
           createdAt: z.string().optional(),
           fileName: z.string(),
-          trainId: z.number().optional(),
+          flightId: z.number().optional(),
           addedBy: z.number().optional(),
           file: z.instanceof(File).optional(),
           fileUrl: z.string().url("File URL is invalid"),

@@ -28,9 +28,11 @@ interface Flight {
   flightClass: FlightClass;
   flightNumber?: string;
   departureAirport: string;
+  departureCity: string;
   departureDate: string;
   departureTime: string;
   arrivalAirport: string;
+  arrivalCity: string;
   arrivalDate: string;
   arrivalTime: string;
   travelers?: Traveler[];
