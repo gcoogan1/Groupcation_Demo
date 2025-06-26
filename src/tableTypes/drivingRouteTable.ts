@@ -1,3 +1,7 @@
+type Traveler = {
+  value: number;
+  label: string;
+};
 
 export type DrivingRouteUITable = {
   id: string;
@@ -11,6 +15,7 @@ export type DrivingRouteUITable = {
   arrivalLocation: string;
   arrivalDate?: string | Date;
   notes?: string;
+  travelers?: DrivingTraveler[];
 }
 
 export type DrivingRouteTable = {
@@ -25,4 +30,13 @@ export type DrivingRouteTable = {
   arrivalLocation: string;
   arrivalDate?: Date | string;
   notes?: string | null;
+  travelers?: Traveler[]; // ONLY FOR UI
+};
+
+export type DrivingTraveler = {
+  id?: number;
+  createdAt?: Date;
+  drivingId: number;
+  travelerId: number;
+  travelerFullName: string;
 };

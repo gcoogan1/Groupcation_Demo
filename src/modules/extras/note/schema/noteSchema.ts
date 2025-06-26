@@ -11,4 +11,12 @@ export const NoteSchema = z.object({
     .string({ required_error: "Content is required." })
     .nonempty("Content is required.")
     .min(10, "Must be at least 10 characters long."),
+  travelers: z
+    .array(
+      z.object({
+        value: z.number(),
+        label: z.string(),
+      })
+    )
+    .optional(),
 });

@@ -1,11 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   addNoteTable,
+  addNoteTravelersTable,
   deleteNoteTable,
+  deleteNoteTraveler,
   fetchNoteByGroupcationId,
   fetchNoteTable,
   updateNoteTable,
 } from "../thunk/noteThunk";
+
+type Traveler = {
+  value: number;
+  label: string;
+};
 
 interface Note {
   id: string;
@@ -15,6 +22,7 @@ interface Note {
   startTime: string;
   noteTitle: string;
   noteContent: string;
+  travelers?: Traveler[];
 }
 
 interface NoteState {
@@ -68,7 +76,48 @@ const noteSlice = createSlice({
         state.notes = state.notes.filter(
           (walking) => walking.id !== action.payload
         );
-      });
+      })
+      // ADD NOTE TRAVELERS
+      .addCase(
+        addNoteTravelersTable.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ travelers: Traveler[]; noteId: string }>
+        ) => {
+          const { travelers, noteId } = action.payload;
+
+          // Find the note associated with this noteId
+          const note = state.notes.find((t) => String(t.id) === String(noteId));
+
+          if (note) {
+            // Append new travelers to the existing list
+            note.travelers = [...(note.travelers || []), ...travelers];
+          }
+        }
+      )
+      // DELETE NOTE TRAVELER
+      .addCase(
+        deleteNoteTraveler.fulfilled,
+        (
+          state,
+          action: PayloadAction<
+            { travelerId: number | string; noteId: string } | undefined
+          >
+        ) => {
+          if (!action.payload) return;
+
+          const { travelerId, noteId } = action.payload;
+
+          // Find the note
+          const note = state.notes.find((t) => Number(t.id) === Number(noteId));
+
+          if (note) {
+            // Remove deleted traveler from the note's travelers
+            note.travelers =
+              note.travelers?.filter((att) => att.value !== travelerId) || [];
+          }
+        }
+      );
   },
 });
 

@@ -24,6 +24,9 @@ import {
   SectionInputs,
 } from "./DrivingRouteForm.styles";
 import { theme } from "@styles/theme";
+import { selectConvertedUsers } from "@/store/selectors/selectors";
+import InputSelectCheckbox from "@/components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import UsersIcon from "@assets/Users.svg?react";
 import InputText from "@components/Inputs/InputText/InputText";
 import CheckboxSelected from "@assets/Checkbox_Selected.svg?react";
 import CheckboxUnselected from "@assets/Checkbox_Unselected.svg?react";
@@ -62,6 +65,9 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     selectDrivingRouteById(state, drivingId)
   );
 
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+
   const [showArrivalDate, setShowArrivalDate] = useState(
     !!existingDrivingRoute?.arrivalDate
   );
@@ -69,6 +75,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
     !!existingDrivingRoute?.notes
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [travelers] = useState(users);
 
   // REACT-HOOK-FORM FUNCTIONS
   const {
@@ -136,7 +143,7 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
 
   // SUBMIT DRIVING FORM DATA
   const onSubmit = async (data: DrivingRouteFormData) => {
-    const { ...rest } = data;
+    const { travelers, ...rest } = data;
     setIsLoading(true);
 
     try {
@@ -149,7 +156,10 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
         };
 
         await dispatch(
-          updateDrivingTable({ driving: updatedDrivingRoute })
+          updateDrivingTable({
+            driving: updatedDrivingRoute,
+            selectedTravelers: travelers,
+          })
         ).unwrap();
       } else {
         // ADD DRIVING
@@ -159,7 +169,9 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
           ...rest,
         };
 
-        await dispatch(addDrivingTable({ driving: newData })).unwrap();
+        await dispatch(
+          addDrivingTable({ driving: newData, travelers })
+        ).unwrap();
       }
 
       // Only navigate after the async thunk is fully completed
@@ -283,6 +295,26 @@ const DrivingRouteForm: React.FC<DrivingRouteFormProps> = ({ drivingId }) => {
                   />
                 )}
               </DistinationDateContainer>
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        <Section>
+          <SectionGraphics>
+            <UsersIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Travelers</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputSelectCheckbox
+                label="Select Travelers"
+                name="travelers"
+                options={travelers}
+                placeholder="Choose your companions..."
+                control={control}
+              />
             </SectionInputs>
           </SectionContents>
         </Section>

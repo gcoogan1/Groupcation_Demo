@@ -21,6 +21,9 @@ import {
   SectionInputs,
 } from "./WalkingRouteForm.styles";
 import { theme } from "@styles/theme";
+import { selectConvertedUsers } from "@/store/selectors/selectors";
+import InputSelectCheckbox from "@/components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
+import UsersIcon from "@assets/Users.svg?react";
 import InputText from "@components/Inputs/InputText/InputText";
 import Button from "@components/Button/Button";
 import DurationIcon from "@assets/Duration.svg?react";
@@ -58,10 +61,14 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
     )
   );
 
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+
   const [showAddNotes, setShowAddNotes] = useState(
     !!existingWalkingRoute?.notes
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [travelers] = useState(users);
 
   // REACT-HOOK-FORM FUNCTIONS
   const {
@@ -110,7 +117,7 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
 
   // SUBMIT WALKING FORM DATA
   const onSubmit = async (data: WalkingRouteFormData) => {
-    const { ...rest } = data;
+    const { travelers, ...rest } = data;
     setIsLoading(true);
 
     try {
@@ -123,7 +130,10 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
         };
 
         await dispatch(
-          updateWalkingTable({ walking: updatedWalkingRoute })
+          updateWalkingTable({
+            walking: updatedWalkingRoute,
+            selectedTravelers: travelers,
+          })
         ).unwrap();
       } else {
         // ADD WALKING
@@ -133,7 +143,9 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
           ...rest,
         };
 
-        await dispatch(addWalkingTable({ walking: newData })).unwrap();
+        await dispatch(
+          addWalkingTable({ walking: newData, travelers })
+        ).unwrap();
       }
 
       // Only navigate after the async thunk is fully completed
@@ -235,6 +247,26 @@ const WalkingRouteForm: React.FC<WalkingRouteFormProps> = ({ walkingId }) => {
                 label={"Arrival Location"}
                 name={"arrivalLocation"}
                 placeholder="Enter the arrival location of the walk"
+              />
+            </SectionInputs>
+          </SectionContents>
+        </Section>
+        <Section>
+          <SectionGraphics>
+            <UsersIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Travelers</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputSelectCheckbox
+                label="Select Travelers"
+                name="travelers"
+                options={travelers}
+                placeholder="Choose your companions..."
+                control={control}
               />
             </SectionInputs>
           </SectionContents>

@@ -20,4 +20,12 @@ export const walkingRouteSchema = z.object({
     .min(10, "Must have at least 10 characters.")
     .nullable()
     .optional(),
+  travelers: z
+    .array(
+      z.object({
+        value: z.number(),
+        label: z.string(),
+      })
+    )
+    .optional(),
 });

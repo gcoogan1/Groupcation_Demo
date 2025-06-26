@@ -1,3 +1,7 @@
+type Traveler = {
+  value: number;
+  label: string;
+};
 
 export type WalkingRouteUITable = {
   id: string;
@@ -10,6 +14,7 @@ export type WalkingRouteUITable = {
   departureTime: string;
   arrivalLocation: string;
   notes?: string;
+  travelers?: WalkingRouteTraveler[];
 }
 
 export type WalkingRouteTable = {
@@ -23,4 +28,13 @@ export type WalkingRouteTable = {
   departureTime: Date;
   arrivalLocation: string;
   notes?: string | null;
+  travelers?: Traveler[]; // ONLY FOR UI
+};
+
+export type WalkingRouteTraveler = {
+  id?: number;
+  createdAt?: Date;
+  walkingRouteId: number;
+  travelerId: number;
+  travelerFullName: string;
 };

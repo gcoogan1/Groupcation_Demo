@@ -18,6 +18,9 @@ import {
   SectionInputs,
 } from "./NoteForm.styles";
 import { theme } from "@styles/theme";
+import UsersIcon from "@assets/Users.svg?react";
+import { selectConvertedUsers } from "@/store/selectors/selectors";
+import InputSelectCheckbox from "@/components/Inputs/InputSelectCheckbox/InputSelectCheckbox";
 import InputText from "@components/Inputs/InputText/InputText";
 import Button from "@components/Button/Button";
 import AddNotesIcon from "@assets/AdditionalNotes.svg?react";
@@ -51,7 +54,11 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
     state.note.notes.find((note) => note.id === noteId)
   );
 
+  // FETCH USERS FROM STATE TO FILL TRAVELERS INPUT
+  const users = useSelector(selectConvertedUsers);
+
   const [isLoading, setIsLoading] = useState(false);
+  const [travelers] = useState(users);
 
   // REACT-HOOK-FORM FUNCTIONS
   const {
@@ -95,7 +102,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
 
   // SUBMIT NOTE FORM DATA
   const onSubmit = async (data: NoteFormData) => {
-    const { ...rest } = data;
+    const { travelers, ...rest } = data;
     setIsLoading(true);
 
     try {
@@ -107,7 +114,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
           id: Number(existingNote?.id),
         };
 
-        await dispatch(updateNoteTable({ note: updatedNote })).unwrap();
+        await dispatch(updateNoteTable({ note: updatedNote, selectedTravelers: travelers })).unwrap();
       } else {
         // ADD NOTE
         const newData = {
@@ -116,7 +123,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
           ...rest,
         };
 
-        await dispatch(addNoteTable({ note: newData })).unwrap();
+        await dispatch(addNoteTable({ note: newData, travelers })).unwrap();
       }
 
       // Only navigate after the async thunk is fully completed
@@ -198,6 +205,26 @@ const NoteForm: React.FC<NoteFormProps> = ({ noteId }) => {
                 name={"startTime"}
               />
             </InputDatesRow>
+          </SectionContents>
+        </Section>
+          <Section>
+          <SectionGraphics>
+            <UsersIcon color={theme.iconText} />
+            <SectionGraphicsLine />
+          </SectionGraphics>
+          <SectionContents>
+            <ContentTitleContainer>
+              <ContentTitle>Travelers</ContentTitle>
+            </ContentTitleContainer>
+            <SectionInputs>
+              <InputSelectCheckbox
+                label="Select Travelers"
+                name="travelers"
+                options={travelers}
+                placeholder="Choose your companions..."
+                control={control}
+              />
+            </SectionInputs>
           </SectionContents>
         </Section>
       </FormSections>

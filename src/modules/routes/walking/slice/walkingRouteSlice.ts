@@ -1,11 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   fetchWalkingRouteByGroupcationId,
   fetchWalkingRouteTable,
   addWalkingTable,
   updateWalkingTable,
   deleteWalkingTable,
+  addWalkingTravelersTable,
+  deleteWalkingTraveler,
 } from "../thunk/walkingThunk";
+
+type Traveler = {
+  value: number;
+  label: string;
+};
 
 interface WalkingRoute {
   id: string;
@@ -17,6 +24,7 @@ interface WalkingRoute {
   departureTime: string;
   arrivalLocation: string;
   notes?: string;
+  travelers?: Traveler[];
 }
 
 interface WalkingRouteState {
@@ -72,7 +80,53 @@ const walkingRouteSlice = createSlice({
         state.walkingRoutes = state.walkingRoutes.filter(
           (walking) => walking.id !== action.payload
         );
-      });
+      })
+        // ADD WALKING TRAVELERS
+      .addCase(
+        addWalkingTravelersTable.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ travelers: Traveler[]; walkingId: string }>
+        ) => {
+          const { travelers, walkingId } = action.payload;
+
+          // Find the walking associated with this walkingId
+          const walking = state.walkingRoutes.find(
+            (t) => String(t.id) === String(walkingId)
+          );
+
+          if (walking) {
+            // Append new travelers to the existing list
+            walking.travelers = [...(walking.travelers || []), ...travelers];
+          }
+        }
+      )
+       // DELETE WALKING TRAVELER
+      .addCase(
+        deleteWalkingTraveler.fulfilled,
+        (
+          state,
+          action: PayloadAction<
+            { travelerId: number | string; walkingId: string } | undefined
+          >
+        ) => {
+          if (!action.payload) return;
+
+          const { travelerId, walkingId } = action.payload;
+
+          // Find the walking
+          const walking = state.walkingRoutes.find(
+            (t) => Number(t.id) === Number(walkingId)
+          );
+
+          if (walking) {
+            // Remove deleted traveler from the walking's travelers
+            walking.travelers =
+              walking.travelers?.filter((att) => att.value !== travelerId) ||
+              [];
+          }
+        }
+      );
   },
 });
 
