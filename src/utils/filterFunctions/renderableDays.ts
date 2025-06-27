@@ -32,38 +32,45 @@ const dateFields = [
 /**
  * Filter each day item by time.
  */
-const getTime = (item: any): number => {
-  // Try matching any date + time pair
+const getItemTime = (item: any): number => {
+  // Try every date field
   for (const dateField of dateFields) {
     const dateVal = item[dateField];
     if (!dateVal) continue;
 
+    // For each date, check if there's a matching time field
     for (const timeField of timeFields) {
       const timeVal = item[timeField];
       if (!timeVal) continue;
 
       try {
-        // Combine date + time and return timestamp
-        const isoDate = dateVal.slice(0, 10) + "T" + timeVal.slice(11);
-        const timestamp = new Date(isoDate).getTime();
-        if (!isNaN(timestamp)) return timestamp;
+        const date = new Date(dateVal);
+        const time = new Date(timeVal);
+
+        const timestamp = new Date(timeVal).getTime();
+        if (!isNaN(timestamp)) {
+          return timestamp;
+        }
       } catch (err) {
-        continue;
+        console.error("Error parsing time:", err);
       }
     }
 
     // If date exists but no time, use just the date
     const dateOnly = new Date(dateVal).getTime();
-    if (!isNaN(dateOnly)) return dateOnly;
+    if (!isNaN(dateOnly)) {
+      return dateOnly;
+    }
   }
 
-  // Final fallback: check for `date` property directly
+  // If none of the above worked, try the generic "date" field
   if (item.date) {
     const fallbackDate = new Date(item.date).getTime();
-    if (!isNaN(fallbackDate)) return fallbackDate;
+    if (!isNaN(fallbackDate)) {
+      return fallbackDate;
+    }
   }
 
-  // Nothing found
   return 0;
 };
 
@@ -81,7 +88,9 @@ export const getRenderableDays = (
   // Add all groupcation "during" dates (always shown)
   groupcationDates?.forEach(({ date, dow, dayNumber }) => {
     const items = (filteredGrouped[date] as TravelItem[]) || [];
-    const sortedItems = [...items].sort((a, b) => getTime(a) - getTime(b));
+    const sortedItems = [...items].sort(
+      (a, b) => getItemTime(a) - getItemTime(b)
+    );
 
     renderable.push({
       date,
@@ -105,7 +114,9 @@ export const getRenderableDays = (
 
     if (period === "before" || period === "after") {
       // Sort days (items) by time for each day
-      const sortedItems = [...items].sort((a, b) => getTime(a) - getTime(b));
+      const sortedItems = [...items].sort(
+        (a, b) => getItemTime(a) - getItemTime(b)
+      );
 
       renderable.push({
         date: dateKey,
